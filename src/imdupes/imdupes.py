@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     clean_options = ap.add_argument_group('clean mode options')
     clean_options.add_argument(
-        '-y', '--no-confirm', action='store_true', help='no asking for user confirmation before deletion'
+        '-y', '--no-confirm', action='store_true', help='no asking for user confirmation before file deletion'
     )
 
     args = ap.parse_args()
