@@ -1,4 +1,5 @@
 from _version import __version__, __app_name__
+import sys
 import argparse
 
 from detect import detect
@@ -13,6 +14,8 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
     if arguments.mode == 'clean':
         if arguments.output:
             ap.error(f'clean mode does not support -o/--output flag, see {ap.prog} --help for more info')
+        if '-f' in sys.argv[1:] or '--format' in sys.argv[1:]:
+            ap.error(f'clean mode does not support -f/--format flag, see {ap.prog} --help for more info')
 
     return arguments
 
