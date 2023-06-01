@@ -15,7 +15,7 @@ if __name__ == '__main__':
     ap.add_argument('mode', choices=['detect', 'clean'], help="run mode")
     ap.add_argument('directory', help='target image directory')
     ap.add_argument(
-        '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched file names based on REGEX pattern'
+        '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched filenames based on REGEX pattern'
     )
     ap.add_argument(
         '-r', '--recursive', action='store_true',
