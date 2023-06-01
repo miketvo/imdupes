@@ -1,0 +1,5 @@
+tqdm
+imagehash
+pillow
+beautifulsoup4
+requests
