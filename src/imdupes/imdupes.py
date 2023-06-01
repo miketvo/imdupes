@@ -1,3 +1,4 @@
+from _version import __version__
 import argparse
 
 
@@ -22,7 +23,10 @@ if __name__ == '__main__':
         help='recursively search for images in subdirectories in addition to the specified parent directory'
     )
     ap.add_argument(
-        '-v', '--verbose', action='store_true', help='verbose mode'
+        '-V', '--verbose', action='store_true', help='explain what is being done'
+    )
+    ap.add_argument(
+        '-v', '--version', action='version', version=f'%(prog)s {__version__}', help='show version information and exit'
     )
 
     detect_options = ap.add_argument_group('detect mode options')
@@ -36,7 +40,7 @@ if __name__ == '__main__':
 
     clean_options = ap.add_argument_group('clean mode options')
     clean_options.add_argument(
-        '-y', '--no-confirm', action='store_true', help='no asking for user confirmation before file deletion'
+        '-i', '--interactive', action='store_true', help='prompt before every file deletion'
     )
 
     args = ap.parse_args()
