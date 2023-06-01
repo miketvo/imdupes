@@ -8,11 +8,15 @@ if __name__ == '__main__':
         "Quickly detects and removes identical images. Has two modes:\n"
         "\t- 'detect' console prints the detected identical images path/filename\n"
         "\t- 'clean' removes the detected identical images",
+        epilog='Note: This program ignores any non-image file in the target directory',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
     ap.add_argument('mode', choices=['detect', 'clean'], help="run mode")
     ap.add_argument('directory', help='target image directory')
+    ap.add_argument(
+        '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched file names based on REGEX'
+    )
     ap.add_argument(
         '-r', '--recursive', action='store_true',
         help='recursively search for images in subdirectories in addition to the specified parent directory'
