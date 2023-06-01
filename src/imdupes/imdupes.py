@@ -6,7 +6,7 @@ if __name__ == '__main__':
         prog='imdupes',
         description=
         "Quickly detects and removes identical images. Has two modes:\n"
-        "\t- 'detect' console prints the detected identical images path/filename\n"
+        "\t- 'detect' console prints the detected identical image paths/filenames\n"
         "\t- 'clean' removes the detected identical images",
         epilog='Note: This program ignores any non-image file in the target directory',
         formatter_class=argparse.RawDescriptionHelpFormatter
