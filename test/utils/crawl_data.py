@@ -36,6 +36,7 @@ if __name__ == '__main__':
                 with open(f'{SAVE_DIR}/{filename}', 'wb') as f:
                     f.write(requests.get(url_download).content)
                     print(f'Saved {filename} [Pokémon {i}/{len(urls_pokemon)}]')
+                    f.close()
 
     else:
         raise RuntimeError("No <div> element found after <h2 id='gen-1'>")

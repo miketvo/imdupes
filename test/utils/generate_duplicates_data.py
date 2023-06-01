@@ -22,14 +22,13 @@ if __name__ == '__main__':
     print(f'Found {len(filenames)} images. Duplicating...\n')
     for i, filename in enumerate(filenames):
         print(f'Image {i + 1}/{len(filenames)}: {filename}', end='')
-        with open(f'{SAVE_DIR}/{filename}', 'wb') as f:
-            num_duplicates = random.randint(1, MAX_DUPLICATES)
-            if random.random() <= DUPLICATE_PERCENTAGE:
-                for j in range(1, num_duplicates + 1):
-                    new_filename = f'DUPLICATE_{j}_{filename}'
-                    shutil.copy(f'{SAVE_DIR}/{filename}', f'{SAVE_DIR}/{new_filename}')
-                print(f' was duplicated {num_duplicates} time(s).')
-            else:
-                print(f' was duplicated 0 time(s).')
+        num_duplicates = random.randint(1, MAX_DUPLICATES)
+        if random.random() <= DUPLICATE_PERCENTAGE:
+            for j in range(1, num_duplicates + 1):
+                new_filename = f'DUPLICATE_{j}_{filename}'
+                shutil.copy(f'{SAVE_DIR}/{filename}', f'{SAVE_DIR}/{new_filename}')
+            print(f' was duplicated {num_duplicates} time(s).')
+        else:
+            print(f' was duplicated 0 time(s).')
 
     print('\n[DONE]')
