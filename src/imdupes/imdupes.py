@@ -5,6 +5,7 @@ import argparse
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(
         prog='imdupes',
+        usage='imdupes [OPTIONS] {detect,clean} DIRECTORY',
         description=
         "Quickly detects and removes identical images. Has two modes:\n"
         "\t- 'detect' console prints the detected identical image paths/filenames\n"
