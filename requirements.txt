@@ -3,3 +3,4 @@ imagehash
 pillow
 beautifulsoup4
 requests
+pyinstaller
