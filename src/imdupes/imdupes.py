@@ -18,7 +18,7 @@ if __name__ == '__main__':
         help='recursively search for images in subdirectories in addition to the specified parent directory'
     )
     ap.add_argument(
-        '-v', '--verbose-level', choices=[0, 1, 2], type=int, default='0', help='verbose level (default: 0)'
+        '-v', '--verbose', action='store_true', help='verbose mode'
     )
 
     detect_options = ap.add_argument_group('detect mode options')
