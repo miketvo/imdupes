@@ -1,2 +1,2 @@
-__version__ = '0.0.1-alpha'
+__version__ = '0.1.0-alpha'
 __app_name__ = 'imdupes'
