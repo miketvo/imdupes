@@ -2,6 +2,7 @@ from _version import __version__, __app_name__
 
 import os
 import sys
+from sys import exit
 import argparse
 from termcolor import cprint
 
