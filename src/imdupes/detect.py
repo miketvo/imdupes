@@ -47,7 +47,8 @@ def detect(
         )
 
     if console_output:
-        print(':')
+        if verbose:
+            print(':')
         for paths in duplicated_image_hashes.values():
             print()
             for path in paths:
