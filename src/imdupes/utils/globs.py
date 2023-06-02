@@ -50,3 +50,9 @@ SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/han
     'psd',
     'xpm',
 ]
+
+INTERACTIVE_OPTS = {
+    'y': 'Yes',
+    'n': 'No',
+    'x': 'Cancel and Exit',
+}

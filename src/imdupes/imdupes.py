@@ -116,14 +116,15 @@ if __name__ == '__main__':
     elif args.mode == 'clean':
         dup_imgs = detect(
             img_paths,
+            root_dir=args.directory,
             console_output=False,
             output_path_format=PathFormat(args.format),
-            root_dir=args.directory,
             verbose=args.verbose
         )
 
         clean(
             dup_imgs,
+            root_dir=args.directory,
             interactive=args.interactive,
             verbose=args.verbose,
             output_path_format=PathFormat(args.format)

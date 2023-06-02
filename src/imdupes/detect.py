@@ -8,9 +8,9 @@ from utils.globs import PathFormat, format_path
 
 def detect(
         img_paths: list[str],
+        root_dir: str = None,
         console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
-        root_dir: str = None,
         verbose: bool = False
 ) -> dict[imagehash.ImageHash, list[str]]:
     image_hashes = {}
@@ -40,7 +40,8 @@ def detect(
     if verbose:
         print(
             f'Scanning for identical images... '
-            f'Found {colored(str(len(duplicated_image_hashes.values())), attrs=["bold"])} identical images '
+            f'Found {colored(str(len(duplicated_image_hashes.values())), attrs=["bold"])} duplication(s) '
+            f'across {colored(str(sum(len(lst) for lst in duplicated_image_hashes.values())), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
             end=''
         )
@@ -48,7 +49,10 @@ def detect(
     if console_output:
         print(':')
         for paths in duplicated_image_hashes.values():
+            print()
             for path in paths:
                 print(format_path(path, output_path_format, root_dir))
+    else:
+        print()
 
     return duplicated_image_hashes

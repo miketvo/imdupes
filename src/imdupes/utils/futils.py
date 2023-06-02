@@ -4,7 +4,9 @@ import re
 from imagehash import ImageHash
 from termcolor import cprint, colored
 
-from utils.globs import SUPPORTED_FILE_EXTS, PathFormat
+from utils.globs import SUPPORTED_FILE_EXTS
+from utils.globs import INTERACTIVE_OPTS
+from utils.globs import PathFormat, format_path
 
 
 # noinspection DuplicatedCode
@@ -59,8 +61,56 @@ def index_images(
 
 def clean(
         dup_imgs: dict[ImageHash, list[str]],
+        root_dir: str = None,
         interactive: bool = False,
         verbose: bool = False,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
-    pass
+    if verbose:
+        print(f'\nCleaning duplications...')
+
+    for dup_paths in dup_imgs.values():
+        if interactive:
+            for path in dup_paths:
+                while True:
+                    choices = '\n\t'.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
+                    choice = input(
+                        f'Delete "{format_path(path, output_path_format, root_dir)}"?\n\t'
+                        f'{colored(choices)}\n{colored(">>", "yellow", attrs=["bold"])} '
+                    ).lower()
+
+                    if choice in INTERACTIVE_OPTS.keys():
+                        if choice == 'y':
+                            try:
+                                os.remove(path)
+                                if verbose:
+                                    print(f'-- Deleted "{format_path(path, output_path_format, root_dir)}"')
+                            except OSError as e:
+                                cprint(
+                                    f'Error deleting file '
+                                    f'"{format_path(path, output_path_format, root_dir)}": {str(e)}',
+                                    'red'
+                                )
+                        if choice == 'x':
+                            print('Cleaning cancelled. Program terminated.')
+                            exit()
+
+                        break
+
+                    else:
+                        print('Invalid choice. Please choose a valid option.')
+
+        else:
+            for i in range(1, len(dup_paths)):
+                try:
+                    os.remove(dup_paths[i])
+                    if verbose:
+                        print(f'-- Deleted "{format_path(dup_paths[i], output_path_format, root_dir)}"')
+                except OSError as e:
+                    cprint(
+                        f'Error deleting file "{format_path(dup_paths[i], output_path_format, root_dir)}": {str(e)}',
+                        'red'
+                    )
+
+    if verbose:
+        print(f'{colored("[DONE]", color="green", attrs=["bold"])}')
