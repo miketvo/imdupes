@@ -60,6 +60,7 @@ def index_images(
 def clean(
         dup_imgs: dict[ImageHash, list[str]],
         interactive: bool = False,
-        verbose: bool = False
+        verbose: bool = False,
+        output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
     pass
