@@ -6,9 +6,9 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 
-from test import URL_DATA_SRC, DATA_DUPLICATE_PERCENTAGE, DATA_MAX_DUPLICATES, DATA_RANDOM_SEED
-from test import DATA_DIR
-from test.clean_test_data import clean
+from tests import URL_DATA_SRC, DATA_DUPLICATE_PERCENTAGE, DATA_MAX_DUPLICATES, DATA_RANDOM_SEED
+from tests import DATA_DIR
+from tests.clean_test_data import clean
 
 
 def crawl():

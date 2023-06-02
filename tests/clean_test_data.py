@@ -1,6 +1,6 @@
 import os
 
-from test import DATA_DIR
+from tests import DATA_DIR
 
 
 def clean():
