@@ -92,7 +92,7 @@ def clean(
                                     'red'
                                 )
                         if choice == 'x':
-                            print('Cleaning cancelled. Program terminated.')
+                            cprint('Cleaning cancelled. Program terminated.', 'red')
                             exit()
 
                         break
