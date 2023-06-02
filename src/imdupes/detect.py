@@ -11,16 +11,12 @@ def detect(
         console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
         root_dir: str = None,
-        progress_bar: bool = True,
         verbose: bool = False,
-) -> dict[str, str]:
+) -> dict[imagehash.ImageHash, list[str]]:
     image_hashes = {}
 
     if verbose:
-        print('Scanning for identical images...')
-
-    if progress_bar:
-        with tqdm(total=len(img_paths), position=0, leave=True) as pbar:
+        with tqdm(total=len(img_paths), desc='Scanning for identical images', position=0, leave=False) as pbar:
             for img_path in img_paths:
                 pbar.update()
                 with Image.open(img_path) as im:
@@ -43,8 +39,9 @@ def detect(
 
     if verbose:
         print(
-            f'{colored("[DONE]", color="green", attrs=["bold"])} '
-            f'Found {len(duplicated_image_hashes.values())} identical images',
+            f'Scanning for identical images... '
+            f'Found {colored(str(len(duplicated_image_hashes.values())), attrs=["bold"])} identical images '
+            f'{colored("[DONE]", color="green", attrs=["bold"])}',
             end=''
         )
 
@@ -53,7 +50,5 @@ def detect(
         for paths in duplicated_image_hashes.values():
             for path in paths:
                 print(format_path(path, output_path_format, root_dir))
-    else:
-        print('.')
 
     return duplicated_image_hashes

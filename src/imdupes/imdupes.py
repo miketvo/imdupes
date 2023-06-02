@@ -7,7 +7,7 @@ from termcolor import cprint
 
 from detect import detect
 from utils.futils import index_images, clean
-from utils.globs import PathFormat
+from utils.globs import PathFormat, format_path
 
 
 def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespace:
@@ -51,10 +51,6 @@ if __name__ == '__main__':
         help='recursively search for images in subdirectories in addition to the specified parent directory'
     )
     ap.add_argument(
-        '-p', '--progress-bar', action='store_true',
-        help='display a progress bar'
-    )
-    ap.add_argument(
         '-V', '--verbose', action='store_true', help='explain what is being done'
     )
     ap.add_argument(
@@ -69,7 +65,8 @@ if __name__ == '__main__':
 
     detect_options = ap.add_argument_group('detect mode options')
     detect_options.add_argument(
-        '-o', '--output', required=False, metavar='OUTPUT', help='save the console output to the specified OUTPUT file'
+        '-o', '--output', required=False, metavar='OUTPUT',
+        help='save the console output to the specified OUTPUT file (overwriting if file already exist)'
     )
 
     clean_options = ap.add_argument_group('clean mode options')
@@ -101,28 +98,33 @@ if __name__ == '__main__':
     )
 
     if args.mode == 'detect':
-        dup_img_paths = detect(
+        dup_imgs = detect(
             img_paths,
             output_path_format=PathFormat(args.format),
             root_dir=args.directory,
-            progress_bar=args.progress_bar,
-            verbose=args.verbose,
+            verbose=args.verbose
         )
 
+        if args.output is not None:
+            f = open(args.output, 'w')
+            for paths in dup_imgs.values():
+                for path in paths:
+                    f.write(f'{format_path(path, PathFormat(args.format), args.directory)}\n')
+            if args.verbose:
+                cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
+
     elif args.mode == 'clean':
-        dup_img_paths = detect(
+        dup_imgs = detect(
             img_paths,
             console_output=False,
             output_path_format=PathFormat(args.format),
             root_dir=args.directory,
-            progress_bar=args.progress_bar,
             verbose=args.verbose
         )
 
         clean(
-            img_paths,
+            dup_imgs,
             interactive=args.interactive,
-            progress_bar=args.progress_bar,
             verbose=args.verbose,
             output_path_format=PathFormat(args.format)
         )

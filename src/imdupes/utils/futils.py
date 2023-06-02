@@ -1,6 +1,7 @@
 from sys import exit
 import os
 import re
+from imagehash import ImageHash
 from termcolor import cprint, colored
 
 from utils.globs import SUPPORTED_FILE_EXTS, PathFormat
@@ -57,7 +58,7 @@ def index_images(
 
 
 def clean(
-        img_paths: list[str],
+        dup_imgs: dict[ImageHash, list[str]],
         interactive: bool = False,
         progress_bar: bool = True,
         verbose: bool = False,
