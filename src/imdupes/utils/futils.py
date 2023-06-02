@@ -12,7 +12,7 @@ def index_images(
         directory: str,
         exclude: str = None,
         recursive: bool = False,
-        verbose: bool = False,
+        verbose: bool = False
 ) -> list[str]:
     img_paths = []
     abs_root = os.path.abspath(directory)
@@ -60,8 +60,6 @@ def index_images(
 def clean(
         dup_imgs: dict[ImageHash, list[str]],
         interactive: bool = False,
-        progress_bar: bool = True,
-        verbose: bool = False,
-        output_path_format: PathFormat = PathFormat.DIR_RELATIVE
+        verbose: bool = False
 ) -> None:
     pass

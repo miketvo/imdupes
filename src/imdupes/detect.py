@@ -11,7 +11,7 @@ def detect(
         console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
         root_dir: str = None,
-        verbose: bool = False,
+        verbose: bool = False
 ) -> dict[imagehash.ImageHash, list[str]]:
     image_hashes = {}
 
