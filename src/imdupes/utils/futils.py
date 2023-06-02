@@ -3,15 +3,15 @@ import os
 import re
 from termcolor import cprint, colored
 
-from utils.globs import SUPPORTED_FILE_EXTS, PathFormat, format_path
+from utils.globs import SUPPORTED_FILE_EXTS, PathFormat
 
 
+# noinspection DuplicatedCode
 def index_images(
         directory: str,
         exclude: str = None,
         recursive: bool = False,
         verbose: bool = False,
-        output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> list[str]:
     img_paths = []
     abs_root = os.path.abspath(directory)
@@ -25,10 +25,10 @@ def index_images(
             for file in files:
                 file_path = os.path.join(root, file)
                 file_name = os.path.basename(file_path)
-                if exclude_pattern is not None and exclude_pattern.search(file_name):
+                if exclude_pattern is not None and exclude_pattern.search(file_name) is not None:
                     continue
 
-                file_extension = os.path.splitext(file)[1].lower()
+                file_extension = os.path.splitext(file)[1].lower()[1:]
                 if file_extension in SUPPORTED_FILE_EXTS:
                     img_paths.append(file_path)
     else:
@@ -36,10 +36,10 @@ def index_images(
             file_path = os.path.join(abs_root, file)
             if os.path.isfile(file_path):
                 file_name = os.path.basename(file_path)
-                if exclude_pattern is not None and exclude_pattern.search(file_name):
+                if exclude_pattern is not None and exclude_pattern.search(file_name) is not None:
                     continue
 
-                file_extension = os.path.splitext(file)[1].lower()
+                file_extension = os.path.splitext(file)[1].lower()[1:]
                 if file_extension in SUPPORTED_FILE_EXTS:
                     img_paths.append(file_path)
 

@@ -98,13 +98,13 @@ if __name__ == '__main__':
         exclude=args.exclude,
         recursive=args.recursive,
         verbose=args.verbose,
-        output_path_format=PathFormat(args.format)
     )
 
     if args.mode == 'detect':
-        detect(
+        dup_img_paths = detect(
             img_paths,
             output_path_format=PathFormat(args.format),
+            root_dir=args.directory,
             progress_bar=args.progress_bar,
             verbose=args.verbose,
         )
@@ -114,6 +114,7 @@ if __name__ == '__main__':
             img_paths,
             console_output=False,
             output_path_format=PathFormat(args.format),
+            root_dir=args.directory,
             progress_bar=args.progress_bar,
             verbose=args.verbose
         )
