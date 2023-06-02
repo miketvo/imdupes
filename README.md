@@ -2,9 +2,12 @@
 
 Quickly detect and remove identical images.
 
-<a style="align:center" href="https://github.com/miketvo/imdupes-prototype/releases/"><button>Download</button></a>
+---
 
-Syntax:
+## Download
+See [Releases](https://github.com/miketvo/imdupes-prototype/releases/) for latest versions.
+
+## Syntax
 
 ```text
 usage: imdupes {detect,clean} [OPTIONS] DIRECTORY
