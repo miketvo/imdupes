@@ -2,6 +2,8 @@
 
 Quickly detect and remove identical images.
 
+<a style="align:center" href="https://github.com/miketvo/imdupes-prototype/releases/"><button>Download</button></a>
+
 Syntax:
 
 ```text
