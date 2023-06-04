@@ -30,9 +30,9 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
 
 if __name__ == '__main__':
     try:
-        # ================================================================================================================ #
-        #                                               Arguments Processing                                               #
-        # ================================================================================================================ #
+        # ============================================================================================================ #
+        #                                             Arguments Processing                                             #
+        # ============================================================================================================ #
         ap = argparse.ArgumentParser(
             prog=__app_name__,
             usage='imdupes {detect,clean} [OPTIONS] DIRECTORY',
@@ -62,7 +62,8 @@ if __name__ == '__main__':
                  f'(default: {PathFormat.DIR_RELATIVE.value})'
         )
         ap.add_argument(
-            '-v', '--version', action='version', version=f'%(prog)s {__version__}', help='show version information and exit'
+            '-v', '--version', action='version', version=f'%(prog)s {__version__}',
+            help='show version information and exit'
         )
 
         detect_options = ap.add_argument_group('detect mode options')
@@ -89,9 +90,9 @@ if __name__ == '__main__':
             exit()
         # ==== End Of Arguments Processing ===== #
 
-        # ================================================================================================================ #
-        #                                                 Image Processing                                                 #
-        # ================================================================================================================ #
+        # ============================================================================================================ #
+        #                                               Image Processing                                               #
+        # ============================================================================================================ #
         img_paths = index_images(
             args.directory,
             exclude=args.exclude,
@@ -133,5 +134,4 @@ if __name__ == '__main__':
             )
 
     except KeyboardInterrupt:
-        cprint('Keyboard Interrupt. Program terminated.')
         exit()
