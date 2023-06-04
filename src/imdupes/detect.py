@@ -42,7 +42,7 @@ def detect(
                 )
             else:
                 print(
-                    f'Error reading {format_path(img_path, output_path_format, root_dir)}: '
+                    f"Error reading '{format_path(img_path, output_path_format, root_dir)}': "
                     f'{error.__str__()}. '
                     f'File skipped.',
                     flush=True
