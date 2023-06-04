@@ -13,9 +13,14 @@ from utils.globs import PathFormat, format_path
 
 def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespace:
     arguments = argument_parser.parse_args()
+
+    if arguments.hash_size < 8:
+        ap.error(f'Hash size {arguments.hash_size} too small, see {ap.prog} --help for more info')
+
     if arguments.mode == 'detect':
         if arguments.interactive:
             ap.error(f'detect mode does not support -i/--interactive flag, see {ap.prog} --help for more info')
+
     if arguments.mode == 'clean':
         if arguments.output:
             ap.error(f'clean mode does not support -o/--output flag, see {ap.prog} --help for more info')
@@ -45,6 +50,10 @@ if __name__ == '__main__':
 
         ap.add_argument('mode', choices=['detect', 'clean'], help="run mode")
         ap.add_argument('directory', help='target image directory')
+        ap.add_argument(
+            '-s', '--hash-size',
+            required=False, type=int, default=512, help='specify an hash size (integer) (default: 256)'
+        )
         ap.add_argument(
             '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched filenames based on REGEX pattern'
         )
@@ -103,6 +112,7 @@ if __name__ == '__main__':
         if args.mode == 'detect':
             dup_imgs = detect(
                 img_paths,
+                hash_size=args.hash_size,
                 output_path_format=PathFormat(args.format),
                 root_dir=args.directory,
                 verbose=args.verbose
@@ -120,6 +130,7 @@ if __name__ == '__main__':
         elif args.mode == 'clean':
             dup_imgs = detect(
                 img_paths,
+                hash_size=args.hash_size,
                 root_dir=args.directory,
                 console_output=False,
                 output_path_format=PathFormat(args.format),

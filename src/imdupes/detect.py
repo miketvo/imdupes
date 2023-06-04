@@ -13,6 +13,7 @@ warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 def detect(
         img_paths: list[str],
+        hash_size: int = 256,
         root_dir: str = None,
         console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
@@ -48,7 +49,7 @@ def detect(
                 )
             continue
 
-        image_hash = imagehash.average_hash(im, hash_size=256).__str__()
+        image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
         if image_hash in image_hashes:
             image_hashes[image_hash].append(img_path)
         else:
