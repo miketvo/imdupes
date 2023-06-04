@@ -13,7 +13,7 @@ warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 def detect(
         img_paths: list[str],
-        hash_size: int = 256,
+        hash_size: int = 512,
         root_dir: str = None,
         console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,

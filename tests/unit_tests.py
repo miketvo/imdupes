@@ -24,8 +24,7 @@ class Detect(unittest.TestCase):
         detect_dups_dict = detect(
             [os.path.join(DATA_DIR, img) for img in os.listdir(DATA_DIR)],
             root_dir=DATA_DIR,
-            console_output=False,
-            verbose=True
+            console_output=False, verbose=True
         )
         detect_dups = []
         for dup in detect_dups_dict.values():

@@ -62,7 +62,7 @@ if __name__ == '__main__':
         ap.add_argument('directory', help='target image directory')
         ap.add_argument(
             '-s', '--hash-size',
-            required=False, type=int, default=512, help='specify a hash size (integer) (default: 256)*'
+            required=False, type=int, default=512, help='specify a hash size (integer) (default: 512)*'
         )
         ap.add_argument(
             '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched filenames based on REGEX pattern'
@@ -120,13 +120,8 @@ if __name__ == '__main__':
         )
 
         if args.mode == 'detect':
-            dup_imgs = detect(
-                img_paths,
-                hash_size=args.hash_size,
-                output_path_format=PathFormat(args.format),
-                root_dir=args.directory,
-                verbose=args.verbose
-            )
+            dup_imgs = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory,
+                              output_path_format=PathFormat(args.format), verbose=args.verbose)
 
             if args.output is not None:
                 f = open(args.output, 'w')
@@ -138,14 +133,8 @@ if __name__ == '__main__':
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
-            dup_imgs = detect(
-                img_paths,
-                hash_size=args.hash_size,
-                root_dir=args.directory,
-                console_output=False,
-                output_path_format=PathFormat(args.format),
-                verbose=args.verbose
-            )
+            dup_imgs = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory, console_output=False,
+                              output_path_format=PathFormat(args.format), verbose=args.verbose)
 
             clean(
                 dup_imgs,
