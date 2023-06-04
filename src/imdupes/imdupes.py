@@ -44,7 +44,16 @@ if __name__ == '__main__':
             description="Quickly detects and removes identical images. Has two modes:\n"
                         "\t- 'detect' console prints the detected identical image paths/filenames\n"
                         "\t- 'clean' removes the detected identical images, keeping only the first copy",
-            epilog='Note: This program ignores any non-image file in the target directory',
+            epilog='Note: This program ignores any non-image file in the target directory\n'
+                   '\n'
+                   '*: Smaller hash sizes are better at detecting visually similar images, while larger hash sizes are'
+                   '\n'
+                   '   better for identifying identical images; The smaller the hash size, the better the performance'
+                   '\n\n'
+                   '   Smallest accepted hash size is 8\n'
+                   '\n'
+                   'Algorithm: Average Hash ('
+                   'https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html)',
             formatter_class=argparse.RawDescriptionHelpFormatter
         )
 
@@ -52,7 +61,7 @@ if __name__ == '__main__':
         ap.add_argument('directory', help='target image directory')
         ap.add_argument(
             '-s', '--hash-size',
-            required=False, type=int, default=512, help='specify an hash size (integer) (default: 256)'
+            required=False, type=int, default=512, help='specify a hash size (integer) (default: 256)*'
         )
         ap.add_argument(
             '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched filenames based on REGEX pattern'
