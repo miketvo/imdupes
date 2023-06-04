@@ -1,5 +1,4 @@
 import warnings
-import PIL.Image
 import imagehash
 from PIL import Image
 from tqdm.auto import tqdm
@@ -8,7 +7,7 @@ from termcolor import colored
 from utils.globs import PathFormat, format_path
 
 
-PIL.Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https://www.panaxity.com/
+Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https://www.panaxity.com/
 warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 
@@ -49,7 +48,7 @@ def detect(
                 )
             continue
 
-        image_hash = imagehash.average_hash(im, hash_size=8)
+        image_hash = imagehash.average_hash(im, hash_size=32).__str__()
         if image_hash in image_hashes:
             image_hashes[image_hash].append(img_path)
         else:
