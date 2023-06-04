@@ -15,6 +15,7 @@ usage: imdupes {detect,clean} [OPTIONS] DIRECTORY
 Quickly detects and removes identical images. Has two modes:
         - 'detect' console prints the detected identical image paths/filenames
         - 'clean' removes the detected identical images, keeping only the first copy
+Warning: Deleted files are not recoverable, proceed with caution
 
 positional arguments:
   {detect,clean}        run mode
