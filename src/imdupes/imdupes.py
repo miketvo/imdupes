@@ -134,5 +134,8 @@ if __name__ == '__main__':
                 output_path_format=PathFormat(args.format)
             )
 
+    except PermissionError as error:
+        cprint(f'{error.__str__()}\nProgram terminated.', 'red')
+        exit()
     except KeyboardInterrupt:
         exit()
