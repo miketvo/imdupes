@@ -137,5 +137,5 @@ if __name__ == '__main__':
     except PermissionError as error:
         cprint(f'{error.__str__()}\nProgram terminated.', 'red')
         exit()
-    except KeyboardInterrupt:
+    except KeyboardInterrupt as error:
         exit()
