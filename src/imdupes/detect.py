@@ -30,6 +30,9 @@ def detect(
 
         try:
             im = Image.open(img_path)
+            if im.format == 'PNG' and im.mode != 'RGBA':
+                im = im.convert('RGBA')
+
         except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError) as error:
             if pbar is not None:
                 pbar.write(
