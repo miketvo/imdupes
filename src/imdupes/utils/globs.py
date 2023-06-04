@@ -24,8 +24,6 @@ def format_path(p: str, path_format: PathFormat, curdir: str = None) -> str:
 
 
 SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html
-
-    # Fully supported
     'blp',
     'bmp', 'dib',
     'dds',
@@ -43,12 +41,6 @@ SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/han
     'tif', 'tiff',
     'webp',
     'xbm',
-
-    # Limited support
-    'cur',
-    'fits', 'fit', 'fts',
-    'psd',
-    'xpm',
 ]
 
 INTERACTIVE_OPTS = {
