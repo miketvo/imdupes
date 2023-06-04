@@ -113,6 +113,7 @@ if __name__ == '__main__':
                 for paths in dup_imgs.values():
                     for path in paths:
                         f.write(f'{format_path(path, PathFormat(args.format), args.directory)}\n')
+                    f.write('\n')
                 if args.verbose:
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
