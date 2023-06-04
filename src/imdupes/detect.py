@@ -1,9 +1,15 @@
+import warnings
+import PIL.Image
 import imagehash
 from PIL import Image
 from tqdm.auto import tqdm
-from termcolor import colored
+from termcolor import cprint, colored
 
 from utils.globs import PathFormat, format_path
+
+
+PIL.Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https://www.panaxity.com/
+warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 
 def detect(
@@ -19,20 +25,42 @@ def detect(
         with tqdm(total=len(img_paths), desc='Scanning for identical images', position=0, leave=False) as pbar:
             for img_path in img_paths:
                 pbar.update()
-                with Image.open(img_path) as im:
-                    image_hash = imagehash.average_hash(im, hash_size=8)
-                    if image_hash in image_hashes:
-                        image_hashes[image_hash].append(img_path)
-                    else:
-                        image_hashes[image_hash] = [img_path]
-    else:
-        for img_path in img_paths:
-            with Image.open(img_path) as im:
+
+                try:
+                    im = Image.open(img_path)
+                except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError) as error:
+                    cprint(
+                        f'Error reading {format_path(img_path, output_path_format, root_dir)}: '
+                        f'{error.__str__()}. '
+                        f'File skipped.',
+                        'red'
+                    )
+                    continue
+
                 image_hash = imagehash.average_hash(im, hash_size=8)
                 if image_hash in image_hashes:
                     image_hashes[image_hash].append(img_path)
                 else:
                     image_hashes[image_hash] = [img_path]
+
+    else:
+        for img_path in img_paths:
+            try:
+                im = Image.open(img_path)
+            except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError) as error:
+                cprint(
+                    f'Error reading {format_path(img_path, output_path_format, root_dir)}: '
+                    f'{error.__str__()}. '
+                    f'File skipped.',
+                    'red'
+                )
+                continue
+
+            image_hash = imagehash.average_hash(im, hash_size=8)
+            if image_hash in image_hashes:
+                image_hashes[image_hash].append(img_path)
+            else:
+                image_hashes[image_hash] = [img_path]
 
     # Remove hashes with a single path
     duplicated_image_hashes = {hash_val: paths for hash_val, paths in image_hashes.items() if len(paths) > 1}
