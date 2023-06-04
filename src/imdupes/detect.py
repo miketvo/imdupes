@@ -45,7 +45,7 @@ def detect(
                     f'Error reading {format_path(img_path, output_path_format, root_dir)}: '
                     f'{error.__str__()}. '
                     f'File skipped.',
-                    'red'
+                    flush=True
                 )
             continue
 
@@ -64,7 +64,8 @@ def detect(
             f'Found {colored(str(len(duplicated_image_hashes.values())), attrs=["bold"])} duplication(s) '
             f'across {colored(str(sum(len(lst) for lst in duplicated_image_hashes.values())), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
-            end=''
+            end='',
+            flush=True
         )
 
     if console_output:

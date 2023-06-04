@@ -21,7 +21,7 @@ def index_images(
     exclude_pattern = None if exclude is None else re.compile(exclude)
 
     if verbose:
-        print('Indexing images...', end='')
+        print('Indexing images...', end='', flush=True)
 
     if recursive:
         for root, dirs, files in os.walk(abs_root):
@@ -53,7 +53,8 @@ def index_images(
     if verbose:
         print(
             f' Found {colored(str(len(img_paths)), attrs=["bold"])} image(s) '
-            f'{colored("[DONE]", color="green", attrs=["bold"])}'
+            f'{colored("[DONE]", color="green", attrs=["bold"])}',
+            flush=True
         )
 
     return img_paths
@@ -67,7 +68,7 @@ def clean(
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
     if verbose:
-        print(f'\nCleaning duplications...')
+        print(f'\nCleaning duplications...', flush=True)
 
     for dup_paths in dup_imgs.values():
         if interactive:
@@ -105,7 +106,7 @@ def clean(
                 try:
                     os.remove(dup_paths[i])
                     if verbose:
-                        print(f'-- Deleted "{format_path(dup_paths[i], output_path_format, root_dir)}"')
+                        print(f'-- Deleted "{format_path(dup_paths[i], output_path_format, root_dir)}"', flush=True)
                 except OSError as e:
                     cprint(
                         f'Error deleting file "{format_path(dup_paths[i], output_path_format, root_dir)}": {str(e)}',
@@ -113,4 +114,4 @@ def clean(
                     )
 
     if verbose:
-        print(f'{colored("[DONE]", color="green", attrs=["bold"])}')
+        print(f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True)
