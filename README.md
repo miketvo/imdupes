@@ -15,6 +15,7 @@ usage: imdupes {detect,clean} [OPTIONS] DIRECTORY
 Quickly detects and removes identical images. Has two modes:
         - 'detect' console prints the detected identical image paths/filenames
         - 'clean' removes the detected identical images, keeping only the first copy
+Warning: Deleted files are not recoverable, proceed with caution
 
 positional arguments:
   {detect,clean}        run mode
@@ -23,7 +24,7 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   -s HASH_SIZE, --hash-size HASH_SIZE
-                        specify a hash size (integer) (default: 256)*
+                        specify a preferred hash size (integer) (default: 512)*
   -e REGEX, --exclude REGEX
                         exclude matched filenames based on REGEX pattern
   -r, --recursive       recursively search for images in subdirectories in addition to the specified parent directory
@@ -41,7 +42,7 @@ clean mode options:
 
 Note: This program ignores any non-image file in the target directory
 
-*: Smaller hash sizes are better at detecting visually similar images, while larger hash sizes are
+*: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are
    better for identifying identical images; The smaller the hash size, the better the performance
 
    Smallest accepted hash size is 8
