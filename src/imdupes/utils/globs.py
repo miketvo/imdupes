@@ -46,3 +46,5 @@ INTERACTIVE_OPTS = {
     'n': 'No',
     'x': 'Cancel and Exit',
 }
+
+DEFAULT_HASH_SIZE = 512

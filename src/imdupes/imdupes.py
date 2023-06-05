@@ -1,4 +1,5 @@
 from _version import __version__, __app_name__
+from _version import __prog_desc__, __prog_epilog__
 
 import os
 import sys
@@ -9,6 +10,7 @@ from termcolor import cprint
 from detect import detect
 from utils.futils import index_images, clean
 from utils.globs import PathFormat, format_path
+from utils.globs import DEFAULT_HASH_SIZE
 
 
 def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespace:
@@ -41,20 +43,8 @@ if __name__ == '__main__':
         ap = argparse.ArgumentParser(
             prog=__app_name__,
             usage='imdupes {detect,clean} [OPTIONS] DIRECTORY',
-            description="Quickly detects and removes identical images. Has two modes:\n"
-                        "\t- 'detect' console prints the detected identical image paths/filenames\n"
-                        "\t- 'clean' removes the detected identical images, keeping only the first copy\n"
-                        "Warning: Deleted files are not recoverable, proceed with caution",
-            epilog='Note: This program ignores any non-image file in the target directory\n'
-                   '\n'
-                   '*: Smaller hash sizes are better at detecting visually similar images, while larger hash sizes are'
-                   '\n'
-                   '   better for identifying identical images; The smaller the hash size, the better the performance'
-                   '\n\n'
-                   '   Smallest accepted hash size is 8\n'
-                   '\n'
-                   'Algorithm: Average Hash ('
-                   'https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html)',
+            description=__prog_desc__,
+            epilog=__prog_epilog__,
             formatter_class=argparse.RawDescriptionHelpFormatter
         )
 
@@ -62,7 +52,8 @@ if __name__ == '__main__':
         ap.add_argument('directory', help='target image directory')
         ap.add_argument(
             '-s', '--hash-size',
-            required=False, type=int, default=512, help='specify a hash size (integer) (default: 512)*'
+            required=False, type=int, default=DEFAULT_HASH_SIZE,
+            help=f'specify a preferred hash size (integer) (default: {DEFAULT_HASH_SIZE})*'
         )
         ap.add_argument(
             '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched filenames based on REGEX pattern'

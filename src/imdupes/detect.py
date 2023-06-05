@@ -5,6 +5,7 @@ from tqdm.auto import tqdm
 from termcolor import colored
 
 from utils.globs import PathFormat, format_path
+from utils.globs import DEFAULT_HASH_SIZE
 
 
 Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https://www.panaxity.com/
@@ -13,7 +14,7 @@ warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 def detect(
         img_paths: list[str],
-        hash_size: int = 512,
+        hash_size: int = DEFAULT_HASH_SIZE,
         root_dir: str = None,
         console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
