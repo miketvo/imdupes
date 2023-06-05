@@ -1,4 +1,3 @@
-import os
 from enum import Enum
 from os import path
 
@@ -24,12 +23,9 @@ def format_path(p: str, path_format: PathFormat, curdir: str = None) -> str:
 
 
 SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html
-
-    # Fully supported
     'blp',
     'bmp', 'dib',
     'dds',
-    'eps',
     'gif',
     'icns', 'ico',
     'im',
@@ -43,12 +39,6 @@ SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/han
     'tif', 'tiff',
     'webp',
     'xbm',
-
-    # Limited support
-    'cur',
-    'fits', 'fit', 'fts',
-    'psd',
-    'xpm',
 ]
 
 INTERACTIVE_OPTS = {
@@ -56,3 +46,5 @@ INTERACTIVE_OPTS = {
     'n': 'No',
     'x': 'Cancel and Exit',
 }
+
+DEFAULT_HASH_SIZE = 512
