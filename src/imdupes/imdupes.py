@@ -111,24 +111,24 @@ if __name__ == '__main__':
         )
 
         if args.mode == 'detect':
-            dup_imgs = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory,
-                              output_path_format=PathFormat(args.format), verbose=args.verbose)
+            hashed_dups = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory,
+                                 output_path_format=PathFormat(args.format), verbose=args.verbose)
 
             if args.output is not None:
                 f = open(args.output, 'w')
-                for imgs in dup_imgs.values():
-                    for img in imgs:
-                        f.write(f'{format_path(img.path, PathFormat(args.format), args.directory)}\n')
+                for dup_imgs in hashed_dups.values():
+                    for dup_img in dup_imgs:
+                        f.write(f'{format_path(dup_img.path, PathFormat(args.format), args.directory)}\n')
                     f.write('\n')
                 if args.verbose:
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
-            dup_imgs = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory, console_output=False,
-                              output_path_format=PathFormat(args.format), verbose=args.verbose)
+            hashed_dups = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory, console_output=False,
+                                 output_path_format=PathFormat(args.format), verbose=args.verbose)
 
             clean(
-                dup_imgs,
+                hashed_dups,
                 root_dir=args.directory,
                 interactive=args.interactive,
                 verbose=args.verbose,

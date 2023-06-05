@@ -27,9 +27,9 @@ class Detect(unittest.TestCase):
             console_output=False, verbose=True
         )
         detect_dups = []
-        for dup in detect_dups_dict.values():
-            for img in dup:
-                detect_dups.append(os.path.basename(img.path))
+        for dup_imgs in detect_dups_dict.values():
+            for dup_img in dup_imgs:
+                detect_dups.append(os.path.basename(dup_img.path))
 
         self.assertCountEqual(test_dups, detect_dups)  # add assertion here
 
