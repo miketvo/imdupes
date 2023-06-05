@@ -116,9 +116,9 @@ if __name__ == '__main__':
 
             if args.output is not None:
                 f = open(args.output, 'w')
-                for paths in dup_imgs.values():
-                    for path in paths:
-                        f.write(f'{format_path(path, PathFormat(args.format), args.directory)}\n')
+                for imgs in dup_imgs.values():
+                    for img in imgs:
+                        f.write(f'{format_path(img.path, PathFormat(args.format), args.directory)}\n')
                     f.write('\n')
                 if args.verbose:
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])

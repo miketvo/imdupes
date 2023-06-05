@@ -6,6 +6,7 @@ from termcolor import colored
 
 from utils.globs import PathFormat, format_path
 from utils.globs import DEFAULT_HASH_SIZE
+from utils.imutils import ImageFileWrapper
 
 
 Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https://www.panaxity.com/
@@ -19,9 +20,10 @@ def detect(
         console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
         verbose: bool = False
-) -> dict[imagehash.ImageHash, list[str]]:
+) -> dict[str, list[ImageFileWrapper]]:
     image_hashes = {}
 
+    # Image hashing
     pbar = None
     if verbose:
         pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', position=0, leave=False)
@@ -52,13 +54,19 @@ def detect(
 
         image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
         if image_hash in image_hashes:
-            image_hashes[image_hash].append(img_path)
+            image_hashes[image_hash].append(ImageFileWrapper(im, img_path))
         else:
-            image_hashes[image_hash] = [img_path]
+            image_hashes[image_hash] = [ImageFileWrapper(im, img_path)]
 
     # Remove hashes with a single path
     duplicated_image_hashes = {hash_val: paths for hash_val, paths in image_hashes.items() if len(paths) > 1}
 
+    # Sort duplications in order of decreasing resolution (width * height) so that the highest resolution image is kept
+    # during cleaning step
+    for i in range(len(duplicated_image_hashes.keys())):
+        pass
+
+    # Output
     if verbose:
         print(
             f'Scanning for identical images... '
