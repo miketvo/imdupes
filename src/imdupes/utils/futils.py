@@ -109,7 +109,8 @@ def clean(
                         print(f'-- Deleted "{format_path(dup_imgs[i].path, output_path_format, root_dir)}"', flush=True)
                 except OSError as e:
                     cprint(
-                        f'Error deleting file "{format_path(dup_imgs[i].path, output_path_format, root_dir)}": {str(e)}',
+                        f'Error deleting file "{format_path(dup_imgs[i].path, output_path_format, root_dir)}": '
+                        f'{str(e)}',
                         'red'
                     )
 
