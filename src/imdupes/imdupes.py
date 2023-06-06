@@ -84,7 +84,7 @@ if __name__ == '__main__':
             help='explain what is being done (default: 0 - verbose mode off)'
         )
 
-        subparsers = ap_top_level.add_subparsers(title='run modes', dest='mode')
+        subparsers = ap_top_level.add_subparsers(title='run modes', dest='mode', metavar='{scan,clean}', required=True)
 
         ap_scan = subparsers.add_parser(
             'scan', parents=[ap_common_args],
