@@ -140,8 +140,7 @@ if __name__ == '__main__':
                 file = open(args.output, 'w')
                 print_dups(
                     hashed_dups,
-                    root_dir=args.directory,
-                    output_path_format=PathFormat(args.format),
+                    output_path_format=PathFormat.ABSOLUTE,
                     show_hash_cluster_header=args.show_hash,
                     file=file
                 )
