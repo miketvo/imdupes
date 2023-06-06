@@ -113,7 +113,10 @@ def clean(
                 try:
                     os.remove(dup_imgs[dup_index].path)
                     if verbose > 0:
-                        print(f'-- Deleted "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}"', flush=True)
+                        print(
+                            f'-- Deleted "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}"',
+                            flush=True
+                        )
                 except OSError as e:
                     cprint(
                         f'Error deleting file "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}": '
