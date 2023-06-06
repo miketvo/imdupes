@@ -8,7 +8,8 @@ import argparse
 from termcolor import cprint
 
 from detect_dup_images import detect_dup_images
-from utils.futils import index_images, clean, print_dups
+from utils.futils import index_images, clean
+from utils.output import print_dups
 from utils.globs import PathFormat
 from utils.globs import DEFAULT_HASH_SIZE
 
