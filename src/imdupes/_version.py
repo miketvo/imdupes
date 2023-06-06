@@ -1,9 +1,10 @@
 __version__ = '0.1.2-beta'
 __app_name__ = 'imdupes'
+__prog_usage__ = f'{__app_name__} {{scan,clean}} [OPTIONS] DIRECTORY'
 __prog_desc__ = \
     'Quickly detects and removes identical images. Has two modes:\n' \
-    "\t- 'detect' console prints the detected identical image paths/filenames\n" \
-    "\t- 'clean' removes the detected identical images, keeping only the first copy\n" \
+    "\t- 'scan' scans and console prints the detected identical image paths/filenames\n" \
+    "\t- 'clean' scans and removes the detected identical images, keeping only the first copy\n" \
     'Warning: Deleted files are not recoverable, proceed with caution'
 __prog_epilog__ = \
     'Note: This program ignores any non-image file in the target directory\n\n' \

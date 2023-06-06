@@ -10,15 +10,15 @@ See [Releases](https://github.com/miketvo/imdupes-prototype/releases/) for lates
 ## Syntax
 
 ```text
-usage: imdupes {detect,clean} [OPTIONS] DIRECTORY
+usage: imdupes {scan,clean} [OPTIONS] DIRECTORY
 
 Quickly detects and removes identical images. Has two modes:
-        - 'detect' console prints the detected identical image paths/filenames
-        - 'clean' removes the detected identical images, keeping only the first copy
+        - 'scan' scans and console prints the detected identical image paths/filenames
+        - 'clean' scans and removes the detected identical images, keeping only the first copy
 Warning: Deleted files are not recoverable, proceed with caution
 
 positional arguments:
-  {detect,clean}        run mode
+  {scan,clean}          run mode
   directory             target image directory
 
 options:
@@ -28,7 +28,8 @@ options:
   -e REGEX, --exclude REGEX
                         exclude matched filenames based on REGEX pattern
   -r, --recursive       recursively search for images in subdirectories in addition to the specified parent directory
-  -V, --verbose         explain what is being done
+  -V {0,1,2}, --verbose {0,1,2}
+                        explain what is being done (default: 0 - verbose mode off)
   -f {absolute,prog-relative,dir-relative,filename}, --format {absolute,prog-relative,dir-relative,filename}
                         console output file path format, always applied to detect mode and clean mode only when verbose is enabled (default: dir-relative)
   -v, --version         show version information and exit

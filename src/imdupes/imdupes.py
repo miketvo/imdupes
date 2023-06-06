@@ -1,5 +1,5 @@
 from _version import __version__, __app_name__
-from _version import __prog_desc__, __prog_epilog__
+from _version import __prog_usage__, __prog_desc__, __prog_epilog__
 
 import os
 import sys
@@ -42,13 +42,13 @@ if __name__ == '__main__':
         # ============================================================================================================ #
         ap = argparse.ArgumentParser(
             prog=__app_name__,
-            usage='imdupes {detect,clean} [OPTIONS] DIRECTORY',
+            usage=__prog_usage__,
             description=__prog_desc__,
             epilog=__prog_epilog__,
             formatter_class=argparse.RawDescriptionHelpFormatter
         )
 
-        ap.add_argument('mode', choices=['detect', 'clean'], help="run mode")
+        ap.add_argument('mode', choices=['scan', 'clean'], help="run mode")
         ap.add_argument('directory', help='target image directory')
         ap.add_argument(
             '-s', '--hash-size',
@@ -111,7 +111,7 @@ if __name__ == '__main__':
             verbose=args.verbose,
         )
 
-        if args.mode == 'detect':
+        if args.mode == 'scan':
             hashed_dups = detect(
                 img_paths,
                 hash_size=args.hash_size,
