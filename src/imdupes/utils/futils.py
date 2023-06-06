@@ -75,14 +75,16 @@ def clean(
     if verbose > 0:
         print(f'\nCleaning duplications...', flush=True)
 
-    for dup_imgs in hashed_dups.values():
+    for dup_imgs_index, dup_imgs in enumerate(hashed_dups.items(), start=1):
         if interactive:
-            for dup_img in dup_imgs:
+            print(colored(f'\n[ DUPLICATION {dup_imgs_index} ]', 'magenta', attrs=['bold']))
+            for dup_img_index, dup_img in enumerate(dup_imgs[1], start=1):
                 while True:
-                    choices = '\n\t'.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
+                    choices = '\n    '.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
                     choice = input(
-                        f'Delete "{format_path(dup_img.path, output_path_format, root_dir)}"?\n\t'
-                        f'{colored(choices)}\n{colored(">>", "yellow", attrs=["bold"])} '
+                        f'{colored(f"Image {dup_img_index}/{len(dup_imgs)}:", "yellow")} Delete '
+                        f'"{format_path(dup_img.path, output_path_format, root_dir)}"?\n'
+                        f'    {colored(choices)}\n{colored(">>", "yellow", attrs=["bold"])} '
                     ).lower()
 
                     if choice in INTERACTIVE_OPTS.keys():
@@ -107,17 +109,19 @@ def clean(
                         print('Invalid choice. Please choose a valid option.')
 
         else:
-            for i in range(1, len(dup_imgs)):
+            for dup_index in range(1, len(dup_imgs)):
                 try:
-                    os.remove(dup_imgs[i].path)
+                    os.remove(dup_imgs[dup_index].path)
                     if verbose > 0:
-                        print(f'-- Deleted "{format_path(dup_imgs[i].path, output_path_format, root_dir)}"', flush=True)
+                        print(f'-- Deleted "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}"', flush=True)
                 except OSError as e:
                     cprint(
-                        f'Error deleting file "{format_path(dup_imgs[i].path, output_path_format, root_dir)}": '
+                        f'Error deleting file "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}": '
                         f'{str(e)}',
                         'red'
                     )
 
     if verbose > 0:
+        if interactive:
+            print()
         print(f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True)
