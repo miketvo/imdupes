@@ -1,4 +1,4 @@
-__version__ = '0.1.1-beta'
+__version__ = '0.1.2-beta'
 __app_name__ = 'imdupes'
 __prog_desc__ = \
     'Quickly detects and removes identical images. Has two modes:\n' \
