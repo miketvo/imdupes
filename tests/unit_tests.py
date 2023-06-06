@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from detect import detect
+from detect_dup_imgs import detect_dup_imgs
 from tests import DATA_DIR
 
 
@@ -21,7 +21,7 @@ class Detect(unittest.TestCase):
     def test(self):
         test_dups = get_test_dups()
 
-        detect_dups_dict = detect(
+        detect_dups_dict = detect_dup_imgs(
             [os.path.join(DATA_DIR, img) for img in os.listdir(DATA_DIR)],
             root_dir=DATA_DIR,
             console_output=False, verbose=True

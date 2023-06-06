@@ -14,7 +14,7 @@ Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https:/
 warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 
-def detect(
+def detect_dup_imgs(
         img_paths: list[str],
         hash_size: int = DEFAULT_HASH_SIZE,
         root_dir: str = None,
