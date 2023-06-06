@@ -63,7 +63,8 @@ if __name__ == '__main__':
             help='recursively search for images in subdirectories in addition to the specified parent directory'
         )
         ap.add_argument(
-            '-V', '--verbose', action='store_true', help='explain what is being done'
+            '-V', '--verbose', type=int, choices=[0, 1, 2], default=0, metavar='LEVEL',
+            help='explain what is being done (default: 0 - verbose mode off)'
         )
         ap.add_argument(
             '-f', '--format', choices=[f.value for f in PathFormat], default=PathFormat.DIR_RELATIVE.value,

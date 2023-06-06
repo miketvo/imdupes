@@ -19,13 +19,13 @@ def detect(
         root_dir: str = None,
         console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
-        verbose: bool = False
+        verbose: int = 0
 ) -> dict[str, list[ImageFileWrapper]]:
     hashed_images: dict[str, list[ImageFileWrapper]] = {}
 
     # Image hashing
     pbar = None
-    if verbose:
+    if verbose > 0:
         pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', position=0, leave=False)
     for img_path in img_paths:
         if pbar is not None:
@@ -74,7 +74,7 @@ def detect(
         )
 
     # Output
-    if verbose:
+    if verbose > 0:
         print(
             f'Scanning for identical images... '
             f'Found {colored(str(len(hashed_dups.values())), attrs=["bold"])} duplication(s) '
@@ -85,7 +85,7 @@ def detect(
         )
 
     if console_output:
-        if verbose:
+        if verbose > 0:
             print(':')
         for dup_imgs in hashed_dups.values():
             print()

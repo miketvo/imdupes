@@ -14,13 +14,13 @@ def index_images(
         directory: str,
         exclude: str = None,
         recursive: bool = False,
-        verbose: bool = False
+        verbose: int = 0
 ) -> list[str]:
     img_paths = []
     abs_root = os.path.abspath(directory)
     exclude_pattern = None if exclude is None else re.compile(exclude)
 
-    if verbose:
+    if verbose > 0:
         print('Indexing images...', end='', flush=True)
 
     if recursive:
@@ -50,7 +50,7 @@ def index_images(
         cprint(f' "{directory}" has no valid image files. Program terminated.', 'red')
         exit()
 
-    if verbose:
+    if verbose > 0:
         print(
             f' Found {colored(str(len(img_paths)), attrs=["bold"])} image(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
@@ -64,10 +64,10 @@ def clean(
         hashed_dups: dict[str, list[ImageFileWrapper]],
         root_dir: str = None,
         interactive: bool = False,
-        verbose: bool = False,
+        verbose: int = 0,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
-    if verbose:
+    if verbose > 0:
         print(f'\nCleaning duplications...', flush=True)
 
     for dup_imgs in hashed_dups.values():
@@ -84,7 +84,7 @@ def clean(
                         if choice == 'y':
                             try:
                                 os.remove(dup_img.path)
-                                if verbose:
+                                if verbose > 0:
                                     print(f'-- Deleted "{format_path(dup_img.path, output_path_format, root_dir)}"')
                             except OSError as e:
                                 cprint(
@@ -105,7 +105,7 @@ def clean(
             for i in range(1, len(dup_imgs)):
                 try:
                     os.remove(dup_imgs[i].path)
-                    if verbose:
+                    if verbose > 0:
                         print(f'-- Deleted "{format_path(dup_imgs[i].path, output_path_format, root_dir)}"', flush=True)
                 except OSError as e:
                     cprint(
@@ -114,5 +114,5 @@ def clean(
                         'red'
                     )
 
-    if verbose:
+    if verbose > 0:
         print(f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True)
