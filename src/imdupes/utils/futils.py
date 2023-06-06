@@ -72,10 +72,10 @@ def print_dups(
         flush: bool = False
 ) -> None:
     for i, dup_imgs in enumerate(hashed_dups.items(), start=1):
-        hash_str = dup_imgs[0][:63] + '...' + dup_imgs[0][-63:] if len(dup_imgs[0]) > 128 else dup_imgs[0]
+        hash_str = dup_imgs[0][:64] + '...' if len(dup_imgs[0]) > 64 else dup_imgs[0]
         hash_str_print = f' | hash: {hash_str}' if show_hash_cluster_header else ''
         print(
-            colored(f'[ DUPLICATION {i}{hash_str_print} ]', 'blue', attrs=['bold']) if colored_cluster_header
+            colored(f'[ DUPLICATION {i}{hash_str_print} ]', 'magenta', attrs=['bold']) if colored_cluster_header
             else f'[ DUPLICATION {i}{hash_str_print} ]',
             file=file
         )
