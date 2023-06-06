@@ -52,7 +52,7 @@ def index_images(
                     img_paths.append(file_path)
 
     if len(img_paths) == 0:
-        cprint(f' "{directory}" has no valid image files. Program terminated.', 'red')
+        cprint(f'"{directory}" has no valid image files. Program terminated.', 'red')
         exit()
 
     if verbose > 0:

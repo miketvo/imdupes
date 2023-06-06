@@ -20,28 +20,28 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
 
     if arguments.hash_size < 8:
         argument_parser.error(
-            f'Hash size {arguments.hash_size} is too small, see {argument_parser.prog} --help for more info'
+            f'hash size of {arguments.hash_size} is too small, '
+            f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
         )
 
     if arguments.mode == 'scan':
         if arguments.silent and arguments.output is None:
-            cprint(f'scan -S/--silent flag requires -o/--output to be specified. Program terminated.', 'red')
-            exit()
+            argument_parser.error(
+                f'scan mode -S/--silent flag requires -o/--output to be specified, '
+                f'see "{argument_parser.prog} scan --help" for more info'
+            )
 
         if not os.path.exists(arguments.directory):
-            cprint(f'Invalid path provided: "{arguments.directory}". Program terminated.', 'red')
-            exit()
+            argument_parser.error(f'invalid path "{arguments.directory}"')
         if not os.path.isdir(arguments.directory):
-            cprint(f'"{arguments.directory}" is not a directory. Program terminated.', 'red')
-            exit()
+            argument_parser.error(f'"{arguments.directory}" is not a directory')
         if len(os.listdir(arguments.directory)) == 0:
             cprint(f'"{arguments.directory}" is empty. Program terminated.', 'red')
             exit()
 
     if arguments.mode == 'clean':
         if not os.path.exists(arguments.input):
-            cprint(f'Invalid path provided: "{arguments.input}". Program terminated.', 'red')
-            exit()
+            argument_parser.error(f'invalid path "{arguments.directory}"')
         if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
             cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
             exit()
@@ -175,8 +175,6 @@ if __name__ == '__main__':
                 )
                 file.close()
                 if args.verbose > 0:
-                    if not args.silent:
-                        print()
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
