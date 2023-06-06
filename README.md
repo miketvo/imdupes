@@ -14,7 +14,7 @@ usage: imdupes {scan,clean} ...
 
 Quickly detects and removes identical images. Has two modes:
         - 'scan' scans and console prints detected identical image paths/filenames
-        - 'clean' scans and removes detected identical images, keeping only the first copy
+        - 'clean' scans and removes detected identical images (keeping only the first copy by default)
 See "imdupes scan --help" and "imdupes clean --help" for more information
 
 options:
