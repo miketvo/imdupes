@@ -31,11 +31,12 @@ options:
   -V {0,1,2}, --verbose {0,1,2}
                         explain what is being done (default: 0 - verbose mode off)
   -f {absolute,prog-relative,dir-relative,filename}, --format {absolute,prog-relative,dir-relative,filename}
-                        console output file path format, always applied to detect mode and clean mode only when verbose is enabled (default: dir-relative)
+                        console output file path format; always applied to scan mode, applied to clean mode only when
+                        verbose is enabled (default: dir-relative)
   -H, --show-hash       show hash value of each duplication in output
   -v, --version         show version information and exit
 
-detect mode options:
+scan mode options:
   -o OUTPUT, --output OUTPUT
                         save the console output to the specified OUTPUT file (overwriting if file already exist)
 
@@ -44,8 +45,8 @@ clean mode options:
 
 Note: This program ignores any non-image file in the target directory
 
-*: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are
-   better for identifying identical images; The smaller the hash size, the better the performance
+*: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are better for
+   identifying identical images; The smaller the hash size, the better the performance
 
    Smallest accepted hash size is 8
 

@@ -8,8 +8,8 @@ __prog_desc__ = \
     'Warning: Deleted files are not recoverable, proceed with caution'
 __prog_epilog__ = \
     'Note: This program ignores any non-image file in the target directory\n\n' \
-    '*: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are\n' \
-    '   better for identifying identical images; The smaller the hash size, the better the performance\n' \
+    '*: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are better for\n' \
+    '   identifying identical images; The smaller the hash size, the better the performance\n' \
     '\n' \
     '   Smallest accepted hash size is 8\n' \
     '\n' \

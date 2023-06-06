@@ -19,13 +19,15 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
     if arguments.hash_size < 8:
         ap.error(f'Hash size {arguments.hash_size} too small, see {ap.prog} --help for more info')
 
-    if arguments.mode == 'detect':
+    if arguments.mode == 'scan':
         if arguments.interactive:
-            ap.error(f'detect mode does not support -i/--interactive flag, see {ap.prog} --help for more info')
+            ap.error(f'scan mode does not support -i/--interactive flag, see {ap.prog} --help for more info')
 
     if arguments.mode == 'clean':
         if arguments.output:
             ap.error(f'clean mode does not support -o/--output flag, see {ap.prog} --help for more info')
+        if arguments.show_hash:
+            ap.error(f'clean mode does not support -H/--show-hash flag, see {ap.prog} --help for more info')
         if ('-f' in sys.argv[1:] or '--format' in sys.argv[1:]) and (not arguments.verbose):
             ap.error(
                 f'clean mode requires -f/--format and -V/--verbose flags to be used together, '
@@ -45,7 +47,7 @@ if __name__ == '__main__':
             usage=__prog_usage__,
             description=__prog_desc__,
             epilog=__prog_epilog__,
-            formatter_class=argparse.RawDescriptionHelpFormatter
+            formatter_class=argparse.RawTextHelpFormatter
         )
 
         ap.add_argument('mode', choices=['scan', 'clean'], help="run mode")
@@ -68,8 +70,8 @@ if __name__ == '__main__':
         )
         ap.add_argument(
             '-f', '--format', choices=[f.value for f in PathFormat], default=PathFormat.DIR_RELATIVE.value,
-            help='console output file path format, '
-                 'always applied to detect mode and clean mode only when verbose is enabled '
+            help='console output file path format; '
+                 'always applied to scan mode, applied to clean mode only when\nverbose is enabled '
                  f'(default: {PathFormat.DIR_RELATIVE.value})'
         )
         ap.add_argument(
@@ -81,8 +83,8 @@ if __name__ == '__main__':
             help='show version information and exit'
         )
 
-        detect_options = ap.add_argument_group('detect mode options')
-        detect_options.add_argument(
+        scan_options = ap.add_argument_group('scan mode options')
+        scan_options.add_argument(
             '-o', '--output', required=False, metavar='OUTPUT',
             help='save the console output to the specified OUTPUT file (overwriting if file already exist)'
         )
