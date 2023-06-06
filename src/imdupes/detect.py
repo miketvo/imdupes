@@ -1,3 +1,4 @@
+import sys
 import warnings
 import imagehash
 from PIL import Image
@@ -26,10 +27,7 @@ def detect(
     # Image hashing
     pbar = None
     if verbose > 0:
-        pbar = tqdm(
-            total=len(img_paths), desc='Scanning for identical images',
-            position=0, dynamic_ncols=True, leave=False
-        )
+        pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', file=sys.stdout, leave=False)
     for img_path in img_paths:
         if pbar is not None:
             pbar.update()
@@ -83,6 +81,9 @@ def detect(
                     flush=True
                 )
             continue
+
+    if pbar is not None:
+        pbar.close()
 
     # Remove hashes with a single path
     hashed_dups: dict[str, list[ImageFileWrapper]] = {
