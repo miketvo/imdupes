@@ -31,7 +31,7 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
             ap.error(f'clean mode does not support -H/--show-hash flag, see {ap.prog} --help for more info')
         if ('-f' in sys.argv[1:] or '--format' in sys.argv[1:]) and (not arguments.verbose):
             ap.error(
-                f'clean mode requires -f/--format and -V/--verbose flags to be used together, '
+                f'clean mode -f/--format requires -V/--verbose flags to be used in conjunction, '
                 f'see {ap.prog} --help for more info'
             )
 
