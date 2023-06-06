@@ -7,7 +7,7 @@ from sys import exit
 import argparse
 from termcolor import cprint
 
-from detect_dup_imgs import detect_dup_imgs
+from detect_dup_images import detect_dup_images
 from utils.futils import index_images, clean, print_dups
 from utils.globs import PathFormat
 from utils.globs import DEFAULT_HASH_SIZE
@@ -118,7 +118,7 @@ if __name__ == '__main__':
         )
 
         if args.mode == 'scan':
-            hashed_dups = detect_dup_imgs(
+            hashed_dups = detect_dup_images(
                 img_paths,
                 hash_size=args.hash_size,
                 root_dir=args.directory,
@@ -137,7 +137,7 @@ if __name__ == '__main__':
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
-            hashed_dups = detect_dup_imgs(
+            hashed_dups = detect_dup_images(
                 img_paths, hash_size=args.hash_size,
                 root_dir=args.directory,
                 output_path_format=PathFormat(args.format),
