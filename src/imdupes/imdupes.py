@@ -9,7 +9,7 @@ from termcolor import cprint
 
 from detect_dup_imgs import detect_dup_imgs
 from utils.futils import index_images, clean, print_dups
-from utils.globs import PathFormat, format_path
+from utils.globs import PathFormat
 from utils.globs import DEFAULT_HASH_SIZE
 
 
