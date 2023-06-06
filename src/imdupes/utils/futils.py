@@ -59,7 +59,7 @@ def index_images(
 
     if verbose > 0:
         print(
-            f' Found {colored(str(len(img_paths)), attrs=["bold"])} image(s) '
+            f'Found {colored(str(len(img_paths)), attrs=["bold"])} image(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
             flush=True
         )
