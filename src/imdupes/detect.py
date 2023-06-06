@@ -32,6 +32,11 @@ def detect(
             pbar.update()
 
         try:
+            if verbose > 1:
+                if pbar is not None:
+                    pbar.write(f'Reading "{format_path(img_path, output_path_format, root_dir)}": ', end='')
+                else:
+                    print(f'Reading "{format_path(img_path, output_path_format, root_dir)}": ', end='', flush=True)
             im = Image.open(img_path)
             if im.format == 'PNG' and im.mode != 'RGBA':
                 im = im.convert('RGBA')
@@ -52,11 +57,33 @@ def detect(
                 )
             continue
 
-        image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
-        if image_hash in hashed_images:
-            hashed_images[image_hash].append(ImageFileWrapper(im, img_path))
-        else:
-            hashed_images[image_hash] = [ImageFileWrapper(im, img_path)]
+        try:
+            if verbose > 1:
+                if pbar is not None:
+                    pbar.write(f'Hashing "{format_path(img_path, output_path_format, root_dir)}"')
+                else:
+                    print(f'Hashing "{format_path(img_path, output_path_format, root_dir)}"', flush=True)
+            image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
+            if image_hash in hashed_images:
+                hashed_images[image_hash].append(ImageFileWrapper(im, img_path))
+            else:
+                hashed_images[image_hash] = [ImageFileWrapper(im, img_path)]
+
+        except MemoryError as error:
+            if pbar is not None:
+                pbar.write(
+                    f"Error hashing '{format_path(img_path, output_path_format, root_dir)}': "
+                    f'{error.__str__()}. '
+                    f'File skipped.'
+                )
+            else:
+                print(
+                    f"Error hashing '{format_path(img_path, output_path_format, root_dir)}': "
+                    f'{error.__str__()}. '
+                    f'File skipped.',
+                    flush=True
+                )
+            continue
 
     # Remove hashes with a single path
     hashed_dups: dict[str, list[ImageFileWrapper]] = {
