@@ -37,35 +37,19 @@ def detect_dup_images(
             else:
                 print(f'Processing "{format_path(img_path, output_path_format, root_dir)}"', flush=True)
 
+        im = None
         try:
             im = Image.open(img_path)
             if im.format == 'PNG' and im.mode != 'RGBA':
                 im = im.convert('RGBA')
 
-        except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError, MemoryError) as error:
-            if pbar is not None:
-                pbar.write(
-                    f"Error reading '{format_path(img_path, output_path_format, root_dir)}': "
-                    f'{error.__str__()}. '
-                    f'File skipped.'
-                )
-            else:
-                print(
-                    f"Error reading '{format_path(img_path, output_path_format, root_dir)}': "
-                    f'{error.__str__()}. '
-                    f'File skipped.',
-                    flush=True
-                )
-            continue
-
-        try:
             image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
             if image_hash in hashed_images:
                 hashed_images[image_hash].append(ImageFileWrapper(im, img_path))
             else:
                 hashed_images[image_hash] = [ImageFileWrapper(im, img_path)]
 
-        except MemoryError as error:
+        except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError, MemoryError) as error:
             if pbar is not None:
                 pbar.write(
                     f"Error hashing '{format_path(img_path, output_path_format, root_dir)}': "
@@ -79,6 +63,8 @@ def detect_dup_images(
                     f'File skipped.',
                     flush=True
                 )
+            if im is not None:
+                im.close()
             continue
 
     if pbar is not None:
