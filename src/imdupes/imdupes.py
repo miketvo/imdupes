@@ -127,11 +127,23 @@ if __name__ == '__main__':
             )
 
             print()
-            print_dups(hashed_dups, colored_cluster_header=True, show_hash_cluster_header=args.show_hash)
+            print_dups(
+                hashed_dups,
+                root_dir=args.directory,
+                output_path_format=PathFormat(args.format),
+                colored_cluster_header=True,
+                show_hash_cluster_header=args.show_hash
+            )
 
             if args.output is not None:
                 f = open(args.output, 'w')
-                print_dups(hashed_dups, file=f, show_hash_cluster_header=args.show_hash)
+                print_dups(
+                    hashed_dups,
+                    root_dir=args.directory,
+                    output_path_format=PathFormat(args.format),
+                    show_hash_cluster_header=args.show_hash,
+                    file=f
+                )
                 f.close()
                 if args.verbose > 0:
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
