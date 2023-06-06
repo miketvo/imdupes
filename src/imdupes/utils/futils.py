@@ -72,7 +72,7 @@ def print_dups(
         flush: bool = False
 ) -> None:
     for i, dup_imgs in enumerate(hashed_dups.items(), start=1):
-        hash_str = dup_imgs[0][:64] + '...' if len(dup_imgs[0]) > 64 else dup_imgs[0]
+        hash_str = dup_imgs[0][:48] + '...' if len(dup_imgs[0]) > 48 else dup_imgs[0]
         hash_str_print = f' | hash: {hash_str}' if show_hash_cluster_header else ''
         print(
             colored(f'[ DUPLICATION {i}{hash_str_print} ]', 'magenta', attrs=['bold']) if colored_cluster_header
