@@ -26,7 +26,10 @@ def detect(
     # Image hashing
     pbar = None
     if verbose > 0:
-        pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', position=0, leave=False)
+        pbar = tqdm(
+            total=len(img_paths), desc='Scanning for identical images',
+            position=0, dynamic_ncols=True, leave=False
+        )
     for img_path in img_paths:
         if pbar is not None:
             pbar.update()
