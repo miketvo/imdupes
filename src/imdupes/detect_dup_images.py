@@ -42,7 +42,7 @@ def detect_dup_images(
             if im.format == 'PNG' and im.mode != 'RGBA':
                 im = im.convert('RGBA')
 
-        except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError) as error:
+        except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError, MemoryError) as error:
             if pbar is not None:
                 pbar.write(
                     f"Error reading '{format_path(img_path, output_path_format, root_dir)}': "
