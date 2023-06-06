@@ -31,12 +31,13 @@ def detect(
         if pbar is not None:
             pbar.update()
 
+        if verbose > 1:
+            if pbar is not None:
+                pbar.write(f'Processing "{format_path(img_path, output_path_format, root_dir)}"')
+            else:
+                print(f'Processing "{format_path(img_path, output_path_format, root_dir)}"', flush=True)
+
         try:
-            if verbose > 1:
-                if pbar is not None:
-                    pbar.write(f'Reading "{format_path(img_path, output_path_format, root_dir)}": ', end='')
-                else:
-                    print(f'Reading "{format_path(img_path, output_path_format, root_dir)}": ', end='', flush=True)
             im = Image.open(img_path)
             if im.format == 'PNG' and im.mode != 'RGBA':
                 im = im.convert('RGBA')
@@ -58,11 +59,6 @@ def detect(
             continue
 
         try:
-            if verbose > 1:
-                if pbar is not None:
-                    pbar.write(f'Hashing "{format_path(img_path, output_path_format, root_dir)}"')
-                else:
-                    print(f'Hashing "{format_path(img_path, output_path_format, root_dir)}"', flush=True)
             image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
             if image_hash in hashed_images:
                 hashed_images[image_hash].append(ImageFileWrapper(im, img_path))
