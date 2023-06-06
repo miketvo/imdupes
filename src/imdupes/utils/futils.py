@@ -76,10 +76,10 @@ def print_dups(
         print(
             colored(f'[ DUPLICATION {i}{hash_str} ]', 'blue', attrs=['bold']) if colored_cluster_header
             else f'[ DUPLICATION {i}{hash_str} ]',
-            file=file, flush=flush
+            file=file
         )
         for dup_img in dup_imgs[1]:
-            print(format_path(dup_img.path, output_path_format, root_dir), file=file, flush=flush)
+            print(format_path(dup_img.path, output_path_format, root_dir), file=file)
         print(file=file, flush=flush)
 
 

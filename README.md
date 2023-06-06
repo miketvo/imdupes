@@ -32,6 +32,7 @@ options:
                         explain what is being done (default: 0 - verbose mode off)
   -f {absolute,prog-relative,dir-relative,filename}, --format {absolute,prog-relative,dir-relative,filename}
                         console output file path format, always applied to detect mode and clean mode only when verbose is enabled (default: dir-relative)
+  -H, --show-hash       show hash value of each duplication in output
   -v, --version         show version information and exit
 
 detect mode options:

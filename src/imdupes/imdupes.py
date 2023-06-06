@@ -73,6 +73,10 @@ if __name__ == '__main__':
                  f'(default: {PathFormat.DIR_RELATIVE.value})'
         )
         ap.add_argument(
+            '-H', '--show-hash', action='store_true',
+            help='show hash value of each duplication in output'
+        )
+        ap.add_argument(
             '-v', '--version', action='version', version=f'%(prog)s {__version__}',
             help='show version information and exit'
         )
@@ -108,7 +112,7 @@ if __name__ == '__main__':
             args.directory,
             exclude=args.exclude,
             recursive=args.recursive,
-            verbose=args.verbose,
+            verbose=args.verbose
         )
 
         if args.mode == 'scan':
@@ -121,11 +125,11 @@ if __name__ == '__main__':
             )
 
             print()
-            print_dups(hashed_dups, colored_cluster_header=True)
+            print_dups(hashed_dups, colored_cluster_header=True, show_hash_cluster_header=args.show_hash)
 
             if args.output is not None:
                 f = open(args.output, 'w')
-                print_dups(hashed_dups, file=f)
+                print_dups(hashed_dups, file=f, show_hash_cluster_header=args.show_hash)
                 f.close()
                 if args.verbose > 0:
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
