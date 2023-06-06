@@ -111,8 +111,13 @@ if __name__ == '__main__':
         )
 
         if args.mode == 'detect':
-            hashed_dups = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory,
-                                 output_path_format=PathFormat(args.format), verbose=args.verbose)
+            hashed_dups = detect(
+                img_paths,
+                hash_size=args.hash_size,
+                root_dir=args.directory,
+                output_path_format=PathFormat(args.format),
+                verbose=args.verbose
+            )
 
             if args.output is not None:
                 f = open(args.output, 'w')
@@ -124,8 +129,13 @@ if __name__ == '__main__':
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
-            hashed_dups = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory, console_output=False,
-                                 output_path_format=PathFormat(args.format), verbose=args.verbose)
+            hashed_dups = detect(
+                img_paths, hash_size=args.hash_size,
+                root_dir=args.directory,
+                console_output=False,
+                output_path_format=PathFormat(args.format),
+                verbose=args.verbose
+            )
 
             clean(
                 hashed_dups,
