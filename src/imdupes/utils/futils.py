@@ -77,7 +77,7 @@ def clean(
 
     for dup_imgs_index, dup_imgs in enumerate(hashed_dups.items(), start=1):
         if interactive:
-            print(colored(f'\n[ DUPLICATION {dup_imgs_index} ]', 'magenta', attrs=['bold']))
+            print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(dup_imgs)} ]', 'magenta', attrs=['bold']))
             for dup_img_index, dup_img in enumerate(dup_imgs[1], start=1):
                 while True:
                     choices = '\n    '.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())

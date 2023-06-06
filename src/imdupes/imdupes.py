@@ -4,7 +4,6 @@ from _version import __scan_usage__, __scan_desc__, __scan_epilog__
 from _version import __clean_usage__, __clean_desc__, __clean_epilog__
 
 import os
-import sys
 from sys import exit
 import argparse
 from termcolor import cprint
@@ -21,10 +20,14 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
 
     if arguments.hash_size < 8:
         argument_parser.error(
-            f'Hash size {arguments.hash_size} too small, see {argument_parser.prog} --help for more info'
+            f'Hash size {arguments.hash_size} is too small, see {argument_parser.prog} --help for more info'
         )
 
     if arguments.mode == 'scan':
+        if arguments.silent and arguments.output is None:
+            cprint(f'scan -S/--silent flag requires -o/--output to be specified. Program terminated.', 'red')
+            exit()
+
         if not os.path.exists(arguments.directory):
             cprint(f'Invalid path provided: "{arguments.directory}". Program terminated.', 'red')
             exit()
@@ -80,12 +83,6 @@ if __name__ == '__main__':
             '-V', '--verbose', type=int, choices=[0, 1, 2], default=0,
             help='explain what is being done (default: 0 - verbose mode off)'
         )
-        ap_common_args.add_argument(
-            '-f', '--format', choices=[f.value for f in PathFormat], default=PathFormat.DIR_RELATIVE.value,
-            help='console output file path format; '
-                 'always applied to scan mode, applied to clean mode only when\nverbose is enabled '
-                 f'(default: {PathFormat.DIR_RELATIVE.value})'
-        )
 
         subparsers = ap_top_level.add_subparsers(title='run modes', dest='mode')
 
@@ -102,8 +99,16 @@ if __name__ == '__main__':
             help='show hash value of each duplication in output'
         )
         ap_scan.add_argument(
+            '-f', '--format', choices=[f.value for f in PathFormat], default=PathFormat.DIR_RELATIVE.value,
+            help=f'console output file path format, (default: {PathFormat.DIR_RELATIVE.value})'
+        )
+        ap_scan.add_argument(
+            '-S', '--silent', action='store_true', default=False,
+            help=f'no console output, -o/--output must be specified'
+        )
+        ap_scan.add_argument(
             '-o', '--output', required=False, metavar='OUTPUT',
-            help='save the console output to the specified OUTPUT file (overwriting if file already exist)'
+            help='save the output to the specified OUTPUT file (overwriting if file already exist)'
         )
 
         ap_clean = subparsers.add_parser(
@@ -116,11 +121,16 @@ if __name__ == '__main__':
         ap_clean.add_argument(
             'input',
             help='a directory containing the target images to be processed and clean, or a valid text file\n'
-                 'containing duplicated image paths (can be generated using scan mode using -o/--output)'
+                 'containing duplicated image paths (can be generated using scan mode using -o/--output flag)'
         )
         ap_clean.add_argument(
             '-i', '--interactive', action='store_true',
             help='prompt for every duplication and let the user choose which file to delete'
+        )
+        ap_clean.add_argument(
+            '-f', '--format', choices=[f.value for f in PathFormat], default=PathFormat.DIR_RELATIVE.value,
+            help=f'console output file path format, ignored if -V/--verbose and -i/--interactive are both not\n'
+                 f'enabled (default: {PathFormat.DIR_RELATIVE.value})'
         )
 
         args = validate_args(ap_top_level)
@@ -145,14 +155,15 @@ if __name__ == '__main__':
                 verbose=args.verbose
             )
 
-            print()
-            print_dups(
-                hashed_dups,
-                root_dir=args.directory,
-                output_path_format=PathFormat(args.format),
-                colored_cluster_header=True,
-                show_hash_cluster_header=args.show_hash
-            )
+            if not args.silent:
+                print()
+                print_dups(
+                    hashed_dups,
+                    root_dir=args.directory,
+                    output_path_format=PathFormat(args.format),
+                    colored_cluster_header=True,
+                    show_hash_cluster_header=args.show_hash
+                )
 
             if args.output is not None:
                 file = open(args.output, 'w')
@@ -164,6 +175,8 @@ if __name__ == '__main__':
                 )
                 file.close()
                 if args.verbose > 0:
+                    if not args.silent:
+                        print()
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
