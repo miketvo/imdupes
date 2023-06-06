@@ -16,7 +16,8 @@ def index_images(
         directory: str,
         exclude: str = None,
         recursive: bool = False,
-        verbose: int = 0
+        verbose: int = 0,
+        output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> list[str]:
     img_paths = []
     abs_root = os.path.abspath(directory)
@@ -31,6 +32,8 @@ def index_images(
                 file_path = os.path.join(root, file)
                 file_name = os.path.basename(file_path)
                 if exclude_pattern is not None and exclude_pattern.search(file_name) is not None:
+                    if verbose > 1:
+                        print(f'Excluded file: "{format_path(file_path, output_path_format, directory)}"')
                     continue
 
                 file_extension = os.path.splitext(file)[1].lower()[1:]
@@ -42,6 +45,8 @@ def index_images(
             if os.path.isfile(file_path):
                 file_name = os.path.basename(file_path)
                 if exclude_pattern is not None and exclude_pattern.search(file_name) is not None:
+                    if verbose > 1:
+                        print(f'Excluded file: "{format_path(file_path, output_path_format, directory)}"')
                     continue
 
                 file_extension = os.path.splitext(file)[1].lower()[1:]
