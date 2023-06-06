@@ -24,7 +24,7 @@ def index_images(
     exclude_pattern = None if exclude is None else re.compile(exclude)
 
     if verbose > 0:
-        print('Indexing images...', end='', flush=True)
+        print('Indexing images...', flush=True)
 
     if recursive:
         for root, dirs, files in os.walk(abs_root):
