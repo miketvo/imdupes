@@ -40,6 +40,9 @@ def detect_dup_images(
         im = None
         try:
             im = Image.open(img_path)
+            im.verify()
+            im = Image.open(img_path)
+
             if im.format == 'PNG' and im.mode != 'RGBA':
                 im = im.convert('RGBA')
 
@@ -48,6 +51,8 @@ def detect_dup_images(
                 hashed_images[image_hash].append(ImageFileWrapper(im, img_path))
             else:
                 hashed_images[image_hash] = [ImageFileWrapper(im, img_path)]
+
+            im.close()
 
         except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError, MemoryError) as error:
             if pbar is not None:
