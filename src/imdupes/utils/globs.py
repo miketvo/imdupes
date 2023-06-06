@@ -15,8 +15,6 @@ def format_path(p: str, path_format: PathFormat, curdir: str = None) -> str:
     if path_format == PathFormat.PROG_RELATIVE:
         return path.relpath(p)
     if path_format == PathFormat.DIR_RELATIVE:
-        if curdir is None:
-            raise ValueError(f'globs.format_path(): {PathFormat.DIR_RELATIVE.value} requires that currdir is provided.')
         return path.relpath(p, start=curdir)
     if path_format == PathFormat.FILENAME:
         return path.basename(p)

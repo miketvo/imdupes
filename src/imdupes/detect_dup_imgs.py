@@ -18,7 +18,6 @@ def detect_dup_imgs(
         img_paths: list[str],
         hash_size: int = DEFAULT_HASH_SIZE,
         root_dir: str = None,
-        console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
         verbose: int = 0
 ) -> dict[str, list[ImageFileWrapper]]:
@@ -100,25 +99,13 @@ def detect_dup_imgs(
             reverse=True
         )
 
-    # Output
     if verbose > 0:
         print(
             f'Scanning for identical images... '
             f'Found {colored(str(len(hashed_dups.values())), attrs=["bold"])} duplication(s) '
             f'across {colored(str(sum(len(lst) for lst in hashed_dups.values())), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
-            end='',
             flush=True
         )
-
-    if console_output:
-        if verbose > 0:
-            print(':')
-        for dup_imgs in hashed_dups.values():
-            print()
-            for dup_img in dup_imgs:
-                print(format_path(dup_img.path, output_path_format, root_dir))
-    else:
-        print()
 
     return hashed_dups

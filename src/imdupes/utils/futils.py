@@ -1,3 +1,5 @@
+from typing import TextIO
+import sys
 from sys import exit
 import os
 import re
@@ -58,6 +60,27 @@ def index_images(
         )
 
     return img_paths
+
+
+def print_dups(
+        hashed_dups: dict[str, list[ImageFileWrapper]],
+        root_dir: str = None,
+        output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
+        colored_cluster_header: bool = False,
+        show_hash_cluster_header: bool = False,
+        file: TextIO = sys.stdout,
+        flush: bool = False
+) -> None:
+    for i, dup_imgs in enumerate(hashed_dups.items(), start=1):
+        hash_str = f' | hash: {dup_imgs[0]}' if show_hash_cluster_header else ''
+        print(
+            colored(f'[ DUPLICATION {i}{hash_str} ]', 'blue', attrs=['bold']) if colored_cluster_header
+            else f'[ DUPLICATION {i}{hash_str} ]',
+            file=file, flush=flush
+        )
+        for dup_img in dup_imgs[1]:
+            print(format_path(dup_img.path, output_path_format, root_dir), file=file, flush=flush)
+        print(file=file, flush=flush)
 
 
 def clean(

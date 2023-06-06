@@ -8,7 +8,7 @@ import argparse
 from termcolor import cprint
 
 from detect_dup_imgs import detect_dup_imgs
-from utils.futils import index_images, clean
+from utils.futils import index_images, clean, print_dups
 from utils.globs import PathFormat, format_path
 from utils.globs import DEFAULT_HASH_SIZE
 
@@ -120,20 +120,20 @@ if __name__ == '__main__':
                 verbose=args.verbose
             )
 
+            print()
+            print_dups(hashed_dups, colored_cluster_header=True)
+
             if args.output is not None:
                 f = open(args.output, 'w')
-                for dup_imgs in hashed_dups.values():
-                    for dup_img in dup_imgs:
-                        f.write(f'{format_path(dup_img.path, PathFormat(args.format), args.directory)}\n')
-                    f.write('\n')
-                if args.verbose:
+                print_dups(hashed_dups, file=f)
+                f.close()
+                if args.verbose > 0:
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
             hashed_dups = detect_dup_imgs(
                 img_paths, hash_size=args.hash_size,
                 root_dir=args.directory,
-                console_output=False,
                 output_path_format=PathFormat(args.format),
                 verbose=args.verbose
             )
