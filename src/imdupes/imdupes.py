@@ -137,15 +137,15 @@ if __name__ == '__main__':
             )
 
             if args.output is not None:
-                f = open(args.output, 'w')
+                file = open(args.output, 'w')
                 print_dups(
                     hashed_dups,
                     root_dir=args.directory,
                     output_path_format=PathFormat(args.format),
                     show_hash_cluster_header=args.show_hash,
-                    file=f
+                    file=file
                 )
-                f.close()
+                file.close()
                 if args.verbose > 0:
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
