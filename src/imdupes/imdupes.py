@@ -56,8 +56,8 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
             argument_parser.error('cleaning from file does not support -r/--recursive flag')
         if os.path.isfile(arguments.input) and ('-f' in sys.argv[1:] or '--format' in sys.argv[1:]):
             argument_parser.error('cleaning from file does not support -f/--format flag')
-        if os.path.isfile(arguments.input) and ('-S' in sys.argv[1:] or '--hash-size' in sys.argv[1:]):
-            argument_parser.error('cleaning from file does not support -S/--hash-size flag')
+        if os.path.isfile(arguments.input) and ('-s' in sys.argv[1:] or '--hash-size' in sys.argv[1:]):
+            argument_parser.error('cleaning from file does not support -s/--hash-size flag')
         if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
             cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
             exit()
