@@ -16,6 +16,7 @@ from utils.futils import index_images, clean
 from utils.output import print_dups
 from utils.globs import PathFormat
 from utils.globs import DEFAULT_HASH_SIZE
+from utils.globs import VERBOSE_LEVELS, PROGRESS_BAR_LEVELS
 
 
 def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespace:
@@ -31,6 +32,12 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
         if arguments.silent and arguments.output is None:
             argument_parser.error(
                 f'scan mode -S/--silent flag requires -o/--output to be specified, '
+                f'see "{argument_parser.prog} scan --help" for more info'
+            )
+
+        if arguments.verbose == 0 and ('-p' in sys.argv[1:] or '--progress-bar' in sys.argv[1:]):
+            argument_parser.error(
+                f'scan mode -p/--progress-bar flag requires -V/--verbose to be specified, '
                 f'see "{argument_parser.prog} scan --help" for more info'
             )
 
@@ -89,7 +96,7 @@ if __name__ == '__main__':
             help='recursively search for images in subdirectories in addition to the specified parent directory'
         )
         ap_common_args.add_argument(
-            '-V', '--verbose', type=int, choices=[1, 2], default=0,
+            '-V', '--verbose', type=int, choices=VERBOSE_LEVELS, default=0,
             help='explain what is being done'
         )
 
@@ -104,6 +111,11 @@ if __name__ == '__main__':
         )
         ap_scan.add_argument('directory', help='target image directory')
         ap_scan.add_argument(
+            '-p', '--progress-bar', choices=PROGRESS_BAR_LEVELS, default=PROGRESS_BAR_LEVELS[-1],
+            help=f'specify verbose mode (-V/--verbose) progress bar detail level, '
+                 f'0 disables the progress bar entirely (default: {PROGRESS_BAR_LEVELS[-1]})'
+        )
+        ap_scan.add_argument(
             '-H', '--show-hash', action='store_true',
             help='show hash value of each duplication in output'
         )
@@ -112,7 +124,7 @@ if __name__ == '__main__':
             help=f'console output file path format, (default: {PathFormat.DIR_RELATIVE.value})'
         )
         ap_scan.add_argument(
-            '-S', '--silent', action='store_true', default=False,
+            '-S', '--silent', action='store_true',
             help=f'no console output, -o/--output must be specified'
         )
         ap_scan.add_argument(
