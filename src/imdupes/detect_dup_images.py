@@ -112,7 +112,7 @@ def detect_dup_images(
     if verbose > 0:
         print(
             f'{"Scanning for identical images..." if progress_bar != PROGRESS_BAR_LEVELS[0] else ""}'
-            f'{"" if verbose > 1 else " "}'
+            f'{"" if verbose > 1 and progress_bar == PROGRESS_BAR_LEVELS[0] else " "}'
             f'Found {colored(str(len(hashed_dups.values())), attrs=["bold"])} duplication(s) '
             f'across {colored(str(sum(len(lst) for lst in hashed_dups.values())), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
