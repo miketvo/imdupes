@@ -66,22 +66,23 @@ def index_images(
 
 
 def clean(
-        hashed_dups: list[list[ImageFileWrapper]],
+        dups: list[list[ImageFileWrapper]],
         root_dir: str = None,
         interactive: bool = False,
         verbose: int = 0,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
-    if len(hashed_dups) == 0:
+    if len(dups) == 0:
         print(f'No duplications to clean', flush=True)
         return
 
     if verbose > 0:
         print(f'\nCleaning duplications...', flush=True)
 
-    for dup_imgs_index, dup_imgs in enumerate(hashed_dups, start=1):
+    del_count = 0
+    for dup_imgs_index, dup_imgs in enumerate(dups, start=1):
         if interactive:
-            print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(hashed_dups)} ]', 'magenta', attrs=['bold']))
+            print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(dups)} ]', 'magenta', attrs=['bold']))
             for dup_img_index, dup_img in enumerate(dup_imgs, start=1):
                 while True:
                     choices = '\n    '.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
@@ -97,6 +98,7 @@ def clean(
                                 os.remove(dup_img.path)
                                 if verbose > 0:
                                     print(f'-- Deleted "{format_path(dup_img.path, output_path_format, root_dir)}"')
+                                del_count += 1
                             except (OSError, PermissionError) as error:
                                 cprint(
                                     f'Error deleting file '
@@ -121,6 +123,7 @@ def clean(
                             f'-- Deleted "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}"',
                             flush=True
                         )
+                    del_count += 1
                 except (OSError, PermissionError) as error:
                     cprint(
                         f'Error deleting file '
@@ -131,4 +134,12 @@ def clean(
     if verbose > 0:
         if interactive:
             print()
-        print(f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True)
+
+        total_files_count = sum(len(lst) for lst in dups)
+        kept_count = total_files_count - del_count
+        print(f'Deleted '
+              f'{colored(str(del_count), attrs=["bold"])}/{colored(str(total_files_count), attrs=["bold"])}'
+              f' files (kept '
+              f'{colored(str(kept_count), attrs=["bold"])}/{colored(str(total_files_count), attrs=["bold"])}'
+              f') in {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
+              f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True)
