@@ -49,6 +49,7 @@ def load(
                     if len(stripped_line) == 0:
                         dup_imgs.append(curr_dups)
                         curr_dups = []
+                        continue
 
                     file_path = stripped_line
                     if not os.path.isabs(file_path):
