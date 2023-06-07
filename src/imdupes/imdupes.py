@@ -4,10 +4,12 @@ from _version import __scan_usage__, __scan_desc__, __scan_epilog__
 from _version import __clean_usage__, __clean_desc__, __clean_epilog__
 
 import os
+import sys
 from sys import exit
 import argparse
 from termcolor import cprint
 
+import dupfile
 from detect_dup_images import detect_dup_images
 from utils.futils import index_images, clean
 from utils.output import print_dups
@@ -42,6 +44,12 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
     if arguments.mode == 'clean':
         if not os.path.exists(arguments.input):
             argument_parser.error(f'invalid path "{arguments.input}"')
+        if os.path.isfile(arguments.input) and arguments.recursive:
+            argument_parser.error('cleaning from file does not support -r/--recursive flag')
+        if os.path.isfile(arguments.input) and ('-f' in sys.argv[1:] or '--format' in sys.argv[1:]):
+            argument_parser.error('cleaning from file does not support -f/--format flag')
+        if os.path.isfile(arguments.input) and ('-S' in sys.argv[1:] or '--hash-size' in sys.argv[1:]):
+            argument_parser.error('cleaning from file does not support -S/--hash-size flag')
         if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
             cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
             exit()
@@ -120,8 +128,14 @@ if __name__ == '__main__':
         )
         ap_clean.add_argument(
             'input',
-            help='a directory containing the target images to be processed and clean, or a valid text file\n'
-                 'containing duplicated image paths (can be generated using scan mode using -o/--output flag)'
+            help='a directory containing the target images to be processed and clean; or a valid text file\n'
+                 'containing duplicated image paths (can be generated using scan mode with -o/--output flag),\n'
+                 'in which case only the following flags are available:\n'
+                 '  -h/--help\n'
+                 '  -e/--exclude\n'
+                 '  -V/--verbose\n'
+                 '  -i/--interactive\n'
+                 'see options below for more information'
         )
         ap_clean.add_argument(
             '-i', '--interactive', action='store_true',
@@ -178,27 +192,42 @@ if __name__ == '__main__':
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
-            img_paths = index_images(
-                args.input,
-                exclude=args.exclude,
-                recursive=args.recursive,
-                verbose=args.verbose
-            )
+            if os.path.isfile(args.input):
+                dup_imgs = dupfile.load(
+                    args.input,
+                    exclude=args.exclude,
+                    verbose=args.verbose
+                )
 
-            hashed_dups = detect_dup_images(
-                img_paths, hash_size=args.hash_size,
-                root_dir=args.input,
-                output_path_format=PathFormat(args.format),
-                verbose=args.verbose
-            )
+                clean(
+                    dup_imgs,
+                    interactive=args.interactive,
+                    verbose=args.verbose,
+                    output_path_format=PathFormat.ABSOLUTE
+                )
 
-            clean(
-                hashed_dups,
-                root_dir=args.input,
-                interactive=args.interactive,
-                verbose=args.verbose,
-                output_path_format=PathFormat(args.format)
-            )
+            else:
+                img_paths = index_images(
+                    args.input,
+                    exclude=args.exclude,
+                    recursive=args.recursive,
+                    verbose=args.verbose
+                )
+
+                hashed_dups = detect_dup_images(
+                    img_paths, hash_size=args.hash_size,
+                    root_dir=args.input,
+                    output_path_format=PathFormat(args.format),
+                    verbose=args.verbose
+                )
+
+                clean(
+                    [img_dups for img_dups in hashed_dups.values()],
+                    root_dir=args.input,
+                    interactive=args.interactive,
+                    verbose=args.verbose,
+                    output_path_format=PathFormat(args.format)
+                )
 
     except PermissionError as error:
         cprint(f'{error.__str__()}\nProgram terminated.', 'red')

@@ -66,7 +66,7 @@ def index_images(
 
 
 def clean(
-        hashed_dups: dict[str, list[ImageFileWrapper]],
+        hashed_dups: list[list[ImageFileWrapper]],
         root_dir: str = None,
         interactive: bool = False,
         verbose: int = 0,
@@ -79,14 +79,14 @@ def clean(
     if verbose > 0:
         print(f'\nCleaning duplications...', flush=True)
 
-    for dup_imgs_index, dup_imgs in enumerate(hashed_dups.items(), start=1):
+    for dup_imgs_index, dup_imgs in enumerate(hashed_dups, start=1):
         if interactive:
             print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(hashed_dups)} ]', 'magenta', attrs=['bold']))
-            for dup_img_index, dup_img in enumerate(dup_imgs[1], start=1):
+            for dup_img_index, dup_img in enumerate(dup_imgs, start=1):
                 while True:
                     choices = '\n    '.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
                     choice = input(
-                        f'{colored(f"Image {dup_img_index}/{len(dup_imgs[1])}:", "yellow")} Delete '
+                        f'{colored(f"Image {dup_img_index}/{len(dup_imgs)}:", "yellow")} Delete '
                         f'"{format_path(dup_img.path, output_path_format, root_dir)}"?\n'
                         f'    {colored(choices)}\n{colored(">>", "yellow", attrs=["bold"])} '
                     ).lower()
@@ -113,18 +113,18 @@ def clean(
                         print('Invalid choice. Please choose a valid option.')
 
         else:
-            for dup_index in range(1, len(dup_imgs[1])):
+            for dup_index in range(1, len(dup_imgs)):
                 try:
-                    os.remove(dup_imgs[1][dup_index].path)
+                    os.remove(dup_imgs[dup_index].path)
                     if verbose > 0:
                         print(
-                            f'-- Deleted "{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}"',
+                            f'-- Deleted "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}"',
                             flush=True
                         )
                 except (OSError, PermissionError) as error:
                     cprint(
                         f'Error deleting file '
-                        f'"{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}": {str(error)}',
+                        f'"{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}": {str(error)}',
                         'red'
                     )
 
