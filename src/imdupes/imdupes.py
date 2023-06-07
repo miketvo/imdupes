@@ -41,7 +41,7 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
 
     if arguments.mode == 'clean':
         if not os.path.exists(arguments.input):
-            argument_parser.error(f'invalid path "{arguments.directory}"')
+            argument_parser.error(f'invalid path "{arguments.input}"')
         if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
             cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
             exit()

@@ -6,7 +6,7 @@ __prog_desc__ = \
     'Quickly detects and removes identical images. Has two modes:\n' \
     "\t- 'scan' scans and console prints detected identical image paths/filenames\n" \
     "\t- 'clean' scans and removes detected identical images (keeping only the first copy by default)\n" \
-    f'See "{__app_name__} scan --help" and "{__app_name__} clean --help" for more information'
+    f'See "{__app_name__} {{scan,clean}} --help" for more information'
 __prog_epilog__ = \
     'Note: This program ignores any non-image file in the target directory\n' \
     'Algorithm: Average Hash (https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html)'
