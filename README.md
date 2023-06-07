@@ -1,6 +1,6 @@
 # Prototype: imdupes
 
-Quickly detect and remove identical images.
+Detect and remove identical images.
 
 ---
 
