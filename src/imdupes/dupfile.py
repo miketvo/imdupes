@@ -1,4 +1,5 @@
 from sys import exit
+import re
 from termcolor import cprint
 
 from utils.imutils import ImageFileWrapper
@@ -13,7 +14,9 @@ def load(
 
     try:
         with open(file, 'rt', errors='backslashreplace') as f:
-            pass
+            for line in f:
+                print(line, end='')
+
     except (
             ValueError,
             OSError, EOFError, PermissionError,
