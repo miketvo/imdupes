@@ -72,6 +72,10 @@ def clean(
         verbose: int = 0,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
+    if len(hashed_dups) == 0:
+        cprint('Nothing to clean', 'red')
+        return
+
     if verbose > 0:
         print(f'\nCleaning duplications...', flush=True)
 
@@ -93,15 +97,15 @@ def clean(
                                 os.remove(dup_img.path)
                                 if verbose > 0:
                                     print(f'-- Deleted "{format_path(dup_img.path, output_path_format, root_dir)}"')
-                            except OSError as e:
+                            except (OSError, PermissionError) as error:
                                 cprint(
                                     f'Error deleting file '
-                                    f'"{format_path(dup_img.path, output_path_format, root_dir)}": {str(e)}',
+                                    f'"{format_path(dup_img.path, output_path_format, root_dir)}": {str(error)}',
                                     'red'
                                 )
                         if choice == 'x':
-                            cprint('Cleaning cancelled. Program terminated.', 'red')
-                            exit()
+                            cprint('Cleaning cancelled', 'red')
+                            return
 
                         break
 
@@ -117,10 +121,10 @@ def clean(
                             f'-- Deleted "{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}"',
                             flush=True
                         )
-                except OSError as e:
+                except (OSError, PermissionError) as error:
                     cprint(
                         f'Error deleting file '
-                        f'"{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}": {str(e)}',
+                        f'"{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}": {str(error)}',
                         'red'
                     )
 
