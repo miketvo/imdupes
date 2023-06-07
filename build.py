@@ -10,6 +10,14 @@ def build():
         '--clean'
     ])
 
+    PyInstaller.__main__.run([
+        'src/imdupes/wimdupes.pyw',
+        '--onefile',
+        '--icon', 'icon.png',
+        '--windowed',
+        '--clean'
+    ])
+
 
 if __name__ == '__main__':
     build()
