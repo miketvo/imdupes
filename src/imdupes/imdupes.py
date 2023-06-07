@@ -230,6 +230,8 @@ if __name__ == '__main__':
                     output_path_format=PathFormat(args.format)
                 )
 
+    except KeyboardInterrupt:
+        exit()
     except (
             ValueError, TypeError,
             Image.DecompressionBombError,
@@ -237,8 +239,6 @@ if __name__ == '__main__':
             MemoryError
     ) as error:
         cprint(f'Fatal error: {error.__str__()}\nProgram terminated.', 'red')
-        exit()
-    except KeyboardInterrupt as error:
         exit()
     except (Exception,) as exception:
         cprint(f'Unknown fatal error: {Exception}\nProgram terminated.', 'red')
