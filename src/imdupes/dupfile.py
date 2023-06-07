@@ -48,7 +48,7 @@ def load(
                 else:
                     if len(stripped_line) == 0:
                         dup_imgs.append(curr_dups)
-                        curr_dups = []
+                        curr_dups = None
                         continue
 
                     file_path = stripped_line
