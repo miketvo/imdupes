@@ -29,11 +29,18 @@ def detect_dup_images(
     pbar = None
     if verbose > 0:
         if progress_bar == PROGRESS_BAR_LEVELS[1]:
-            pbar = tqdm(total=float('inf'), desc='Scanning for identical images', file=sys.stdout, leave=False)
+            pbar = tqdm(
+                total=len(img_paths),
+                desc='Scanning for identical images',
+                bar_format='{desc}: {percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]',
+                file=sys.stdout, leave=False
+            )
         if progress_bar == PROGRESS_BAR_LEVELS[2]:
             pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', file=sys.stdout, leave=False)
     if progress_bar == PROGRESS_BAR_LEVELS[0]:
-        print('Scanning for identical images...', end='', flush=True)
+        print(
+            'Scanning for identical images...', end='\n' if progress_bar == PROGRESS_BAR_LEVELS[0] else '', flush=True
+        )
     for img_path in img_paths:
         if pbar is not None:
             pbar.update()
@@ -104,7 +111,7 @@ def detect_dup_images(
 
     if verbose > 0:
         print(
-            f'{"Scanning for identical images..." if progress_bar != PROGRESS_BAR_LEVELS[0] else ""} '
+            f'{"Scanning for identical images... " if progress_bar != PROGRESS_BAR_LEVELS[0] else ""}'
             f'Found {colored(str(len(hashed_dups.values())), attrs=["bold"])} duplication(s) '
             f'across {colored(str(sum(len(lst) for lst in hashed_dups.values())), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
