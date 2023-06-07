@@ -1,5 +1,6 @@
 __version__ = '0.1.3'
 __app_name__ = 'imdupes'
+__gui_app_name__ = 'Imdupes'
 
 __prog_usage__ = f'{__app_name__} {{scan,clean}} ...'
 __prog_desc__ = \
