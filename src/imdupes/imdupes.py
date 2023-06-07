@@ -243,4 +243,3 @@ if __name__ == '__main__':
     except (Exception,) as exception:
         cprint(f'Unknown fatal error: {Exception}\nProgram terminated.', 'red')
         exit()
-
