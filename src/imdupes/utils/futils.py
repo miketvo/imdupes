@@ -137,8 +137,10 @@ def clean(
 
         total_files_count = sum(len(lst) for lst in dups)
         kept_count = total_files_count - del_count
-        print(f'Deleted '
-              f'{colored(str(del_count), attrs=["bold"])}/{colored(str(total_files_count), attrs=["bold"])} '
-              f'files (kept {colored(str(kept_count), attrs=["bold"])}) '
-              f'in {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
-              f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True)
+        print(
+            f'Deleted '
+            f'{colored(str(del_count), attrs=["bold"])}/{colored(str(total_files_count), attrs=["bold"])} '
+            f'files (kept {colored(str(kept_count), attrs=["bold"])}) '
+            f'in {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
+            f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True
+        )
