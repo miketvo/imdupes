@@ -52,13 +52,6 @@ def load(
                         continue
 
                     file_path = stripped_line
-                    if not os.path.isabs(file_path):
-                        cprint(
-                            f'Error reading file "{file}", line {line_num}: '
-                            f'Malformed entry: File path "{file_path}" must be absolute\nProgram terminated.',
-                            'red'
-                        )
-                        exit()
                     if not os.path.exists(file_path):
                         cprint(
                             f'Error reading file "{file}", line {line_num}: '
@@ -70,6 +63,13 @@ def load(
                         cprint(
                             f'Error reading file "{file}", line {line_num}: '
                             f'Malformed entry: "{file_path}" is not a file\nProgram terminated.',
+                            'red'
+                        )
+                        exit()
+                    if not os.path.isabs(file_path):
+                        cprint(
+                            f'Error reading file "{file}", line {line_num}: '
+                            f'Malformed entry: File path "{file_path}" must be absolute\nProgram terminated.',
                             'red'
                         )
                         exit()
