@@ -95,7 +95,7 @@ def clean(
         if interactive:
             print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(dups)} ]', 'magenta', attrs=['bold']))
             if len(dup_imgs) == 0:
-                cprint('Excluded', 'yellow', attrs=['bold'])
+                cprint('Excluded', 'yellow')
             for dup_img_index, dup_img in enumerate(dup_imgs, start=1):
                 while True:
                     choices = '\n    '.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
