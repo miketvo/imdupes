@@ -111,7 +111,7 @@ if __name__ == '__main__':
         )
         ap_scan.add_argument('directory', help='target image directory')
         ap_scan.add_argument(
-            '-p', '--progress-bar', choices=PROGRESS_BAR_LEVELS, default=PROGRESS_BAR_LEVELS[-1],
+            '-p', '--progress-bar', type=int, choices=PROGRESS_BAR_LEVELS, default=PROGRESS_BAR_LEVELS[-1],
             help=f'specify verbose mode (-V/--verbose) progress bar detail level, '
                  f'0 disables the progress bar entirely (default: {PROGRESS_BAR_LEVELS[-1]})'
         )
