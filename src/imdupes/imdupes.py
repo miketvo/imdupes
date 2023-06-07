@@ -178,7 +178,8 @@ if __name__ == '__main__':
                 hash_size=args.hash_size,
                 root_dir=args.directory,
                 output_path_format=PathFormat(args.format),
-                verbose=args.verbose
+                verbose=args.verbose,
+                progress_bar=args.progress_bar
             )
 
             if not args.silent:
@@ -230,7 +231,8 @@ if __name__ == '__main__':
                     img_paths, hash_size=args.hash_size,
                     root_dir=args.input,
                     output_path_format=PathFormat(args.format),
-                    verbose=args.verbose
+                    verbose=args.verbose,
+                    progress_bar=args.progress_bar
                 )
 
                 clean(

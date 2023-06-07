@@ -17,12 +17,13 @@ def index_images(
         verbose: int = 0,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> list[str]:
+    excluded_count = 0
     img_paths = []
     abs_root = os.path.abspath(directory)
     exclude_pattern = None if exclude is None else re.compile(exclude)
 
     if verbose > 0:
-        print('Indexing images...', flush=True)
+        print('Indexing images...', end='', flush=True)
 
     if recursive:
         for root, dirs, files in os.walk(abs_root):
@@ -31,7 +32,10 @@ def index_images(
                 file_name = os.path.basename(file_path)
                 if exclude_pattern is not None and exclude_pattern.search(file_name) is not None:
                     if verbose > 1:
+                        if excluded_count == 0:
+                            print()
                         print(f'Excluded file: "{format_path(file_path, output_path_format, directory)}"')
+                    excluded_count += 1
                     continue
 
                 file_extension = os.path.splitext(file)[1].lower()[1:]
@@ -44,7 +48,10 @@ def index_images(
                 file_name = os.path.basename(file_path)
                 if exclude_pattern is not None and exclude_pattern.search(file_name) is not None:
                     if verbose > 1:
+                        if excluded_count == 0:
+                            print()
                         print(f'Excluded file: "{format_path(file_path, output_path_format, directory)}"')
+                    excluded_count += 1
                     continue
 
                 file_extension = os.path.splitext(file)[1].lower()[1:]
@@ -55,9 +62,12 @@ def index_images(
         cprint(f'"{directory}" has no valid image files. Program terminated.', 'red')
         exit()
 
+    if excluded_count == 0:
+        cprint(' No file(s) excluded.', 'yellow', end='')
+
     if verbose > 0:
         print(
-            f'Found {colored(str(len(img_paths)), attrs=["bold"])} image(s) '
+            f'{" " if excluded_count == 0 else ""}Found {colored(str(len(img_paths)), attrs=["bold"])} image(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
             flush=True
         )

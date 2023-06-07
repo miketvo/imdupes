@@ -8,6 +8,7 @@ from termcolor import colored
 from utils.globs import PathFormat, format_path
 from utils.globs import DEFAULT_HASH_SIZE
 from utils.imutils import ImageFileWrapper
+from utils.globs import PROGRESS_BAR_LEVELS
 
 
 Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https://www.panaxity.com/
@@ -19,14 +20,20 @@ def detect_dup_images(
         hash_size: int = DEFAULT_HASH_SIZE,
         root_dir: str = None,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
-        verbose: int = 0
+        verbose: int = 0,
+        progress_bar: int = PROGRESS_BAR_LEVELS[2]
 ) -> dict[str, list[ImageFileWrapper]]:
     hashed_images: dict[str, list[ImageFileWrapper]] = {}
 
     # Image hashing
     pbar = None
     if verbose > 0:
-        pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', file=sys.stdout, leave=False)
+        if progress_bar == PROGRESS_BAR_LEVELS[1]:
+            pbar = tqdm(total=float('inf'), desc='Scanning for identical images', file=sys.stdout, leave=False)
+        if progress_bar == PROGRESS_BAR_LEVELS[2]:
+            pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', file=sys.stdout, leave=False)
+    if progress_bar == PROGRESS_BAR_LEVELS[0]:
+        print('Scanning for identical images...', end='', flush=True)
     for img_path in img_paths:
         if pbar is not None:
             pbar.update()
@@ -94,7 +101,7 @@ def detect_dup_images(
 
     if verbose > 0:
         print(
-            f'Scanning for identical images... '
+            f'{"Scanning for identical images..." if progress_bar != PROGRESS_BAR_LEVELS[0] else ""} '
             f'Found {colored(str(len(hashed_dups.values())), attrs=["bold"])} duplication(s) '
             f'across {colored(str(sum(len(lst) for lst in hashed_dups.values())), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
