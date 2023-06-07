@@ -251,8 +251,8 @@ if __name__ == '__main__':
             OSError, EOFError, PermissionError,
             MemoryError
     ) as error:
-        cprint(f'Fatal error: {error.__str__()}\nProgram terminated.', 'red')
+        cprint(f'\nFatal error: {error.__str__()}\nProgram terminated.', 'red')
         exit()
     except (Exception,) as exception:
-        cprint(f'Unknown fatal error: {Exception}\nProgram terminated.', 'red')
+        cprint(f'\nUnknown fatal error: {Exception.__str__()}\nProgram terminated.', 'red')
         exit()
