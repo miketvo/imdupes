@@ -39,7 +39,7 @@ def detect_dup_images(
             pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', file=sys.stdout, leave=False)
     if progress_bar == PROGRESS_BAR_LEVELS[0]:
         print(
-            'Scanning for identical images...', end='\n' if progress_bar == PROGRESS_BAR_LEVELS[0] else '', flush=True
+            'Scanning for identical images...', end='\n' if verbose > 1 else '', flush=True
         )
     for img_path in img_paths:
         if pbar is not None:
