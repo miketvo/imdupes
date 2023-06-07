@@ -181,7 +181,7 @@ if __name__ == '__main__':
                 )
 
             if args.output is not None:
-                file = open(args.output, 'w')
+                file = open(args.output, 'wt')
                 print_dups(
                     hashed_dups,
                     output_path_format=PathFormat.ABSOLUTE,
