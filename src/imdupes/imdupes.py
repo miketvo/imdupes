@@ -1,3 +1,5 @@
+import traceback
+
 from _version import __version__, __app_name__
 from _version import __prog_usage__, __prog_desc__, __prog_epilog__
 from _version import __scan_usage__, __scan_desc__, __scan_epilog__
@@ -16,6 +18,7 @@ from utils.futils import index_images, clean
 from utils.output import print_dups
 from utils.globs import PathFormat
 from utils.globs import DEFAULT_HASH_SIZE
+from utils.globs import VERBOSE_LEVELS, PROGRESS_BAR_LEVELS
 
 
 def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespace:
@@ -24,6 +27,11 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
     if arguments.hash_size < 8:
         argument_parser.error(
             f'hash size of {arguments.hash_size} is too small, '
+            f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
+        )
+    if (arguments.verbose == 0) and any(argv.startswith(('-p', '--progress-bar')) for argv in sys.argv[1:]):
+        argument_parser.error(
+            f'-p/--progress-bar flag requires -V/--verbose to be specified, '
             f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
         )
 
@@ -47,10 +55,10 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
             argument_parser.error(f'invalid path "{arguments.input}"')
         if os.path.isfile(arguments.input) and arguments.recursive:
             argument_parser.error('cleaning from file does not support -r/--recursive flag')
-        if os.path.isfile(arguments.input) and ('-f' in sys.argv[1:] or '--format' in sys.argv[1:]):
+        if os.path.isfile(arguments.input) and any(argv.startswith(('-f', '--format')) for argv in sys.argv[1:]):
             argument_parser.error('cleaning from file does not support -f/--format flag')
-        if os.path.isfile(arguments.input) and ('-S' in sys.argv[1:] or '--hash-size' in sys.argv[1:]):
-            argument_parser.error('cleaning from file does not support -S/--hash-size flag')
+        if os.path.isfile(arguments.input) and any(argv.startswith(('-s', '--hash-size')) for argv in sys.argv[1:]):
+            argument_parser.error('cleaning from file does not support -s/--hash-size flag')
         if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
             cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
             exit()
@@ -89,8 +97,13 @@ if __name__ == '__main__':
             help='recursively search for images in subdirectories in addition to the specified parent directory'
         )
         ap_common_args.add_argument(
-            '-V', '--verbose', type=int, choices=[1, 2], default=0,
+            '-V', '--verbose', type=int, choices=VERBOSE_LEVELS, default=0,
             help='explain what is being done'
+        )
+        ap_common_args.add_argument(
+            '-p', '--progress-bar', type=int, choices=PROGRESS_BAR_LEVELS, default=PROGRESS_BAR_LEVELS[-1],
+            help=f'specify verbose mode (-V/--verbose) progress bar detail level, '
+                 f'0 disables the progress bar entirely (default: {PROGRESS_BAR_LEVELS[-1]})'
         )
 
         subparsers = ap_top_level.add_subparsers(title='run modes', dest='mode', metavar='{scan,clean}', required=True)
@@ -112,7 +125,7 @@ if __name__ == '__main__':
             help=f'console output file path format, (default: {PathFormat.DIR_RELATIVE.value})'
         )
         ap_scan.add_argument(
-            '-S', '--silent', action='store_true', default=False,
+            '-S', '--silent', action='store_true',
             help=f'no console output, -o/--output must be specified'
         )
         ap_scan.add_argument(
@@ -167,7 +180,8 @@ if __name__ == '__main__':
                 hash_size=args.hash_size,
                 root_dir=args.directory,
                 output_path_format=PathFormat(args.format),
-                verbose=args.verbose
+                verbose=args.verbose,
+                progress_bar=args.progress_bar
             )
 
             if not args.silent:
@@ -219,7 +233,8 @@ if __name__ == '__main__':
                     img_paths, hash_size=args.hash_size,
                     root_dir=args.input,
                     output_path_format=PathFormat(args.format),
-                    verbose=args.verbose
+                    verbose=args.verbose,
+                    progress_bar=args.progress_bar
                 )
 
                 clean(
@@ -238,8 +253,10 @@ if __name__ == '__main__':
             OSError, EOFError, PermissionError,
             MemoryError
     ) as error:
-        cprint(f'Fatal error: {error.__str__()}\nProgram terminated.', 'red')
+        cprint(f'\nFatal error: {error.__str__()}\nProgram terminated.', 'red')
         exit()
-    except (Exception,) as exception:
-        cprint(f'Unknown fatal error: {Exception}\nProgram terminated.', 'red')
+    except (Exception,) as exception:  # Do not remove this comma, lest thou seek the wrath of PEP 8 gods
+        cprint(f'\nUnknown fatal error:', 'red')
+        traceback.print_exc()
+        cprint(f'Program terminated.', 'red')
         exit()
