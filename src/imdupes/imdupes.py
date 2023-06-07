@@ -240,3 +240,7 @@ if __name__ == '__main__':
         exit()
     except KeyboardInterrupt as error:
         exit()
+    except (Exception,) as exception:
+        cprint(f'Unknown fatal error: {Exception}\nProgram terminated.', 'red')
+        exit()
+
