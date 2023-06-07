@@ -73,7 +73,7 @@ def clean(
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
     if len(hashed_dups) == 0:
-        print(f'No duplications to clean {colored("[DONE]", color="green", attrs=["bold"])}', flush=True)
+        print(f'No duplications to clean', flush=True)
         return
 
     if verbose > 0:
