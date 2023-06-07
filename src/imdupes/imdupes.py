@@ -27,17 +27,16 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
             f'hash size of {arguments.hash_size} is too small, '
             f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
         )
+    if (arguments.verbose == 0) and any(argv.startswith(('-p', '--progress-bar')) for argv in sys.argv[1:]):
+        argument_parser.error(
+            f'-p/--progress-bar flag requires -V/--verbose to be specified, '
+            f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
+        )
 
     if arguments.mode == 'scan':
         if arguments.silent and arguments.output is None:
             argument_parser.error(
                 f'scan mode -S/--silent flag requires -o/--output to be specified, '
-                f'see "{argument_parser.prog} scan --help" for more info'
-            )
-
-        if (arguments.verbose == 0) and ('-p' in sys.argv[1:] or '--progress-bar' in sys.argv[1:]):
-            argument_parser.error(
-                f'scan mode -p/--progress-bar flag requires -V/--verbose to be specified, '
                 f'see "{argument_parser.prog} scan --help" for more info'
             )
 
@@ -54,9 +53,9 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
             argument_parser.error(f'invalid path "{arguments.input}"')
         if os.path.isfile(arguments.input) and arguments.recursive:
             argument_parser.error('cleaning from file does not support -r/--recursive flag')
-        if os.path.isfile(arguments.input) and ('-f' in sys.argv[1:] or '--format' in sys.argv[1:]):
+        if os.path.isfile(arguments.input) and any(argv.startswith(('-f', '--format')) for argv in sys.argv[1:]):
             argument_parser.error('cleaning from file does not support -f/--format flag')
-        if os.path.isfile(arguments.input) and ('-s' in sys.argv[1:] or '--hash-size' in sys.argv[1:]):
+        if os.path.isfile(arguments.input) and any(argv.startswith(('-s', '--hash-size')) for argv in sys.argv[1:]):
             argument_parser.error('cleaning from file does not support -s/--hash-size flag')
         if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
             cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
@@ -99,6 +98,11 @@ if __name__ == '__main__':
             '-V', '--verbose', type=int, choices=VERBOSE_LEVELS, default=0,
             help='explain what is being done'
         )
+        ap_common_args.add_argument(
+            '-p', '--progress-bar', type=int, choices=PROGRESS_BAR_LEVELS, default=PROGRESS_BAR_LEVELS[-1],
+            help=f'specify verbose mode (-V/--verbose) progress bar detail level, '
+                 f'0 disables the progress bar entirely (default: {PROGRESS_BAR_LEVELS[-1]})'
+        )
 
         subparsers = ap_top_level.add_subparsers(title='run modes', dest='mode', metavar='{scan,clean}', required=True)
 
@@ -110,11 +114,6 @@ if __name__ == '__main__':
             formatter_class=argparse.RawTextHelpFormatter
         )
         ap_scan.add_argument('directory', help='target image directory')
-        ap_scan.add_argument(
-            '-p', '--progress-bar', type=int, choices=PROGRESS_BAR_LEVELS, default=PROGRESS_BAR_LEVELS[-1],
-            help=f'specify verbose mode (-V/--verbose) progress bar detail level, '
-                 f'0 disables the progress bar entirely (default: {PROGRESS_BAR_LEVELS[-1]})'
-        )
         ap_scan.add_argument(
             '-H', '--show-hash', action='store_true',
             help='show hash value of each duplication in output'
