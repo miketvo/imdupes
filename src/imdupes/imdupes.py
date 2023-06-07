@@ -8,6 +8,7 @@ import sys
 from sys import exit
 import argparse
 from termcolor import cprint
+from PIL import Image
 
 import dupfile
 from detect_dup_images import detect_dup_images
@@ -229,8 +230,13 @@ if __name__ == '__main__':
                     output_path_format=PathFormat(args.format)
                 )
 
-    except PermissionError as error:
-        cprint(f'{error.__str__()}\nProgram terminated.', 'red')
+    except (
+            ValueError, TypeError,
+            Image.DecompressionBombError,
+            OSError, EOFError, PermissionError,
+            MemoryError
+    ) as error:
+        cprint(f'Fatal error: {error.__str__()}\nProgram terminated.', 'red')
         exit()
     except KeyboardInterrupt as error:
         exit()
