@@ -80,8 +80,8 @@ if __name__ == '__main__':
             help='recursively search for images in subdirectories in addition to the specified parent directory'
         )
         ap_common_args.add_argument(
-            '-V', '--verbose', type=int, choices=[0, 1, 2], default=0,
-            help='explain what is being done (default: 0 - verbose mode off)'
+            '-V', '--verbose', type=int, choices=[1, 2], default=0,
+            help='explain what is being done'
         )
 
         subparsers = ap_top_level.add_subparsers(title='run modes', dest='mode', metavar='{scan,clean}', required=True)

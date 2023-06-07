@@ -109,18 +109,18 @@ def clean(
                         print('Invalid choice. Please choose a valid option.')
 
         else:
-            for dup_index in range(1, len(dup_imgs)):
+            for dup_index in range(1, len(dup_imgs[1])):
                 try:
-                    os.remove(dup_imgs[dup_index].path)
+                    os.remove(dup_imgs[1][dup_index].path)
                     if verbose > 0:
                         print(
-                            f'-- Deleted "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}"',
+                            f'-- Deleted "{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}"',
                             flush=True
                         )
                 except OSError as e:
                     cprint(
-                        f'Error deleting file "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}": '
-                        f'{str(e)}',
+                        f'Error deleting file '
+                        f'"{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}": {str(e)}',
                         'red'
                     )
 
