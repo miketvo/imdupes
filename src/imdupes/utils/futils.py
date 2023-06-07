@@ -80,6 +80,17 @@ def clean(
         print(f'\nCleaning duplications...', flush=True)
 
     del_count = 0
+    total_files_count = sum(len(lst) for lst in dups)
+
+    def print_done():
+        print(
+            f'Deleted '
+            f'{colored(str(del_count), attrs=["bold"])}/{colored(str(total_files_count), attrs=["bold"])} '
+            f'files (kept {colored(str(total_files_count - del_count), attrs=["bold"])}) '
+            f'in {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
+            f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True
+        )
+
     for dup_imgs_index, dup_imgs in enumerate(dups, start=1):
         if interactive:
             print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(dups)} ]', 'magenta', attrs=['bold']))
@@ -107,6 +118,7 @@ def clean(
                                 )
                         if choice == 'x':
                             cprint('Cleaning cancelled', 'red')
+                            print_done()
                             return
 
                         break
@@ -134,13 +146,4 @@ def clean(
     if verbose > 0:
         if interactive:
             print()
-
-        total_files_count = sum(len(lst) for lst in dups)
-        kept_count = total_files_count - del_count
-        print(
-            f'Deleted '
-            f'{colored(str(del_count), attrs=["bold"])}/{colored(str(total_files_count), attrs=["bold"])} '
-            f'files (kept {colored(str(kept_count), attrs=["bold"])}) '
-            f'in {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
-            f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True
-        )
+        print_done()
