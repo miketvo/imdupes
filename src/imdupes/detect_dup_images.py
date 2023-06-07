@@ -39,7 +39,10 @@ def detect_dup_images(
             pbar.update()
 
         if verbose > 1:
-            pbar.write(f'Scanning "{format_path(img_path, output_path_format, root_dir)}"')
+            if progress_bar == PROGRESS_BAR_LEVELS[0]:
+                print(f'Scanning "{format_path(img_path, output_path_format, root_dir)}"')
+            else:
+                pbar.write(f'Scanning "{format_path(img_path, output_path_format, root_dir)}"')
 
         im = None
         try:
