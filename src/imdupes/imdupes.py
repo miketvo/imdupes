@@ -1,3 +1,5 @@
+import traceback
+
 from _version import __version__, __app_name__
 from _version import __prog_usage__, __prog_desc__, __prog_epilog__
 from _version import __scan_usage__, __scan_desc__, __scan_epilog__
@@ -253,6 +255,8 @@ if __name__ == '__main__':
     ) as error:
         cprint(f'\nFatal error: {error.__str__()}\nProgram terminated.', 'red')
         exit()
-    except (Exception,) as exception:
-        cprint(f'\nUnknown fatal error: {Exception.__str__()}\nProgram terminated.', 'red')
+    except (Exception,) as exception:  # Do not remove this comma, lest thou seek the wrath of PEP 8 gods
+        cprint(f'\nUnknown fatal error:', 'red')
+        traceback.print_exc()
+        cprint(f'Program terminated.', 'red')
         exit()
