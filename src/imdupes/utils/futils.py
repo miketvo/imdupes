@@ -72,17 +72,21 @@ def clean(
         verbose: int = 0,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
+    if len(hashed_dups) == 0:
+        print(f'No duplications to clean', flush=True)
+        return
+
     if verbose > 0:
         print(f'\nCleaning duplications...', flush=True)
 
     for dup_imgs_index, dup_imgs in enumerate(hashed_dups.items(), start=1):
         if interactive:
-            print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(dup_imgs)} ]', 'magenta', attrs=['bold']))
+            print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(hashed_dups)} ]', 'magenta', attrs=['bold']))
             for dup_img_index, dup_img in enumerate(dup_imgs[1], start=1):
                 while True:
                     choices = '\n    '.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
                     choice = input(
-                        f'{colored(f"Image {dup_img_index}/{len(dup_imgs)}:", "yellow")} Delete '
+                        f'{colored(f"Image {dup_img_index}/{len(dup_imgs[1])}:", "yellow")} Delete '
                         f'"{format_path(dup_img.path, output_path_format, root_dir)}"?\n'
                         f'    {colored(choices)}\n{colored(">>", "yellow", attrs=["bold"])} '
                     ).lower()
@@ -93,15 +97,15 @@ def clean(
                                 os.remove(dup_img.path)
                                 if verbose > 0:
                                     print(f'-- Deleted "{format_path(dup_img.path, output_path_format, root_dir)}"')
-                            except OSError as e:
+                            except (OSError, PermissionError) as error:
                                 cprint(
                                     f'Error deleting file '
-                                    f'"{format_path(dup_img.path, output_path_format, root_dir)}": {str(e)}',
+                                    f'"{format_path(dup_img.path, output_path_format, root_dir)}": {str(error)}',
                                     'red'
                                 )
                         if choice == 'x':
-                            cprint('Cleaning cancelled. Program terminated.', 'red')
-                            exit()
+                            cprint('Cleaning cancelled', 'red')
+                            return
 
                         break
 
@@ -109,18 +113,18 @@ def clean(
                         print('Invalid choice. Please choose a valid option.')
 
         else:
-            for dup_index in range(1, len(dup_imgs)):
+            for dup_index in range(1, len(dup_imgs[1])):
                 try:
-                    os.remove(dup_imgs[dup_index].path)
+                    os.remove(dup_imgs[1][dup_index].path)
                     if verbose > 0:
                         print(
-                            f'-- Deleted "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}"',
+                            f'-- Deleted "{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}"',
                             flush=True
                         )
-                except OSError as e:
+                except (OSError, PermissionError) as error:
                     cprint(
-                        f'Error deleting file "{format_path(dup_imgs[dup_index].path, output_path_format, root_dir)}": '
-                        f'{str(e)}',
+                        f'Error deleting file '
+                        f'"{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}": {str(error)}',
                         'red'
                     )
 

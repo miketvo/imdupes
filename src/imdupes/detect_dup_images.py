@@ -32,10 +32,7 @@ def detect_dup_images(
             pbar.update()
 
         if verbose > 1:
-            if pbar is not None:
-                pbar.write(f'Processing "{format_path(img_path, output_path_format, root_dir)}"')
-            else:
-                print(f'Processing "{format_path(img_path, output_path_format, root_dir)}"', flush=True)
+            pbar.write(f'Scanning "{format_path(img_path, output_path_format, root_dir)}"')
 
         im = None
         try:
