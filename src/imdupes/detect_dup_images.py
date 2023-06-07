@@ -51,16 +51,21 @@ def detect_dup_images(
 
             im.close()
 
-        except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError, MemoryError) as error:
+        except (
+                ValueError, TypeError,
+                Image.DecompressionBombError,
+                OSError, EOFError, PermissionError,
+                MemoryError
+        ) as error:
             if pbar is not None:
                 pbar.write(
-                    f"Error hashing '{format_path(img_path, output_path_format, root_dir)}': "
+                    f"Error scanning '{format_path(img_path, output_path_format, root_dir)}': "
                     f'{error.__str__()}. '
                     f'File skipped.'
                 )
             else:
                 print(
-                    f"Error hashing '{format_path(img_path, output_path_format, root_dir)}': "
+                    f"Error scanning '{format_path(img_path, output_path_format, root_dir)}': "
                     f'{error.__str__()}. '
                     f'File skipped.',
                     flush=True
