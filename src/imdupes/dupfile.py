@@ -1,3 +1,6 @@
+from sys import exit
+from termcolor import cprint
+
 from utils.imutils import ImageFileWrapper
 
 
@@ -9,13 +12,14 @@ def load(
     dup_imgs = []
 
     try:
-        with open(file, 'rt') as f:
+        with open(file, 'rt', errors='backslashreplace') as f:
             pass
     except (
-            ValueError, TypeError,
+            ValueError,
             OSError, EOFError, PermissionError,
             MemoryError
     ) as error:
-        pass
+        cprint(f"Error reading file '{file}': {error.__str__()}\nProgram terminated.", 'red')
+        exit()
 
     return dup_imgs
