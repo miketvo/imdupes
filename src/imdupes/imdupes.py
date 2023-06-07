@@ -35,7 +35,7 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
                 f'see "{argument_parser.prog} scan --help" for more info'
             )
 
-        if arguments.verbose == 0 and ('-p' in sys.argv[1:] or '--progress-bar' in sys.argv[1:]):
+        if (arguments.verbose == 0) and ('-p' in sys.argv[1:] or '--progress-bar' in sys.argv[1:]):
             argument_parser.error(
                 f'scan mode -p/--progress-bar flag requires -V/--verbose to be specified, '
                 f'see "{argument_parser.prog} scan --help" for more info'
