@@ -14,14 +14,15 @@ def index_images(
         directory: str,
         exclude: str = None,
         recursive: bool = False,
-        verbose: bool = False
+        verbose: int = 0,
+        output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> list[str]:
     img_paths = []
     abs_root = os.path.abspath(directory)
     exclude_pattern = None if exclude is None else re.compile(exclude)
 
-    if verbose:
-        print('Indexing images...', end='', flush=True)
+    if verbose > 0:
+        print('Indexing images...', flush=True)
 
     if recursive:
         for root, dirs, files in os.walk(abs_root):
@@ -29,6 +30,8 @@ def index_images(
                 file_path = os.path.join(root, file)
                 file_name = os.path.basename(file_path)
                 if exclude_pattern is not None and exclude_pattern.search(file_name) is not None:
+                    if verbose > 1:
+                        print(f'Excluded file: "{format_path(file_path, output_path_format, directory)}"')
                     continue
 
                 file_extension = os.path.splitext(file)[1].lower()[1:]
@@ -40,6 +43,8 @@ def index_images(
             if os.path.isfile(file_path):
                 file_name = os.path.basename(file_path)
                 if exclude_pattern is not None and exclude_pattern.search(file_name) is not None:
+                    if verbose > 1:
+                        print(f'Excluded file: "{format_path(file_path, output_path_format, directory)}"')
                     continue
 
                 file_extension = os.path.splitext(file)[1].lower()[1:]
@@ -47,12 +52,12 @@ def index_images(
                     img_paths.append(file_path)
 
     if len(img_paths) == 0:
-        cprint(f' "{directory}" has no valid image files. Program terminated.', 'red')
+        cprint(f'"{directory}" has no valid image files. Program terminated.', 'red')
         exit()
 
-    if verbose:
+    if verbose > 0:
         print(
-            f' Found {colored(str(len(img_paths)), attrs=["bold"])} image(s) '
+            f'Found {colored(str(len(img_paths)), attrs=["bold"])} image(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
             flush=True
         )
@@ -64,37 +69,43 @@ def clean(
         hashed_dups: dict[str, list[ImageFileWrapper]],
         root_dir: str = None,
         interactive: bool = False,
-        verbose: bool = False,
+        verbose: int = 0,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
-    if verbose:
+    if len(hashed_dups) == 0:
+        print(f'No duplications to clean', flush=True)
+        return
+
+    if verbose > 0:
         print(f'\nCleaning duplications...', flush=True)
 
-    for dup_imgs in hashed_dups.values():
+    for dup_imgs_index, dup_imgs in enumerate(hashed_dups.items(), start=1):
         if interactive:
-            for dup_img in dup_imgs:
+            print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(hashed_dups)} ]', 'magenta', attrs=['bold']))
+            for dup_img_index, dup_img in enumerate(dup_imgs[1], start=1):
                 while True:
-                    choices = '\n\t'.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
+                    choices = '\n    '.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
                     choice = input(
-                        f'Delete "{format_path(dup_img.path, output_path_format, root_dir)}"?\n\t'
-                        f'{colored(choices)}\n{colored(">>", "yellow", attrs=["bold"])} '
+                        f'{colored(f"Image {dup_img_index}/{len(dup_imgs[1])}:", "yellow")} Delete '
+                        f'"{format_path(dup_img.path, output_path_format, root_dir)}"?\n'
+                        f'    {colored(choices)}\n{colored(">>", "yellow", attrs=["bold"])} '
                     ).lower()
 
                     if choice in INTERACTIVE_OPTS.keys():
                         if choice == 'y':
                             try:
                                 os.remove(dup_img.path)
-                                if verbose:
+                                if verbose > 0:
                                     print(f'-- Deleted "{format_path(dup_img.path, output_path_format, root_dir)}"')
-                            except OSError as e:
+                            except (OSError, PermissionError) as error:
                                 cprint(
                                     f'Error deleting file '
-                                    f'"{format_path(dup_img.path, output_path_format, root_dir)}": {str(e)}',
+                                    f'"{format_path(dup_img.path, output_path_format, root_dir)}": {str(error)}',
                                     'red'
                                 )
                         if choice == 'x':
-                            cprint('Cleaning cancelled. Program terminated.', 'red')
-                            exit()
+                            cprint('Cleaning cancelled', 'red')
+                            return
 
                         break
 
@@ -102,17 +113,22 @@ def clean(
                         print('Invalid choice. Please choose a valid option.')
 
         else:
-            for i in range(1, len(dup_imgs)):
+            for dup_index in range(1, len(dup_imgs[1])):
                 try:
-                    os.remove(dup_imgs[i].path)
-                    if verbose:
-                        print(f'-- Deleted "{format_path(dup_imgs[i].path, output_path_format, root_dir)}"', flush=True)
-                except OSError as e:
+                    os.remove(dup_imgs[1][dup_index].path)
+                    if verbose > 0:
+                        print(
+                            f'-- Deleted "{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}"',
+                            flush=True
+                        )
+                except (OSError, PermissionError) as error:
                     cprint(
-                        f'Error deleting file "{format_path(dup_imgs[i].path, output_path_format, root_dir)}": '
-                        f'{str(e)}',
+                        f'Error deleting file '
+                        f'"{format_path(dup_imgs[1][dup_index].path, output_path_format, root_dir)}": {str(error)}',
                         'red'
                     )
 
-    if verbose:
+    if verbose > 0:
+        if interactive:
+            print()
         print(f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True)

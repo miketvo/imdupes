@@ -1,15 +1,17 @@
 from _version import __version__, __app_name__
-from _version import __prog_desc__, __prog_epilog__
+from _version import __prog_usage__, __prog_desc__, __prog_epilog__
+from _version import __scan_usage__, __scan_desc__, __scan_epilog__
+from _version import __clean_usage__, __clean_desc__, __clean_epilog__
 
 import os
-import sys
 from sys import exit
 import argparse
 from termcolor import cprint
 
-from detect import detect
+from detect_dup_images import detect_dup_images
 from utils.futils import index_images, clean
-from utils.globs import PathFormat, format_path
+from utils.output import print_dups
+from utils.globs import PathFormat
 from utils.globs import DEFAULT_HASH_SIZE
 
 
@@ -17,20 +19,32 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
     arguments = argument_parser.parse_args()
 
     if arguments.hash_size < 8:
-        ap.error(f'Hash size {arguments.hash_size} too small, see {ap.prog} --help for more info')
+        argument_parser.error(
+            f'hash size of {arguments.hash_size} is too small, '
+            f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
+        )
 
-    if arguments.mode == 'detect':
-        if arguments.interactive:
-            ap.error(f'detect mode does not support -i/--interactive flag, see {ap.prog} --help for more info')
+    if arguments.mode == 'scan':
+        if arguments.silent and arguments.output is None:
+            argument_parser.error(
+                f'scan mode -S/--silent flag requires -o/--output to be specified, '
+                f'see "{argument_parser.prog} scan --help" for more info'
+            )
+
+        if not os.path.exists(arguments.directory):
+            argument_parser.error(f'invalid path "{arguments.directory}"')
+        if not os.path.isdir(arguments.directory):
+            argument_parser.error(f'"{arguments.directory}" is not a directory')
+        if len(os.listdir(arguments.directory)) == 0:
+            cprint(f'"{arguments.directory}" is empty. Program terminated.', 'red')
+            exit()
 
     if arguments.mode == 'clean':
-        if arguments.output:
-            ap.error(f'clean mode does not support -o/--output flag, see {ap.prog} --help for more info')
-        if ('-f' in sys.argv[1:] or '--format' in sys.argv[1:]) and (not arguments.verbose):
-            ap.error(
-                f'clean mode requires -f/--format and -V/--verbose flags to be used together, '
-                f'see {ap.prog} --help for more info'
-            )
+        if not os.path.exists(arguments.input):
+            argument_parser.error(f'invalid path "{arguments.input}"')
+        if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
+            cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
+            exit()
 
     return arguments
 
@@ -40,96 +54,147 @@ if __name__ == '__main__':
         # ============================================================================================================ #
         #                                             Arguments Processing                                             #
         # ============================================================================================================ #
-        ap = argparse.ArgumentParser(
+        ap_top_level = argparse.ArgumentParser(
             prog=__app_name__,
-            usage='imdupes {detect,clean} [OPTIONS] DIRECTORY',
+            usage=__prog_usage__,
             description=__prog_desc__,
             epilog=__prog_epilog__,
-            formatter_class=argparse.RawDescriptionHelpFormatter
+            formatter_class=argparse.RawTextHelpFormatter
         )
-
-        ap.add_argument('mode', choices=['detect', 'clean'], help="run mode")
-        ap.add_argument('directory', help='target image directory')
-        ap.add_argument(
-            '-s', '--hash-size',
-            required=False, type=int, default=DEFAULT_HASH_SIZE,
-            help=f'specify a preferred hash size (integer) (default: {DEFAULT_HASH_SIZE})*'
-        )
-        ap.add_argument(
-            '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched filenames based on REGEX pattern'
-        )
-        ap.add_argument(
-            '-r', '--recursive', action='store_true',
-            help='recursively search for images in subdirectories in addition to the specified parent directory'
-        )
-        ap.add_argument(
-            '-V', '--verbose', action='store_true', help='explain what is being done'
-        )
-        ap.add_argument(
-            '-f', '--format', choices=[f.value for f in PathFormat], default=PathFormat.DIR_RELATIVE.value,
-            help='console output file path format, '
-                 'always applied to detect mode and clean mode only when verbose is enabled '
-                 f'(default: {PathFormat.DIR_RELATIVE.value})'
-        )
-        ap.add_argument(
+        ap_top_level.add_argument(
             '-v', '--version', action='version', version=f'%(prog)s {__version__}',
             help='show version information and exit'
         )
 
-        detect_options = ap.add_argument_group('detect mode options')
-        detect_options.add_argument(
+        ap_common_args = argparse.ArgumentParser(add_help=False)
+        ap_common_args.add_argument(
+            '-s', '--hash-size',
+            required=False, type=int, default=DEFAULT_HASH_SIZE,
+            help=f'specify a preferred hash size (integer) (default: {DEFAULT_HASH_SIZE})*'
+        )
+        ap_common_args.add_argument(
+            '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched filenames based on REGEX pattern'
+        )
+        ap_common_args.add_argument(
+            '-r', '--recursive', action='store_true',
+            help='recursively search for images in subdirectories in addition to the specified parent directory'
+        )
+        ap_common_args.add_argument(
+            '-V', '--verbose', type=int, choices=[1, 2], default=0,
+            help='explain what is being done'
+        )
+
+        subparsers = ap_top_level.add_subparsers(title='run modes', dest='mode', metavar='{scan,clean}', required=True)
+
+        ap_scan = subparsers.add_parser(
+            'scan', parents=[ap_common_args],
+            usage=__scan_usage__,
+            description=__scan_desc__,
+            epilog=__scan_epilog__,
+            formatter_class=argparse.RawTextHelpFormatter
+        )
+        ap_scan.add_argument('directory', help='target image directory')
+        ap_scan.add_argument(
+            '-H', '--show-hash', action='store_true',
+            help='show hash value of each duplication in output'
+        )
+        ap_scan.add_argument(
+            '-f', '--format', choices=[f.value for f in PathFormat], default=PathFormat.DIR_RELATIVE.value,
+            help=f'console output file path format, (default: {PathFormat.DIR_RELATIVE.value})'
+        )
+        ap_scan.add_argument(
+            '-S', '--silent', action='store_true', default=False,
+            help=f'no console output, -o/--output must be specified'
+        )
+        ap_scan.add_argument(
             '-o', '--output', required=False, metavar='OUTPUT',
-            help='save the console output to the specified OUTPUT file (overwriting if file already exist)'
+            help='save the output to the specified OUTPUT file (overwriting if file already exist)'
         )
 
-        clean_options = ap.add_argument_group('clean mode options')
-        clean_options.add_argument(
+        ap_clean = subparsers.add_parser(
+            'clean', parents=[ap_common_args],
+            usage=__clean_usage__,
+            description=__clean_desc__,
+            epilog=__clean_epilog__,
+            formatter_class=argparse.RawTextHelpFormatter
+        )
+        ap_clean.add_argument(
+            'input',
+            help='a directory containing the target images to be processed and clean, or a valid text file\n'
+                 'containing duplicated image paths (can be generated using scan mode using -o/--output flag)'
+        )
+        ap_clean.add_argument(
             '-i', '--interactive', action='store_true',
-            help='prompt before every file deletion and let the user choose which file to delete'
+            help='prompt for every duplication and let the user choose which file to delete'
+        )
+        ap_clean.add_argument(
+            '-f', '--format', choices=[f.value for f in PathFormat], default=PathFormat.DIR_RELATIVE.value,
+            help=f'console output file path format, ignored if -V/--verbose and -i/--interactive are both not\n'
+                 f'enabled (default: {PathFormat.DIR_RELATIVE.value})'
         )
 
-        args = validate_args(ap)
-        if not os.path.exists(args.directory):
-            cprint(f'Invalid path provided: "{args.directory}". Program terminated.', 'red')
-            exit()
-        if not os.path.isdir(args.directory):
-            cprint(f'"{args.directory}" is not a directory. Program terminated.', 'red')
-            exit()
-        if len(os.listdir(args.directory)) == 0:
-            cprint(f'"{args.directory}" is empty. Program terminated.', 'red')
-            exit()
+        args = validate_args(ap_top_level)
         # ==== End Of Arguments Processing ===== #
 
         # ============================================================================================================ #
         #                                               Image Processing                                               #
         # ============================================================================================================ #
-        img_paths = index_images(
-            args.directory,
-            exclude=args.exclude,
-            recursive=args.recursive,
-            verbose=args.verbose,
-        )
+        if args.mode == 'scan':
+            img_paths = index_images(
+                args.directory,
+                exclude=args.exclude,
+                recursive=args.recursive,
+                verbose=args.verbose
+            )
 
-        if args.mode == 'detect':
-            hashed_dups = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory,
-                                 output_path_format=PathFormat(args.format), verbose=args.verbose)
+            hashed_dups = detect_dup_images(
+                img_paths,
+                hash_size=args.hash_size,
+                root_dir=args.directory,
+                output_path_format=PathFormat(args.format),
+                verbose=args.verbose
+            )
+
+            if not args.silent:
+                print()
+                print_dups(
+                    hashed_dups,
+                    root_dir=args.directory,
+                    output_path_format=PathFormat(args.format),
+                    colored_cluster_header=True,
+                    show_hash_cluster_header=args.show_hash
+                )
 
             if args.output is not None:
-                f = open(args.output, 'w')
-                for dup_imgs in hashed_dups.values():
-                    for dup_img in dup_imgs:
-                        f.write(f'{format_path(dup_img.path, PathFormat(args.format), args.directory)}\n')
-                    f.write('\n')
-                if args.verbose:
+                file = open(args.output, 'w')
+                print_dups(
+                    hashed_dups,
+                    output_path_format=PathFormat.ABSOLUTE,
+                    show_hash_cluster_header=args.show_hash,
+                    file=file
+                )
+                file.close()
+                if args.verbose > 0:
                     cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
-            hashed_dups = detect(img_paths, hash_size=args.hash_size, root_dir=args.directory, console_output=False,
-                                 output_path_format=PathFormat(args.format), verbose=args.verbose)
+            img_paths = index_images(
+                args.input,
+                exclude=args.exclude,
+                recursive=args.recursive,
+                verbose=args.verbose
+            )
+
+            hashed_dups = detect_dup_images(
+                img_paths, hash_size=args.hash_size,
+                root_dir=args.input,
+                output_path_format=PathFormat(args.format),
+                verbose=args.verbose
+            )
 
             clean(
                 hashed_dups,
-                root_dir=args.directory,
+                root_dir=args.input,
                 interactive=args.interactive,
                 verbose=args.verbose,
                 output_path_format=PathFormat(args.format)

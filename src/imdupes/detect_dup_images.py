@@ -1,3 +1,4 @@
+import sys
 import warnings
 import imagehash
 from PIL import Image
@@ -13,50 +14,63 @@ Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https:/
 warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 
-def detect(
+def detect_dup_images(
         img_paths: list[str],
         hash_size: int = DEFAULT_HASH_SIZE,
         root_dir: str = None,
-        console_output: bool = True,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
-        verbose: bool = False
+        verbose: int = 0
 ) -> dict[str, list[ImageFileWrapper]]:
     hashed_images: dict[str, list[ImageFileWrapper]] = {}
 
     # Image hashing
     pbar = None
-    if verbose:
-        pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', position=0, leave=False)
+    if verbose > 0:
+        pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', file=sys.stdout, leave=False)
     for img_path in img_paths:
         if pbar is not None:
             pbar.update()
 
+        if verbose > 1:
+            pbar.write(f'Scanning "{format_path(img_path, output_path_format, root_dir)}"')
+
+        im = None
         try:
             im = Image.open(img_path)
+            im.verify()
+            im = Image.open(img_path)
+
             if im.format == 'PNG' and im.mode != 'RGBA':
                 im = im.convert('RGBA')
 
-        except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError) as error:
+            image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
+            if image_hash in hashed_images:
+                hashed_images[image_hash].append(ImageFileWrapper(im, img_path))
+            else:
+                hashed_images[image_hash] = [ImageFileWrapper(im, img_path)]
+
+            im.close()
+
+        except (ValueError, TypeError, Image.DecompressionBombError, OSError, EOFError, MemoryError) as error:
             if pbar is not None:
                 pbar.write(
-                    f"Error reading '{format_path(img_path, output_path_format, root_dir)}': "
+                    f"Error hashing '{format_path(img_path, output_path_format, root_dir)}': "
                     f'{error.__str__()}. '
                     f'File skipped.'
                 )
             else:
                 print(
-                    f"Error reading '{format_path(img_path, output_path_format, root_dir)}': "
+                    f"Error hashing '{format_path(img_path, output_path_format, root_dir)}': "
                     f'{error.__str__()}. '
                     f'File skipped.',
                     flush=True
                 )
+            if im is not None:
+                im.close()
             continue
 
-        image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
-        if image_hash in hashed_images:
-            hashed_images[image_hash].append(ImageFileWrapper(im, img_path))
-        else:
-            hashed_images[image_hash] = [ImageFileWrapper(im, img_path)]
+    if pbar is not None:
+        pbar.close()
 
     # Remove hashes with a single path
     hashed_dups: dict[str, list[ImageFileWrapper]] = {
@@ -73,25 +87,13 @@ def detect(
             reverse=True
         )
 
-    # Output
-    if verbose:
+    if verbose > 0:
         print(
             f'Scanning for identical images... '
             f'Found {colored(str(len(hashed_dups.values())), attrs=["bold"])} duplication(s) '
             f'across {colored(str(sum(len(lst) for lst in hashed_dups.values())), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
-            end='',
             flush=True
         )
-
-    if console_output:
-        if verbose:
-            print(':')
-        for dup_imgs in hashed_dups.values():
-            print()
-            for dup_img in dup_imgs:
-                print(format_path(dup_img.path, output_path_format, root_dir))
-    else:
-        print()
 
     return hashed_dups
