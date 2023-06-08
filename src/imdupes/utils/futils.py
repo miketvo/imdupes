@@ -82,7 +82,12 @@ def clean(
         verbose: int = 0,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE
 ) -> None:
-    if len(dups) == 0:
+    processed_dups = []
+    for dup in dups:
+        if len(dup) > 0:
+            processed_dups.append(dup)
+
+    if len(processed_dups) == 0:
         print(f'No duplications to clean', flush=True)
         return
 
@@ -90,20 +95,20 @@ def clean(
         print(f'\nCleaning duplications...', flush=True)
 
     del_count = 0
-    total_files_count = sum(len(lst) for lst in dups)
+    total_files_count = sum(len(lst) for lst in processed_dups)
 
     def print_done():
         print(
             f'Deleted '
             f'{colored(str(del_count), attrs=["bold"])}/{colored(str(total_files_count), attrs=["bold"])} '
             f'files (kept {colored(str(total_files_count - del_count), attrs=["bold"])}) '
-            f'in {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
+            f'in {colored(str(len(processed_dups)), attrs=["bold"])} duplication(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}', flush=True
         )
 
-    for dup_imgs_index, dup_imgs in enumerate(dups, start=1):
+    for dup_imgs_index, dup_imgs in enumerate(processed_dups, start=1):
         if interactive:
-            print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(dups)} ]', 'magenta', attrs=['bold']))
+            print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(processed_dups)} ]', 'magenta', attrs=['bold']))
             for dup_img_index, dup_img in enumerate(dup_imgs, start=1):
                 while True:
                     choices = '\n    '.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
