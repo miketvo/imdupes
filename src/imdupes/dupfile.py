@@ -97,4 +97,4 @@ def load(
     for dup in dups:
         if len(dup) > 0:
             processed_dups.append(dup)
-    return dups
+    return processed_dups
