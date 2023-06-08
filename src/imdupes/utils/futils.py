@@ -62,7 +62,7 @@ def index_images(
         cprint(f'"{directory}" has no valid image files. Program terminated.', 'red')
         exit()
 
-    if excluded_count == 0:
+    if excluded_count == 0 and verbose > 1:
         cprint(' No file(s) excluded.', 'yellow', end='')
 
     if verbose > 0:
