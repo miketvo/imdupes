@@ -61,11 +61,13 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
         if not os.path.exists(arguments.input):
             argument_parser.error(f'invalid path "{arguments.input}"')
         if os.path.isfile(arguments.input) and arguments.recursive:
-            argument_parser.error('cleaning from file does not support -r/--recursive flag')
+            argument_parser.error('cleaning from dupfile does not support -r/--recursive flag')
         if os.path.isfile(arguments.input) and any(argv.startswith(('-f', '--format')) for argv in sys.argv[1:]):
-            argument_parser.error('cleaning from file does not support -f/--format flag')
+            argument_parser.error('cleaning from dupfile does not support -f/--format flag')
         if os.path.isfile(arguments.input) and any(argv.startswith(('-s', '--hash-size')) for argv in sys.argv[1:]):
-            argument_parser.error('cleaning from file does not support -s/--hash-size flag')
+            argument_parser.error('cleaning from dupfile does not support -s/--hash-size flag')
+        if os.path.isfile(arguments.input) and any(argv.startswith(('-p', '--progress-bar')) for argv in sys.argv[1:]):
+            argument_parser.error('cleaning from dupfile does not support -p/--progress-bar flag')
         if os.path.isfile(arguments.input) and arguments.input.split('.')[-1].lower() != DUPFILE_EXT:
             ext = arguments.input.split('.')[-1]
             cprint(
