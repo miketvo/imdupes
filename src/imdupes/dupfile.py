@@ -35,7 +35,7 @@ def load(
         exclude: str = None,
         verbose: int = 0
 ) -> list[list[ImageFileWrapper]]:
-    dup_imgs = []
+    dups = []
     exclude_pattern = None if exclude is None else re.compile(exclude)
 
     if verbose > 0:
@@ -75,7 +75,7 @@ def load(
                         print(f'Excluded file: "{file_path}"')
                     continue
                 curr_dups.append(ImageFileWrapper(path=file_path))
-            dup_imgs.append(curr_dups)
+            dups.append(curr_dups)
 
     except (
             ValueError,
@@ -87,10 +87,14 @@ def load(
 
     if verbose > 0:
         print(
-            f'Loaded {colored(str(len(dup_imgs)), attrs=["bold"])} duplication(s) '
-            f'across {colored(str(sum(len(lst) for lst in dup_imgs)), attrs=["bold"])} file(s) '
+            f'Loaded {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
+            f'across {colored(str(sum(len(lst) for lst in dups)), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
             flush=True
         )
 
-    return dup_imgs
+    processed_dups = []
+    for dup in dups:
+        if len(dup) > 0:
+            processed_dups.append(dup)
+    return dups
