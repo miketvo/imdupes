@@ -238,7 +238,7 @@ if __name__ == '__main__':
                 )
 
                 clean(
-                    [img_dups for img_dups in hashed_dups.values()],
+                    [dup_imgs for dup_imgs in hashed_dups.values()],
                     root_dir=args.input,
                     interactive=args.interactive,
                     verbose=args.verbose,

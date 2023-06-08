@@ -6,6 +6,13 @@ from termcolor import cprint, colored
 from utils.imutils import ImageFileWrapper
 
 
+def save(
+        dups: list[list[ImageFileWrapper]],
+        file: str
+) -> None:
+    pass
+
+
 def load(
         file: str,
         exclude: str = None,
