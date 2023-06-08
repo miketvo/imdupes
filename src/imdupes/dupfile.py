@@ -1,16 +1,33 @@
 import os.path
 from sys import exit
 import re
+import json
 from termcolor import cprint, colored
 
+from utils.globs import PathFormat, format_path
 from utils.imutils import ImageFileWrapper
 
 
 def save(
         dups: list[list[ImageFileWrapper]],
-        file: str
+        file: str,
+        verbose: int = 0
 ) -> None:
-    pass
+    try:
+        f = open(file, 'wt')
+        data = [[format_path(img.path, PathFormat.ABSOLUTE) for img in dup_imgs] for dup_imgs in dups]
+        json.dump(data, f, indent=2)
+        f.close()
+    except (
+            ValueError,
+            OSError, EOFError, PermissionError,
+            MemoryError
+    ) as error:
+        cprint(f"Error writing file '{file}': {error.__str__()}\nProgram terminated.", 'red')
+        exit()
+
+    if verbose > 0:
+        cprint(f'Output saved to "{file}"', 'blue', attrs=['bold'])
 
 
 def load(
@@ -19,76 +36,46 @@ def load(
         verbose: int = 0
 ) -> list[list[ImageFileWrapper]]:
     dup_imgs = []
+    exclude_pattern = None if exclude is None else re.compile(exclude)
 
     if verbose > 0:
         print(f'Reading "{file}"...', flush=True)
 
     try:
-        with open(file, 'rt', errors='backslashreplace') as f:
-            curr_dups = None
-            curr_dups_num = 0
-            dup_header_pattern = re.compile('\\[ DUPLICATION [0-9]+ ]')
-            exclude_pattern = None if exclude is None else re.compile(exclude)
+        f = open(file, 'rt', errors='backslashreplace')
+        data = json.load(f)
+        f.close()
+        for duplication in data:
+            curr_dups = []
+            for file_path in duplication:
+                if not os.path.exists(file_path):
+                    cprint(
+                        f'Error reading file "{file}": '
+                        f'Malformed entry: Incorrect path "{file_path}"\nProgram terminated.',
+                        'red'
+                    )
+                    exit()
+                if not os.path.isfile(file_path):
+                    cprint(
+                        f'Error reading file "{file}": '
+                        f'Malformed entry: "{file_path}" is not a file\nProgram terminated.',
+                        'red'
+                    )
+                    exit()
+                if not os.path.isabs(file_path):
+                    cprint(
+                        f'Error reading file "{file}": '
+                        f'Malformed entry: File path "{file_path}" must be absolute\nProgram terminated.',
+                        'red'
+                    )
+                    exit()
 
-            for line_num, line in enumerate(f, start=1):
-                stripped_line = line.strip()
-
-                if curr_dups is None:
-                    if dup_header_pattern.fullmatch(stripped_line):
-                        curr_dups_num += 1
-                        if stripped_line != f'[ DUPLICATION {curr_dups_num} ]':
-                            cprint(
-                                f'Error reading file "{file}", line {line_num}: '
-                                f'Incorrect duplication numbering\nProgram terminated.',
-                                'red'
-                            )
-                            exit()
-                        curr_dups = []
-                    else:
-                        cprint(
-                            f'Error reading file "{file}", line {line_num}: '
-                            f'Malformed duplication header\nProgram terminated.',
-                            'red'
-                        )
-                        exit()
-
-                else:
-                    if len(stripped_line) == 0:
-                        dup_imgs.append(curr_dups)
-                        curr_dups = None
-                        continue
-
-                    file_path = stripped_line
-                    if not os.path.exists(file_path):
-                        cprint(
-                            f'Error reading file "{file}", line {line_num}: '
-                            f'Malformed entry: Incorrect path "{file_path}"\nProgram terminated.',
-                            'red'
-                        )
-                        exit()
-                    if not os.path.isfile(file_path):
-                        cprint(
-                            f'Error reading file "{file}", line {line_num}: '
-                            f'Malformed entry: "{file_path}" is not a file\nProgram terminated.',
-                            'red'
-                        )
-                        exit()
-                    if not os.path.isabs(file_path):
-                        cprint(
-                            f'Error reading file "{file}", line {line_num}: '
-                            f'Malformed entry: File path "{file_path}" must be absolute\nProgram terminated.',
-                            'red'
-                        )
-                        exit()
-
-                    if exclude_pattern is not None and exclude_pattern.search(file_path) is not None:
-                        if verbose > 1:
-                            print(f'Excluded file: "{file_path}"')
-                        continue
-                    curr_dups.append(ImageFileWrapper(path=file_path))
-
-            if curr_dups is not None:
-                dup_imgs.append(curr_dups)
+                if exclude_pattern is not None and exclude_pattern.search(file_path) is not None:
+                    if verbose > 1:
+                        print(f'Excluded file: "{file_path}"')
+                    continue
+                curr_dups.append(ImageFileWrapper(path=file_path))
+            dup_imgs.append(curr_dups)
 
     except (
             ValueError,

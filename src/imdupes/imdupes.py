@@ -1,5 +1,3 @@
-import traceback
-
 from _version import __version__, __app_name__
 from _version import __prog_usage__, __prog_desc__, __prog_epilog__
 from _version import __scan_usage__, __scan_desc__, __scan_epilog__
@@ -8,6 +6,7 @@ from _version import __clean_usage__, __clean_desc__, __clean_epilog__
 import os
 import sys
 from sys import exit
+import traceback
 import argparse
 from termcolor import cprint
 from PIL import Image
@@ -17,6 +16,7 @@ from detect_dup_images import detect_dup_images
 from utils.futils import index_images, clean
 from utils.output import print_dups
 from utils.globs import PathFormat
+from utils.globs import DUPFILE_EXT
 from utils.globs import DEFAULT_HASH_SIZE
 from utils.globs import VERBOSE_LEVELS, PROGRESS_BAR_LEVELS
 
@@ -50,6 +50,13 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
             cprint(f'"{arguments.directory}" is empty. Program terminated.', 'red')
             exit()
 
+        if arguments.output is not None and arguments.output.split('.')[-1].lower() != DUPFILE_EXT:
+            ext = arguments.output.split('.')[-1]
+            argument_parser.error(
+                f'output "{arguments.output}": invalid extension ".{ext}" (must be ".{DUPFILE_EXT}"), '
+                f'see "{argument_parser.prog} scan --help" for more info'
+            )
+
     if arguments.mode == 'clean':
         if not os.path.exists(arguments.input):
             argument_parser.error(f'invalid path "{arguments.input}"')
@@ -59,6 +66,13 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
             argument_parser.error('cleaning from file does not support -f/--format flag')
         if os.path.isfile(arguments.input) and any(argv.startswith(('-s', '--hash-size')) for argv in sys.argv[1:]):
             argument_parser.error('cleaning from file does not support -s/--hash-size flag')
+        if os.path.isfile(arguments.input) and arguments.input.split('.')[-1].lower() != DUPFILE_EXT:
+            ext = arguments.input.split('.')[-1]
+            cprint(
+                f'"{arguments.input}": Invalid input file type ".{ext}". '
+                f'Program terminated.', 'red'
+            )
+            exit()
         if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
             cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
             exit()
@@ -102,8 +116,8 @@ if __name__ == '__main__':
         )
         ap_common_args.add_argument(
             '-p', '--progress-bar', type=int, choices=PROGRESS_BAR_LEVELS, default=PROGRESS_BAR_LEVELS[-1],
-            help=f'specify verbose mode (-V/--verbose) progress bar detail level, '
-                 f'0 disables the progress bar entirely (default: {PROGRESS_BAR_LEVELS[-1]})'
+            help=f'specify verbose mode (-V/--verbose) progress bar detail level, 0 disables the progress bar\n'
+                 f'entirely (default: {PROGRESS_BAR_LEVELS[-1]})'
         )
 
         subparsers = ap_top_level.add_subparsers(title='run modes', dest='mode', metavar='{scan,clean}', required=True)
@@ -129,8 +143,9 @@ if __name__ == '__main__':
             help=f'no console output, -o/--output must be specified'
         )
         ap_scan.add_argument(
-            '-o', '--output', required=False, metavar='OUTPUT',
-            help='save the output to the specified OUTPUT (JSON format) file (overwriting if file already exist)'
+            '-o', '--output', required=False, metavar='DUPFILE',
+            help=f'save the output to the specified DUPFILE (JSON formatted .{DUPFILE_EXT}) file (overwriting if file\n'
+                 'already exist)'
         )
 
         ap_clean = subparsers.add_parser(
@@ -142,9 +157,9 @@ if __name__ == '__main__':
         )
         ap_clean.add_argument(
             'input',
-            help='a directory containing the target images to be processed and clean; or a valid JSON file\n'
-                 'containing duplicated image paths (can be generated using scan mode with -o/--output flag),\n'
-                 'in which case only the following flags are available:\n'
+            help='a directory containing the target images to be processed and clean; or a valid JSON formatted\n'
+                 f'.{DUPFILE_EXT} file containing duplicated image paths (can be generated using scan mode with\n'
+                 '-o/--output\n flag), in which case only the following flags are available:\n'
                  '  -h/--help\n'
                  '  -e/--exclude\n'
                  '  -V/--verbose\n'
@@ -195,16 +210,11 @@ if __name__ == '__main__':
                 )
 
             if args.output is not None:
-                file = open(args.output, 'wt')
-                print_dups(
-                    hashed_dups,
-                    output_path_format=PathFormat.ABSOLUTE,
-                    show_hash_cluster_header=args.show_hash,
-                    file=file
+                dupfile.save(
+                    [dup_imgs for dup_imgs in hashed_dups.values()],
+                    file=args.output,
+                    verbose=args.verbose
                 )
-                file.close()
-                if args.verbose > 0:
-                    cprint(f'Output saved to "{args.output}"', 'blue', attrs=['bold'])
 
         elif args.mode == 'clean':
             if os.path.isfile(args.input):
