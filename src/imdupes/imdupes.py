@@ -130,7 +130,7 @@ if __name__ == '__main__':
         )
         ap_scan.add_argument(
             '-o', '--output', required=False, metavar='OUTPUT',
-            help='save the output to the specified OUTPUT file (overwriting if file already exist)'
+            help='save the output to the specified OUTPUT (JSON format) file (overwriting if file already exist)'
         )
 
         ap_clean = subparsers.add_parser(
@@ -142,7 +142,7 @@ if __name__ == '__main__':
         )
         ap_clean.add_argument(
             'input',
-            help='a directory containing the target images to be processed and clean; or a valid text file\n'
+            help='a directory containing the target images to be processed and clean; or a valid JSON file\n'
                  'containing duplicated image paths (can be generated using scan mode with -o/--output flag),\n'
                  'in which case only the following flags are available:\n'
                  '  -h/--help\n'
