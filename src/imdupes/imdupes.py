@@ -220,14 +220,14 @@ if __name__ == '__main__':
 
         elif args.mode == 'clean':
             if os.path.isfile(args.input):
-                dup_imgs = dupfile.load(
+                dups = dupfile.load(
                     args.input,
                     exclude=args.exclude,
                     verbose=args.verbose
                 )
 
                 clean(
-                    dup_imgs,
+                    dups,
                     interactive=args.interactive,
                     verbose=args.verbose,
                     output_path_format=PathFormat.ABSOLUTE
