@@ -85,16 +85,17 @@ def load(
         cprint(f"Error reading file '{file}': {error.__str__()}\nProgram terminated.", 'red')
         exit()
 
-    if verbose > 0:
-        print(
-            f'Loaded {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
-            f'across {colored(str(sum(len(lst) for lst in dups)), attrs=["bold"])} file(s) '
-            f'{colored("[DONE]", color="green", attrs=["bold"])}',
-            flush=True
-        )
-
     processed_dups = []
     for dup in dups:
         if len(dup) > 0:
             processed_dups.append(dup)
+
+    if verbose > 0:
+        print(
+            f'Loaded {colored(str(len(processed_dups)), attrs=["bold"])} duplication(s) '
+            f'across {colored(str(sum(len(lst) for lst in processed_dups)), attrs=["bold"])} file(s) '
+            f'{colored("[DONE]", color="green", attrs=["bold"])}',
+            flush=True
+        )
+
     return processed_dups
