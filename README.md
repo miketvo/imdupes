@@ -112,7 +112,7 @@ Note: This program ignores any non-image file in the target directory
 
 - Extension: `.imdup`
 - Format: JSON
-- Indent: 2
+- Indent: 2 spaces
 
 These files are JSON-formatted text file generated from running:
 
