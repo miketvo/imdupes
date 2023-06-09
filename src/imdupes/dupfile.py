@@ -88,15 +88,6 @@ def load(
         cprint(f"Error reading file '{file}': {error.__str__()}\nProgram terminated.", 'red')
         exit()
 
-    # Sort duplications in order of decreasing resolution (width * height) so that the highest resolution image is kept
-    # during cleaning step
-    for i in range(len(dups)):
-        dups[i] = sorted(
-            dups[i],
-            key=lambda img: img.image.size[0] * img.image.size[1],
-            reverse=True
-        )
-
     if verbose > 0:
         print(
             f'Loaded {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
