@@ -85,10 +85,7 @@ def load(
         cprint(f"Error reading file '{file}': {error.__str__()}\nProgram terminated.", 'red')
         exit()
 
-    processed_dups = []
-    for dup in dups:
-        if len(dup) > 0:
-            processed_dups.append(dup)
+    processed_dups = [dup for dup in dups if len(dup) > 0]
 
     if verbose > 0:
         print(
