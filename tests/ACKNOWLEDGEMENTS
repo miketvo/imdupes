@@ -1,1 +1,4 @@
-Data scraped from: https://pokemondb.net/pokedex/national#gen-1
+Imdupes test data:
+
+- tests/data/images/scraped: Pokémon images scraped from: https://pokemondb.net/pokedex/national#gen-1
+- tests/data/images: Edited images from https://img.pokemondb.net/artwork/large/pikachu.jpg
