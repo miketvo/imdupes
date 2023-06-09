@@ -2,6 +2,7 @@ import os.path
 from sys import exit
 import re
 import json
+from PIL import Image
 from termcolor import cprint, colored
 
 from utils.globs import PathFormat, format_path
@@ -74,9 +75,37 @@ def load(
                     if verbose > 1:
                         print(f'Excluded file: "{file_path}"')
                     continue
-                curr_dups.append(ImageFileWrapper(path=file_path))
 
-            # Skip all empty duplication groups, which can happen if all files within them are excluded
+                im = None
+                try:
+                    im = Image.open(file_path)
+                    im.verify()
+                    im = Image.open(file_path)
+
+                    if im.format == 'PNG' and im.mode != 'RGBA':
+                        im = im.convert('RGBA')
+
+                    curr_dups.append(ImageFileWrapper(im, file_path))
+
+                    im.close()
+                except (
+                        ValueError, TypeError,
+                        Image.DecompressionBombError,
+                        OSError, EOFError, PermissionError,
+                        MemoryError
+                ) as error:
+                    print(
+                        f"Error scanning '{file_path}': "
+                        f'{error.__str__()}. '
+                        f'File skipped.',
+                        flush=True
+                    )
+                    if im is not None:
+                        im.close()
+                    continue
+
+            # Skip all empty duplication groups, which can happen if all files within them are excluded, or are skipped
+            # because of error when loading the image file
             if len(curr_dups) > 0:
                 dups.append(curr_dups)
 
@@ -87,6 +116,15 @@ def load(
     ) as error:
         cprint(f"Error reading file '{file}': {error.__str__()}\nProgram terminated.", 'red')
         exit()
+
+    # Sort duplications in order of decreasing resolution (width * height) so that the highest resolution image is kept
+    # during cleaning step
+    for i in range(len(dups)):
+        dups[i] = sorted(
+            dups[i],
+            key=lambda img: img.image.size[0] * img.image.size[1],
+            reverse=True
+        )
 
     if verbose > 0:
         print(
