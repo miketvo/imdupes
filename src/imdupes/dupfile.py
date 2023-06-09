@@ -75,7 +75,10 @@ def load(
                         print(f'Excluded file: "{file_path}"')
                     continue
                 curr_dups.append(ImageFileWrapper(path=file_path))
-            dups.append(curr_dups)
+
+            # Skip all empty duplication groups, which can happen if all files within them are excluded
+            if len(curr_dups) > 0:
+                dups.append(curr_dups)
 
     except (
             ValueError,
@@ -85,14 +88,21 @@ def load(
         cprint(f"Error reading file '{file}': {error.__str__()}\nProgram terminated.", 'red')
         exit()
 
-    processed_dups = [dup for dup in dups if len(dup) > 0]
+    # Sort duplications in order of decreasing resolution (width * height) so that the highest resolution image is kept
+    # during cleaning step
+    for i in range(len(dups)):
+        dups[i] = sorted(
+            dups[i],
+            key=lambda img: img.image.size[0] * img.image.size[1],
+            reverse=True
+        )
 
     if verbose > 0:
         print(
-            f'Loaded {colored(str(len(processed_dups)), attrs=["bold"])} duplication(s) '
-            f'across {colored(str(sum(len(lst) for lst in processed_dups)), attrs=["bold"])} file(s) '
+            f'Loaded {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
+            f'across {colored(str(sum(len(lst) for lst in dups)), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
             flush=True
         )
 
-    return processed_dups
+    return dups
