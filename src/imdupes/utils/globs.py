@@ -38,6 +38,7 @@ SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/han
     'webp',
     'xbm',
 ]
+DUPFILE_EXT = 'imdup'
 
 INTERACTIVE_OPTS = {
     'y': 'Yes',

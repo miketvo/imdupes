@@ -62,7 +62,7 @@ def index_images(
         cprint(f'"{directory}" has no valid image files. Program terminated.', 'red')
         exit()
 
-    if excluded_count == 0:
+    if excluded_count == 0 and verbose > 1:
         cprint(' No file(s) excluded.', 'yellow', end='')
 
     if verbose > 0:
@@ -104,8 +104,6 @@ def clean(
     for dup_imgs_index, dup_imgs in enumerate(dups, start=1):
         if interactive:
             print(colored(f'\n[ DUPLICATION {dup_imgs_index}/{len(dups)} ]', 'magenta', attrs=['bold']))
-            if len(dup_imgs) == 0:
-                cprint('Excluded', 'yellow')
             for dup_img_index, dup_img in enumerate(dup_imgs, start=1):
                 while True:
                     choices = '\n    '.join(f'[{key.upper()}] {value}' for key, value in INTERACTIVE_OPTS.items())
