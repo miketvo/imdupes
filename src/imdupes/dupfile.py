@@ -38,9 +38,10 @@ def load(
 ) -> list[list[ImageFileWrapper]]:
     dups = []
     exclude_pattern = None if exclude is None else re.compile(exclude)
+    excluded_count = 0
 
     if verbose > 0:
-        print(f'Reading "{file}"...', flush=True)
+        print(f'Reading "{file}"...', end='', flush=True)
 
     try:
         f = open(file, 'rt', errors='backslashreplace')
@@ -72,6 +73,9 @@ def load(
                     exit()
 
                 if exclude_pattern is not None and exclude_pattern.search(file_path) is not None:
+                    if excluded_count == 0 and verbose > 1:
+                        print()
+                    excluded_count += 1
                     if verbose > 1:
                         print(f'Excluded file: "{file_path}"')
                     continue
@@ -126,8 +130,14 @@ def load(
             reverse=True
         )
 
+    if excluded_count == 0 and verbose > 1:
+        cprint(' No file(s) excluded. ', 'yellow', end='')
+
     if verbose > 0:
+        if verbose > 1 and excluded_count > 0:
+            print()
         print(
+            f'{"" if (verbose > 1) or (verbose > 1 and excluded_count > 0) else " "}'
             f'Loaded {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
             f'across {colored(str(sum(len(lst) for lst in dups)), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
