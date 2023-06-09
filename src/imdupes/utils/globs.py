@@ -38,6 +38,7 @@ SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/han
     'webp',
     'xbm',
 ]
+DUPFILE_EXT = 'imdup'
 
 INTERACTIVE_OPTS = {
     'y': 'Yes',
@@ -46,3 +47,6 @@ INTERACTIVE_OPTS = {
 }
 
 DEFAULT_HASH_SIZE = 512
+
+VERBOSE_LEVELS = [1, 2]
+PROGRESS_BAR_LEVELS = [0, 1, 2]
