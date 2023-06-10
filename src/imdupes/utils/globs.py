@@ -21,13 +21,17 @@ def format_path(p: str, path_format: PathFormat, curdir: str = None) -> str:
 
 
 SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html
+
+    # Fully supported read/write extensions
     'blp',
     'bmp', 'dib',
     'dds',
+    'eps',
     'gif',
     'icns', 'ico',
     'im',
     'jpg', 'jpeg', 'jpe', 'jfif', 'jif',
+    'jp2', 'j2k', 'jpf', 'jpm', 'jpg2', 'j2c', 'jpc', 'jpx', 'mj2',
     'pcx',
     'png',
     'pbm', 'pgm', 'ppm', 'pnm',
@@ -37,6 +41,15 @@ SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/han
     'tif', 'tiff',
     'webp',
     'xbm',
+
+    # Limited read-only extensions
+    'cur',
+    'fits', 'fit', 'fts',
+    'mpo',
+    'pxr',
+    'psd',
+    'ras', 'sun',
+    'xpm',
 ]
 DUPFILE_EXT = 'imdup'
 
