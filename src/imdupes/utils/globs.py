@@ -26,7 +26,7 @@ SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/han
     'blp',
     'bmp', 'dib',
     'dds',
-    'eps',
+    'eps',  # User needs Ghostscript for Pillow to be able to read this format: https://www.ghostscript.com/
     'gif',
     'icns', 'ico',
     'im',
