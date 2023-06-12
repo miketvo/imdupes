@@ -25,7 +25,7 @@ from utils.globs import VERBOSE_LEVELS, PROGRESS_BAR_LEVELS
 def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespace:
     arguments = argument_parser.parse_args()
 
-    if arguments.hash_size < 8:
+    if arguments.hash_size is not None and arguments.hash_size < 8:
         argument_parser.error(
             f'hash size of {arguments.hash_size} is too small, '
             f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
@@ -202,7 +202,7 @@ if __name__ == '__main__':
                 verbose=args.verbose
             )
 
-            hash_size = calc_hash_size(
+            hash_size, img_paths = calc_hash_size(
                 img_paths, auto_hash_size=args.auto_hash_size, verbose=args.verbose
             ) if args.hash_size is None else args.hash_size
             hashed_dups = detect_dup_images(
@@ -256,7 +256,7 @@ if __name__ == '__main__':
                     verbose=args.verbose
                 )
 
-                hash_size = calc_hash_size(
+                hash_size, img_paths = calc_hash_size(
                     img_paths, auto_hash_size=args.auto_hash_size, verbose=args.verbose
                 ) if args.hash_size is None else args.hash_size
                 hashed_dups = detect_dup_images(
