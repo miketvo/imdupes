@@ -1,13 +1,13 @@
 import sys
 import warnings
-import imagehash
 from PIL import Image
 from tqdm.auto import tqdm
 from termcolor import colored
 
 from utils.globs import PathFormat, format_path
+from utils.globs import HashingMethod
 from utils.globs import DEFAULT_HASH_SIZE
-from utils.imutils import ImageFileWrapper
+from utils.imutils import hash_image, ImageFileWrapper
 from utils.globs import PROGRESS_BAR_LEVELS
 
 
@@ -17,6 +17,7 @@ warnings.simplefilter('ignore', Image.DecompressionBombWarning)
 
 def detect_dup_images(
         img_paths: list[str],
+        method: HashingMethod,
         hash_size: int = DEFAULT_HASH_SIZE,
         root_dir: str = None,
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
@@ -60,7 +61,7 @@ def detect_dup_images(
             if im.format == 'PNG' and im.mode != 'RGBA':
                 im = im.convert('RGBA')
 
-            image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
+            image_hash = hash_image(im, method=method, hash_size=hash_size)
             if image_hash in hashed_images:
                 hashed_images[image_hash].append(ImageFileWrapper(im, img_path))
             else:

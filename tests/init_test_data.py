@@ -7,14 +7,14 @@ from urllib.parse import urljoin
 
 
 from tests import URL_DATA_SRC, DATA_DUPLICATE_PERCENTAGE, DATA_MAX_DUPLICATES, DATA_RANDOM_SEED
-from tests import DATA_DIR
+from tests import DIR_DATA_SCRAPED
 from tests.clean_test_data import clean
 
 
 def crawl():
     print(
         f'Source: {URL_DATA_SRC}\n'
-        f'Save directory: {DATA_DIR}\n'
+        f'Save directory: {DIR_DATA_SCRAPED}\n'
     )
 
     # Access main Pokémon database for Generation 1 Pokémon
@@ -36,7 +36,7 @@ def crawl():
                 url_download = artwork_tag['href']
                 filename = url_download.split('/')[-1]
 
-                with open(f'{DATA_DIR}/{filename}', 'wb') as f:
+                with open(f'{DIR_DATA_SCRAPED}/{filename}', 'wb') as f:
                     f.write(requests.get(url_download).content)
                     print(f'Saved {filename} [Pokémon {i}/{len(urls_pokemon)}]')
                     f.close()
@@ -50,13 +50,13 @@ def crawl():
 def generate():
     random.seed(DATA_RANDOM_SEED)
     print(
-        f'Save directory: {DATA_DIR}\n'
+        f'Save directory: {DIR_DATA_SCRAPED}\n'
         f'Duplicate percentage: {DATA_DUPLICATE_PERCENTAGE:.2f}\n'
         f'Max duplicates: {DATA_MAX_DUPLICATES}\n'
         f'Random seed: {DATA_RANDOM_SEED}\n'
     )
 
-    filenames = os.listdir(DATA_DIR)
+    filenames = os.listdir(DIR_DATA_SCRAPED)
     print(f'Found {len(filenames)} images. Duplicating...\n')
     for i, filename in enumerate(filenames):
         print(f'Image {i + 1}/{len(filenames)}: {filename}', end='')
@@ -64,7 +64,7 @@ def generate():
         if random.random() <= DATA_DUPLICATE_PERCENTAGE:
             for j in range(1, num_duplicates + 1):
                 new_filename = f'DUPLICATE_{j}_{filename}'
-                shutil.copy(f'{DATA_DIR}/{filename}', f'{DATA_DIR}/{new_filename}')
+                shutil.copy(f'{DIR_DATA_SCRAPED}/{filename}', f'{DIR_DATA_SCRAPED}/{new_filename}')
             print(f' was duplicated {num_duplicates} time(s).')
         else:
             print(f' was duplicated 0 time(s).')
@@ -73,7 +73,7 @@ def generate():
 
 
 if __name__ == '__main__':
-    if len(os.listdir(DATA_DIR)) != 0:
+    if len(os.listdir(DIR_DATA_SCRAPED)) != 0:
         clean()
     crawl()
     generate()

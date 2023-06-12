@@ -16,6 +16,7 @@ from detect_dup_images import detect_dup_images
 from utils.futils import index_images, clean
 from utils.output import print_dups
 from utils.globs import PathFormat
+from utils.globs import HashingMethod
 from utils.globs import DUPFILE_EXT
 from utils.globs import DEFAULT_HASH_SIZE
 from utils.globs import VERBOSE_LEVELS, PROGRESS_BAR_LEVELS
@@ -100,6 +101,10 @@ if __name__ == '__main__':
         )
 
         ap_common_args = argparse.ArgumentParser(add_help=False)
+        ap_common_args.add_argument(
+            '-m', '--hashing-method', choices=[m.value for m in HashingMethod], default=HashingMethod.RGBA.value,
+            help=f'specify a hashing method (default: {HashingMethod.RGBA.value})'
+        )
         ap_common_args.add_argument(
             '-s', '--hash-size',
             required=False, type=int, default=DEFAULT_HASH_SIZE,
@@ -194,6 +199,7 @@ if __name__ == '__main__':
 
             hashed_dups = detect_dup_images(
                 img_paths,
+                method=HashingMethod(args.hashing_method),
                 hash_size=args.hash_size,
                 root_dir=args.directory,
                 output_path_format=PathFormat(args.format),
@@ -242,7 +248,9 @@ if __name__ == '__main__':
                 )
 
                 hashed_dups = detect_dup_images(
-                    img_paths, hash_size=args.hash_size,
+                    img_paths,
+                    method=HashingMethod(args.hashing_method),
+                    hash_size=args.hash_size,
                     root_dir=args.input,
                     output_path_format=PathFormat(args.format),
                     verbose=args.verbose,
