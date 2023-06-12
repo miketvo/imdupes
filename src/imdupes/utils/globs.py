@@ -59,6 +59,14 @@ INTERACTIVE_OPTS = {
     'x': 'Cancel and Exit',
 }
 
+
+class HashingMethod(Enum):
+    RGBA = 'rgba-hashing'
+    RGB = 'rgb-hashing'
+    BW = 'grayscale-hashing'
+
+
+DEFAULT_HASHING_METHOD = HashingMethod.RGBA
 DEFAULT_HASH_SIZE = 512
 
 VERBOSE_LEVELS = [1, 2]

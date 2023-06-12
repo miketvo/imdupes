@@ -57,10 +57,13 @@ def detect_dup_images(
             im.verify()
             im = Image.open(img_path)
 
-            if im.format == 'PNG' and im.mode != 'RGBA':
+            if im.mode != 'RGBA':
                 im = im.convert('RGBA')
 
-            image_hash = imagehash.average_hash(im, hash_size=hash_size).__str__()
+            image_hash = imagehash.phash(im.getchannel('R'), hash_size=hash_size).__str__()
+            image_hash += imagehash.phash(im.getchannel('G'), hash_size=hash_size).__str__()
+            image_hash += imagehash.phash(im.getchannel('B'), hash_size=hash_size).__str__()
+            image_hash += imagehash.phash(im.getchannel('A'), hash_size=hash_size).__str__()
             if image_hash in hashed_images:
                 hashed_images[image_hash].append(ImageFileWrapper(im, img_path))
             else:
