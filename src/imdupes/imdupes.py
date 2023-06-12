@@ -13,12 +13,12 @@ from PIL import Image
 
 import dupfile
 from detect_dup_images import detect_dup_images
-from utils.futils import index_images, clean
+from utils.futils import index_images, calc_hash_size, clean
 from utils.output import print_dups
 from utils.globs import PathFormat
 from utils.globs import HashingMethod
+from utils.globs import AutoHashSize
 from utils.globs import DUPFILE_EXT
-from utils.globs import DEFAULT_HASH_SIZE
 from utils.globs import VERBOSE_LEVELS, PROGRESS_BAR_LEVELS
 
 
@@ -105,10 +105,14 @@ if __name__ == '__main__':
             '-m', '--hashing-method', choices=[m.value for m in HashingMethod], default=HashingMethod.RGBA.value,
             help=f'specify a hashing method (default: {HashingMethod.RGBA.value})'
         )
-        ap_common_args.add_argument(
-            '-s', '--hash-size',
-            required=False, type=int, default=DEFAULT_HASH_SIZE,
-            help=f'specify a preferred hash size (integer) (default: {DEFAULT_HASH_SIZE})*'
+        ap_common_args_hash_size = ap_common_args.add_mutually_exclusive_group()
+        ap_common_args_hash_size.add_argument(
+            '-a', '--auto-hash-size', choices=[a.value for a in AutoHashSize], default=AutoHashSize.MAX_AVG_DIM.value,
+            help=f'automatic hash size calculation (default: {AutoHashSize.MAX_AVG_DIM.value})'
+        )
+        ap_common_args_hash_size.add_argument(
+            '-s', '--hash-size', required=False, type=int, default=None,
+            help=f'specify a preferred hash size (integer)*'
         )
         ap_common_args.add_argument(
             '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched filenames based on REGEX pattern'
@@ -190,6 +194,7 @@ if __name__ == '__main__':
         #                                               Image Processing                                               #
         # ============================================================================================================ #
         if args.mode == 'scan':
+            # noinspection DuplicatedCode
             img_paths = index_images(
                 args.directory,
                 exclude=args.exclude,
@@ -197,10 +202,13 @@ if __name__ == '__main__':
                 verbose=args.verbose
             )
 
+            hash_size = calc_hash_size(
+                img_paths, auto_hash_size=args.auto_hash_size, verbose=args.verbose
+            ) if args.hash_size is None else args.hash_size
             hashed_dups = detect_dup_images(
                 img_paths,
                 method=HashingMethod(args.hashing_method),
-                hash_size=args.hash_size,
+                hash_size=hash_size,
                 root_dir=args.directory,
                 output_path_format=PathFormat(args.format),
                 verbose=args.verbose,
@@ -240,6 +248,7 @@ if __name__ == '__main__':
                 )
 
             else:
+                # noinspection DuplicatedCode
                 img_paths = index_images(
                     args.input,
                     exclude=args.exclude,
@@ -247,10 +256,13 @@ if __name__ == '__main__':
                     verbose=args.verbose
                 )
 
+                hash_size = calc_hash_size(
+                    img_paths, auto_hash_size=args.auto_hash_size, verbose=args.verbose
+                ) if args.hash_size is None else args.hash_size
                 hashed_dups = detect_dup_images(
                     img_paths,
                     method=HashingMethod(args.hashing_method),
-                    hash_size=args.hash_size,
+                    hash_size=hash_size,
                     root_dir=args.input,
                     output_path_format=PathFormat(args.format),
                     verbose=args.verbose,

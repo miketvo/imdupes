@@ -1,11 +1,13 @@
 from sys import exit
 import os
 import re
+from PIL import Image
 from termcolor import cprint, colored
 
 from utils.globs import SUPPORTED_FILE_EXTS
 from utils.globs import INTERACTIVE_OPTS
 from utils.globs import PathFormat, format_path
+from utils.globs import AutoHashSize
 from utils.imutils import ImageFileWrapper
 
 
@@ -73,6 +75,61 @@ def index_images(
         )
 
     return img_paths
+
+
+def calc_hash_size(
+        img_paths: list[str],
+        auto_hash_size: AutoHashSize = AutoHashSize.MAX_AVG_DIM,
+        verbose: int = 0,
+        output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
+        root_dir: str = None
+) -> tuple[int, list[str]]:
+    max_hash_size = 0
+    dims_total = 0
+    im_count = 0
+    new_img_paths = []
+    for img_path in img_paths:
+        im = None
+        try:
+            im = Image.open(img_path)
+            im.verify()
+            im = Image.open(img_path)
+
+            if auto_hash_size == AutoHashSize.MAX_DIM:
+                max_hash_size = max([max_hash_size, im.width, im.height])
+            if auto_hash_size == AutoHashSize.MAX_AVG_DIM:
+                max_hash_size = max([max_hash_size, int((im.width + im.height) / 2)])
+            if auto_hash_size == AutoHashSize.AVG_DIM:
+                dims_total += im.width + im.height
+                im_count += 1
+            if auto_hash_size == AutoHashSize.AVG_AVG_DIM:
+                dims_total += int((im.width + im.height) / 2)
+                im_count += 1
+
+            im.close()
+            new_img_paths.append(img_path)
+        except (
+                ValueError, TypeError,
+                Image.DecompressionBombError,
+                OSError, EOFError, PermissionError,
+                MemoryError
+        ) as error:
+            print(
+                f"Error scanning '{format_path(img_path, output_path_format, root_dir)}': "
+                f'{error.__str__()}. '
+                f'File skipped.',
+                flush=True
+            )
+            if im is not None:
+                im.close()
+            continue
+
+    if auto_hash_size == AutoHashSize.AVG_DIM:
+        return int(dims_total / (im_count * 2)), new_img_paths
+    elif auto_hash_size == AutoHashSize.AVG_AVG_DIM:
+        return int(dims_total / im_count * 2), new_img_paths
+    else:
+        return max_hash_size, new_img_paths
 
 
 def clean(

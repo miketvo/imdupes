@@ -66,6 +66,13 @@ class HashingMethod(Enum):
     BW = 'grayscale-hashing'
 
 
+class AutoHashSize(Enum):
+    MAX_DIM = 'max-dim'
+    MAX_AVG_DIM = 'max-adim'
+    AVG_DIM = 'avg-dim'
+    AVG_AVG_DIM = 'avg-adim'
+
+
 DEFAULT_HASH_SIZE = 512
 
 VERBOSE_LEVELS = [1, 2]
