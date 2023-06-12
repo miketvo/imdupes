@@ -153,7 +153,7 @@ They have the following format:
 They can then be further edited by the user for more fine control over which file is deleted, then loaded back into the `clean` mode for automated or interactive cleaning:
 
 ```bash
-imdupes clean path/to/dupfile.imdup  # Automated cleaning
+imdupes clean path/to/dupfile.imdup     # Automated cleaning
 imdupes clean -i path/to/dupfile.imdup  # Interactive cleaning
 ```
 
