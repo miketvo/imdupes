@@ -4,6 +4,7 @@ from PIL import Image
 from tqdm.auto import tqdm
 from termcolor import colored
 
+from utils import loop_errprint
 from utils.globs import PathFormat, format_path
 from utils.globs import HashingMethod
 from utils.globs import DEFAULT_HASH_SIZE
@@ -25,6 +26,7 @@ def detect_dup_images(
         progress_bar: int = PROGRESS_BAR_LEVELS[2]
 ) -> dict[str, list[ImageFileWrapper]]:
     hashed_images: dict[str, list[ImageFileWrapper]] = {}
+    has_errors = False
 
     # Image hashing
     pbar = None
@@ -36,8 +38,10 @@ def detect_dup_images(
                 bar_format='{desc}: {percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]',
                 file=sys.stdout, leave=False
             )
-        if progress_bar == PROGRESS_BAR_LEVELS[2]:
+        elif progress_bar == PROGRESS_BAR_LEVELS[2]:
             pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', file=sys.stdout, leave=False)
+        else:
+            raise ValueError('Invalid progress bar level')
     if progress_bar == PROGRESS_BAR_LEVELS[0]:
         print(
             'Scanning for identical images...', end='\n' if verbose > 1 else '', flush=True
@@ -75,19 +79,13 @@ def detect_dup_images(
                 OSError, EOFError, PermissionError,
                 MemoryError
         ) as error:
-            if pbar is not None:
-                pbar.write(
-                    f"Error scanning '{format_path(img_path, output_path_format, root_dir)}': "
-                    f'{error.__str__()}. '
-                    f'File skipped.'
-                )
-            else:
-                print(
-                    f"Error scanning '{format_path(img_path, output_path_format, root_dir)}': "
-                    f'{error.__str__()}. '
-                    f'File skipped.',
-                    flush=True
-                )
+            has_errors = True
+            loop_errprint(
+                f"Error scanning '{format_path(img_path, output_path_format, root_dir)}': "
+                f'{error.__str__()}. '
+                f'File skipped.',
+                pbar=pbar
+            )
             if im is not None:
                 im.close()
             continue
@@ -113,7 +111,7 @@ def detect_dup_images(
     if verbose > 0:
         print(
             f'{"Scanning for identical images..." if progress_bar != PROGRESS_BAR_LEVELS[0] else ""}'
-            f'{"" if verbose > 1 and progress_bar == PROGRESS_BAR_LEVELS[0] else " "}'
+            f'{"" if (verbose > 1 and progress_bar == PROGRESS_BAR_LEVELS[0]) or has_errors else " "}'
             f'Found {colored(str(len(hashed_dups.values())), attrs=["bold"])} duplication(s) '
             f'across {colored(str(sum(len(lst) for lst in hashed_dups.values())), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',

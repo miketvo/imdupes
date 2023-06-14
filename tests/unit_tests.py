@@ -2,6 +2,7 @@ import unittest
 import os
 
 from detect_dup_images import detect_dup_images
+from utils.globs import HashingMethod, AutoHashSize
 from tests import DIR_DATA_SCRAPED
 
 
@@ -23,6 +24,7 @@ class Detect(unittest.TestCase):
 
         detect_dups_dict = detect_dup_images(
             [os.path.join(DIR_DATA_SCRAPED, img) for img in os.listdir(DIR_DATA_SCRAPED)],
+            method=HashingMethod.RGBA,
             root_dir=DIR_DATA_SCRAPED,
             verbose=True
         )
