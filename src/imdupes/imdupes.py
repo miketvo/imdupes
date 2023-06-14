@@ -203,7 +203,12 @@ if __name__ == '__main__':
             )
 
             hash_size, img_paths = calc_hash_size(
-                img_paths, auto_hash_size=AutoHashSize(args.auto_hash_size), verbose=args.verbose
+                img_paths,
+                auto_hash_size=AutoHashSize(args.auto_hash_size),
+                verbose=args.verbose,
+                progress_bar=args.progress_bar,
+                output_path_format=PathFormat(args.format),
+                root_dir=args.directory
             ) if args.hash_size is None else args.hash_size
             hashed_dups = detect_dup_images(
                 img_paths,
@@ -257,7 +262,12 @@ if __name__ == '__main__':
                 )
 
                 hash_size, img_paths = calc_hash_size(
-                    img_paths, auto_hash_size=AutoHashSize(args.auto_hash_size), verbose=args.verbose
+                    img_paths,
+                    auto_hash_size=AutoHashSize(args.auto_hash_size),
+                    verbose=args.verbose,
+                    progress_bar=args.progress_bar,
+                    output_path_format=PathFormat(args.format),
+                    root_dir=args.directory
                 ) if args.hash_size is None else args.hash_size
                 hashed_dups = detect_dup_images(
                     img_paths,
