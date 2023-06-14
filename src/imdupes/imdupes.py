@@ -202,14 +202,17 @@ if __name__ == '__main__':
                 verbose=args.verbose
             )
 
-            hash_size, img_paths = calc_hash_size(
-                img_paths,
-                auto_hash_size=AutoHashSize(args.auto_hash_size),
-                verbose=args.verbose,
-                progress_bar=args.progress_bar,
-                output_path_format=PathFormat(args.format),
-                root_dir=args.directory
-            ) if args.hash_size is None else args.hash_size
+            if args.hash_size is None:
+                hash_size, img_paths = calc_hash_size(
+                    img_paths,
+                    auto_hash_size=AutoHashSize(args.auto_hash_size),
+                    verbose=args.verbose,
+                    progress_bar=args.progress_bar,
+                    output_path_format=PathFormat(args.format),
+                    root_dir=args.directory
+                )
+            else:
+                hash_size = args.hash_size
             hashed_dups = detect_dup_images(
                 img_paths,
                 method=HashingMethod(args.hashing_method),
@@ -261,14 +264,17 @@ if __name__ == '__main__':
                     verbose=args.verbose
                 )
 
-                hash_size, img_paths = calc_hash_size(
-                    img_paths,
-                    auto_hash_size=AutoHashSize(args.auto_hash_size),
-                    verbose=args.verbose,
-                    progress_bar=args.progress_bar,
-                    output_path_format=PathFormat(args.format),
-                    root_dir=args.directory
-                ) if args.hash_size is None else args.hash_size
+                if args.hash_size is None:
+                    hash_size, img_paths = calc_hash_size(
+                        img_paths,
+                        auto_hash_size=AutoHashSize(args.auto_hash_size),
+                        verbose=args.verbose,
+                        progress_bar=args.progress_bar,
+                        output_path_format=PathFormat(args.format),
+                        root_dir=args.directory
+                    )
+                else:
+                    hash_size = args.hash_size
                 hashed_dups = detect_dup_images(
                     img_paths,
                     method=HashingMethod(args.hashing_method),
