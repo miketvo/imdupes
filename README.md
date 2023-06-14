@@ -44,8 +44,10 @@ options:
   -h, --help            show this help message and exit
   -m {rgba-hashing,rgb-hashing,grayscale-hashing}, --hashing-method {rgba-hashing,rgb-hashing,grayscale-hashing}
                         specify a hashing method (default: rgba-hashing)
+  -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
+                        automatic hash size calculation (default: max-adim)
   -s HASH_SIZE, --hash-size HASH_SIZE
-                        specify a preferred hash size (integer) (default: 512)*
+                        specify a preferred hash size (integer)*
   -e REGEX, --exclude REGEX
                         exclude matched filenames based on REGEX pattern
   -r, --recursive       recursively search for images in subdirectories in addition to the specified parent directory
@@ -91,8 +93,10 @@ options:
   -h, --help            show this help message and exit
   -m {rgba-hashing,rgb-hashing,grayscale-hashing}, --hashing-method {rgba-hashing,rgb-hashing,grayscale-hashing}
                         specify a hashing method (default: rgba-hashing)
+  -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
+                        automatic hash size calculation (default: max-adim)
   -s HASH_SIZE, --hash-size HASH_SIZE
-                        specify a preferred hash size (integer) (default: 512)*
+                        specify a preferred hash size (integer)*
   -e REGEX, --exclude REGEX
                         exclude matched filenames based on REGEX pattern
   -r, --recursive       recursively search for images in subdirectories in addition to the specified parent directory
