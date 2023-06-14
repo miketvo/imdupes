@@ -152,6 +152,9 @@ def calc_hash_size(
                 im.close()
             continue
 
+    if pbar is not None:
+        pbar.close()
+
     if auto_hash_size == AutoHashSize.AVG_DIM:
         hash_size = int(dims_total / (im_count * 2))
     elif auto_hash_size == AutoHashSize.AVG_AVG_DIM:
