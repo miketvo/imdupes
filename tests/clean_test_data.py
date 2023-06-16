@@ -1,12 +1,12 @@
 import os
 
-from tests import DATA_DIR
+from tests import DIR_DATA_SCRAPED
 
 
 def clean():
     print(f'Cleaning test data...', end='')
-    for file in os.listdir(DATA_DIR):
-        os.remove(f'{DATA_DIR}/{file}')
+    for file in os.listdir(DIR_DATA_SCRAPED):
+        os.remove(f'{DIR_DATA_SCRAPED}/{file}')
     print(' [DONE]')
 
 

@@ -2,6 +2,7 @@ tqdm
 termcolor
 imagehash
 pillow
+numpy
 beautifulsoup4
 requests
 pyinstaller

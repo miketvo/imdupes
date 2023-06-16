@@ -21,13 +21,17 @@ def format_path(p: str, path_format: PathFormat, curdir: str = None) -> str:
 
 
 SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html
+
+    # Fully supported read/write extensions
     'blp',
     'bmp', 'dib',
     'dds',
+    'eps',  # User needs Ghostscript for Pillow to be able to read this format: https://www.ghostscript.com/
     'gif',
     'icns', 'ico',
     'im',
     'jpg', 'jpeg', 'jpe', 'jfif', 'jif',
+    'jp2', 'j2k', 'jpf', 'jpm', 'jpg2', 'j2c', 'jpc', 'jpx', 'mj2',
     'pcx',
     'png',
     'pbm', 'pgm', 'ppm', 'pnm',
@@ -37,6 +41,15 @@ SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/han
     'tif', 'tiff',
     'webp',
     'xbm',
+
+    # Limited read-only extensions
+    'cur',
+    'fits', 'fit', 'fts',
+    'mpo',
+    'pxr',
+    'psd',
+    'ras', 'sun',
+    'xpm',
 ]
 DUPFILE_EXT = 'imdup'
 
@@ -45,6 +58,21 @@ INTERACTIVE_OPTS = {
     'n': 'No',
     'x': 'Cancel and Exit',
 }
+
+
+class HashingMethod(Enum):
+    BW_HIST = 'grayscale-hist-hashing'
+    BW = 'grayscale-hashing'
+    RGB = 'rgb-hashing'
+    RGBA = 'rgba-hashing'
+
+
+class AutoHashSize(Enum):
+    MAX_DIM = 'max-dim'
+    MAX_AVG_DIM = 'max-adim'
+    AVG_DIM = 'avg-dim'
+    AVG_AVG_DIM = 'avg-adim'
+
 
 DEFAULT_HASH_SIZE = 512
 
