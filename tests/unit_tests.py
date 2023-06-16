@@ -2,13 +2,14 @@ import unittest
 import os
 
 from detect_dup_images import detect_dup_images
-from tests import DATA_DIR
+from utils.globs import HashingMethod
+from tests import DIR_DATA_SCRAPED
 
 
 def get_test_dups() -> list[str]:
     dups = set()
 
-    for filename in os.listdir(DATA_DIR):
+    for filename in os.listdir(DIR_DATA_SCRAPED):
         filename_tokens = filename.split('_')
         if filename_tokens[0] == 'DUPLICATE':
             dups.add(filename)
@@ -22,8 +23,9 @@ class Detect(unittest.TestCase):
         test_dups = get_test_dups()
 
         detect_dups_dict = detect_dup_images(
-            [os.path.join(DATA_DIR, img) for img in os.listdir(DATA_DIR)],
-            root_dir=DATA_DIR,
+            [os.path.join(DIR_DATA_SCRAPED, img) for img in os.listdir(DIR_DATA_SCRAPED)],
+            method=HashingMethod.RGBA,
+            root_dir=DIR_DATA_SCRAPED,
             verbose=True
         )
         detect_dups = []

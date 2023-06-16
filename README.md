@@ -1,6 +1,6 @@
-# Prototype: imdupes
+# Prototype: Imdupes
 
-Detect and remove identical images.
+Versatile image deduplicator.
 
 ---
 
@@ -42,8 +42,12 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
+  -m {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}, --hashing-method {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}
+                        specify a hashing method (default: color-hist-hashing)
+  -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
+                        automatic hash size calculation (default: max-adim)
   -s HASH_SIZE, --hash-size HASH_SIZE
-                        specify a preferred hash size (integer) (default: 512)*
+                        specify a preferred hash size (integer)*
   -e REGEX, --exclude REGEX
                         exclude matched filenames based on REGEX pattern
   -r, --recursive       recursively search for images in subdirectories in addition to the specified parent directory
@@ -87,8 +91,12 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
+  -m {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}, --hashing-method {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}
+                        specify a hashing method (default: color-hist-hashing)
+  -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
+                        automatic hash size calculation (default: max-adim)
   -s HASH_SIZE, --hash-size HASH_SIZE
-                        specify a preferred hash size (integer) (default: 512)*
+                        specify a preferred hash size (integer)*
   -e REGEX, --exclude REGEX
                         exclude matched filenames based on REGEX pattern
   -r, --recursive       recursively search for images in subdirectories in addition to the specified parent directory
@@ -149,10 +157,44 @@ They have the following format:
 They can then be further edited by the user for more fine control over which file is deleted, then loaded back into the `clean` mode for automated or interactive cleaning:
 
 ```bash
-imdupes clean path/to/dupfile.imdup  # Automated cleaning
+imdupes clean path/to/dupfile.imdup     # Automated cleaning
 imdupes clean -i path/to/dupfile.imdup  # Interactive cleaning
 ```
 
 When loaded into `clean` mode, all duplication will be sorted in order from the largest dimension to the smallest dimension, so that during automatic cleaning, only the largest file (1st copy) is kept, to ensure that the program preserve as much information as possible.
 
 The user can also specify `-e/--exclude REGEX` flag when cleaning this way to further filtering.
+
+## Supported Image File Formats
+
+| File type                        | Extension                                                               | Note                                                                     |
+|----------------------------------|-------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| Blizzard Texture Format          | `.blp`                                                                  |                                                                          |
+| Bitmap                           | `.bmp`, `.dib`                                                          |                                                                          |
+| DirectDraw Surface               | `.dds`                                                                  |                                                                          |
+| Encapsulated PostScript          | `.eps`                                                                  | User needs to have installed [Ghostscript](https://www.ghostscript.com/) |
+| Graphics Interchange Format      | `.gif`                                                                  |                                                                          |
+| Apple Icon Image                 | `.icns`                                                                 |                                                                          |
+| Icon                             | `.ico`                                                                  |                                                                          |
+| IM Magica                        | `.im`                                                                   |                                                                          |
+| Joint Photographic Experts Group | `.jpg`, `.jpeg`, `.jpe`, `.jfif`, `.jif`                                |                                                                          |
+| JPEG 2000                        | `.jp2`, `.j2k`, `.jpf`, `.jpm`, `.jpg2`, `.j2c`, `.jpc`, `.jpx`, `.mj2` |                                                                          |
+| PiCture eXchange                 | `.pcx`                                                                  |                                                                          |
+| Portable Network Graphics        | `.png`                                                                  |                                                                          |
+| Portable Bitmap                  | `.pbm`                                                                  |                                                                          |
+| Portable Graymap                 | `.pgm`                                                                  |                                                                          |
+| Portable Pixmap                  | `.ppm`                                                                  |                                                                          |
+| Portable Anymap                  | `.pnm`                                                                  |                                                                          |
+| Silicon Graphics Image           | `.sgi`                                                                  |                                                                          |
+| Seattle FilmWorks                | `.spi`                                                                  |                                                                          |
+| Truevision TGA                   | `.tga`                                                                  |                                                                          |
+| Tagged Image File Format         | `.tif`, `.tiff`                                                         |                                                                          |
+| WebP                             | `.webp`                                                                 |                                                                          |
+| X11 Bitmap                       | `.xbm`                                                                  |                                                                          |
+| Cursor                           | `.cur`                                                                  |                                                                          |
+| Flexible Image Transport System  | `.fits`, `.fit`, `.fts`                                                 |                                                                          |
+| Multi-Picture Object             | `.mpo`                                                                  |                                                                          |
+| Pixar Image File Format          | `.pxr`                                                                  |                                                                          |
+| Adobe Photoshop Document         | `.psd`                                                                  |                                                                          |
+| Sun Raster                       | `.ras`, `.sun`                                                          |                                                                          |
+| X11 Pixmap                       | `.xpm`                                                                  |                                                                          |
