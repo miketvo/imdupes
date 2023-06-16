@@ -64,6 +64,7 @@ class HashingMethod(Enum):
     RGBA = 'rgba-hashing'
     RGB = 'rgb-hashing'
     BW = 'grayscale-hashing'
+    BW_HIST = 'grayscale-hist-hashing'
 
 
 class AutoHashSize(Enum):

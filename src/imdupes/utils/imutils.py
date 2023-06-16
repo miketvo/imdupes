@@ -26,7 +26,7 @@ def hash_image(
 
         return hash_value
 
-    if method == HashingMethod.RGB:
+    elif method == HashingMethod.RGB:
         im = image if image.mode == 'RGB' else image.convert('RGB')
 
         hash_value = imagehash.phash(im.getchannel('R'), hash_size=int(hash_size / 3)).__str__()
@@ -35,5 +35,8 @@ def hash_image(
 
         return hash_value
 
-    if method == HashingMethod.BW:
+    elif method == HashingMethod.BW:
         return imagehash.average_hash(image, hash_size=hash_size).__str__()
+
+    else:
+        raise ValueError(f'Unknown HashingMethod "{method.value}"')
