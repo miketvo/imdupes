@@ -61,7 +61,7 @@ INTERACTIVE_OPTS = {
 
 
 class HashingMethod(Enum):
-    BW_HIST = 'grayscale-hist-hashing'
+    HIST = 'color-hist-hashing'
     BW = 'grayscale-hashing'
     RGB = 'rgb-hashing'
     RGBA = 'rgba-hashing'
