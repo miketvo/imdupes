@@ -102,8 +102,8 @@ if __name__ == '__main__':
 
         ap_common_args = argparse.ArgumentParser(add_help=False)
         ap_common_args.add_argument(
-            '-m', '--hashing-method', choices=[m.value for m in HashingMethod], default=HashingMethod.RGBA.value,
-            help=f'specify a hashing method (default: {HashingMethod.RGBA.value})'
+            '-m', '--hashing-method', choices=[m.value for m in HashingMethod], default=HashingMethod.BW_HIST.value,
+            help=f'specify a hashing method (default: {HashingMethod.BW_HIST.value})'
         )
         ap_common_args_hash_size = ap_common_args.add_mutually_exclusive_group()
         ap_common_args_hash_size.add_argument(
