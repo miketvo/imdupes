@@ -18,7 +18,7 @@ def hash_image(
         method: HashingMethod,
         hash_size: int = DEFAULT_HASH_SIZE
 ) -> str:
-    if method == HashingMethod.BW_HIST:
+    if method == HashingMethod.HIST:
         hash_value = imagehash.dhash(image, hash_size=hash_size).__str__()
         hash_value += average_histogram_hash(image).__str__()
         return hash_value
