@@ -42,8 +42,8 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  -m {rgba-hashing,rgb-hashing,grayscale-hashing}, --hashing-method {rgba-hashing,rgb-hashing,grayscale-hashing}
-                        specify a hashing method (default: rgba-hashing)
+  -m {rgba-hashing,rgb-hashing,grayscale-hashing,grayscale-hist-hashing}, --hashing-method {rgba-hashing,rgb-hashing,grayscale-hashing,grayscale-hist-hashing}
+                        specify a hashing method (default: grayscale-hist-hashing)
   -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
                         automatic hash size calculation (default: max-adim)
   -s HASH_SIZE, --hash-size HASH_SIZE
@@ -91,8 +91,8 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  -m {rgba-hashing,rgb-hashing,grayscale-hashing}, --hashing-method {rgba-hashing,rgb-hashing,grayscale-hashing}
-                        specify a hashing method (default: rgba-hashing)
+  -m {rgba-hashing,rgb-hashing,grayscale-hashing,grayscale-hist-hashing}, --hashing-method {rgba-hashing,rgb-hashing,grayscale-hashing,grayscale-hist-hashing}
+                        specify a hashing method (default: grayscale-hist-hashing)
   -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
                         automatic hash size calculation (default: max-adim)
   -s HASH_SIZE, --hash-size HASH_SIZE
