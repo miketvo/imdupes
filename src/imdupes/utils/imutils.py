@@ -36,4 +36,4 @@ def hash_image(
         return hash_value
 
     if method == HashingMethod.BW:
-        return imagehash.phash(image, hash_size=hash_size).__str__()
+        return imagehash.average_hash(image, hash_size=hash_size).__str__()
