@@ -2,7 +2,7 @@ import unittest
 import os
 
 from detect_dup_images import detect_dup_images
-from utils.globs import HashingMethod, AutoHashSize
+from utils.globs import HashingMethod
 from tests import DIR_DATA_SCRAPED
 
 
