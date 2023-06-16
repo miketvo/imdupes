@@ -18,13 +18,13 @@ def hash_image(
         method: HashingMethod,
         hash_size: int = DEFAULT_HASH_SIZE
 ) -> str:
-    if method == HashingMethod.RGBA:
-        im = image if image.mode == 'RGBA' else image.convert('RGBA')
-        hash_value = imagehash.phash(im.getchannel('R'), hash_size=int(hash_size / 4)).__str__()
-        hash_value += imagehash.phash(im.getchannel('G'), hash_size=int(hash_size / 4)).__str__()
-        hash_value += imagehash.phash(im.getchannel('B'), hash_size=int(hash_size / 4)).__str__()
-        hash_value += imagehash.phash(im.getchannel('A'), hash_size=int(hash_size / 4)).__str__()
+    if method == HashingMethod.BW_HIST:
+        hash_value = imagehash.average_hash(image, hash_size=hash_size).__str__()
+        hash_value += average_histogram_hash(image).__str__()
         return hash_value
+
+    elif method == HashingMethod.BW:
+        return imagehash.average_hash(image, hash_size=hash_size).__str__()
 
     elif method == HashingMethod.RGB:
         im = image if image.mode == 'RGB' else image.convert('RGB')
@@ -33,12 +33,12 @@ def hash_image(
         hash_value += imagehash.phash(im.getchannel('B'), hash_size=int(hash_size / 3)).__str__()
         return hash_value
 
-    elif method == HashingMethod.BW:
-        return imagehash.average_hash(image, hash_size=hash_size).__str__()
-
-    elif method == HashingMethod.BW_HIST:
-        hash_value = imagehash.average_hash(image, hash_size=hash_size).__str__()
-        hash_value += average_histogram_hash(image).__str__()
+    elif method == HashingMethod.RGBA:
+        im = image if image.mode == 'RGBA' else image.convert('RGBA')
+        hash_value = imagehash.phash(im.getchannel('R'), hash_size=int(hash_size / 4)).__str__()
+        hash_value += imagehash.phash(im.getchannel('G'), hash_size=int(hash_size / 4)).__str__()
+        hash_value += imagehash.phash(im.getchannel('B'), hash_size=int(hash_size / 4)).__str__()
+        hash_value += imagehash.phash(im.getchannel('A'), hash_size=int(hash_size / 4)).__str__()
         return hash_value
 
     else:

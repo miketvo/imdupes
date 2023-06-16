@@ -61,10 +61,10 @@ INTERACTIVE_OPTS = {
 
 
 class HashingMethod(Enum):
-    RGBA = 'rgba-hashing'
-    RGB = 'rgb-hashing'
-    BW = 'grayscale-hashing'
     BW_HIST = 'grayscale-hist-hashing'
+    BW = 'grayscale-hashing'
+    RGB = 'rgb-hashing'
+    RGBA = 'rgba-hashing'
 
 
 class AutoHashSize(Enum):
