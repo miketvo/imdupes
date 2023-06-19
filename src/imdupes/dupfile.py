@@ -39,6 +39,7 @@ def load(
     dups = []
     exclude_pattern = None if exclude is None else re.compile(exclude)
     excluded_count = 0
+    has_err = False
 
     if verbose > 0:
         print(f'Reading "{file}"...', end='', flush=True)
@@ -51,16 +52,20 @@ def load(
             curr_dups = []
             for file_path in duplication:
                 if not os.path.exists(file_path):
-                    cprint(
-                        f'Error reading file "{file}": '
-                        f'Malformed entry: Incorrect path "{file_path}"\nProgram terminated.',
-                        'red'
-                    )
-                    exit()
+                    if not has_err:
+                        has_err = True
+                        if (verbose == 1) or (verbose > 1 and excluded_count == 0):
+                            print()
+                    if verbose > 0:
+                        print(
+                            f'"{file_path}" does not exist, entry skipped.',
+                            flush=True
+                        )
+                    continue
                 if not os.path.isfile(file_path):
                     cprint(
                         f'Error reading file "{file}": '
-                        f'Malformed entry: "{file_path}" is not a file\nProgram terminated.',
+                        f'"{file_path}" is not a file\nProgram terminated.',
                         'red'
                     )
                     exit()
@@ -73,11 +78,11 @@ def load(
                     exit()
 
                 if exclude_pattern is not None and exclude_pattern.search(file_path) is not None:
-                    if excluded_count == 0 and verbose > 1:
+                    if not has_err and excluded_count == 0 and verbose > 1:
                         print()
                     excluded_count += 1
                     if verbose > 1:
-                        print(f'Excluded file: "{file_path}"')
+                        print(f'Excluded entry: "{file_path}"')
                     continue
 
                 im = None
@@ -108,9 +113,9 @@ def load(
                         im.close()
                     continue
 
-            # Skip all empty duplication groups, which can happen if all files within them are excluded, or are skipped
-            # because of error when loading the image file
-            if len(curr_dups) > 0:
+            # Skip all duplication groups with length < 2, which can happen if all files within them are excluded, or
+            # are skipped because of error when loading the image file
+            if len(curr_dups) > 1:
                 dups.append(curr_dups)
 
     except (
@@ -131,13 +136,11 @@ def load(
         )
 
     if excluded_count == 0 and verbose > 1:
-        cprint(' No file(s) excluded. ', 'yellow', end='')
+        cprint(f'{"" if has_err else " "}No file(s) excluded. ', 'yellow', end='')
 
     if verbose > 0:
-        if verbose > 1 and excluded_count > 0:
-            print()
         print(
-            f'{"" if (verbose > 1) or (verbose > 1 and excluded_count > 0) else " "}'
+            f'{"" if (verbose > 1) or (verbose > 1 and excluded_count > 0) or (verbose > 0 and has_err) else " "}'
             f'Loaded {colored(str(len(dups)), attrs=["bold"])} duplication(s) '
             f'across {colored(str(sum(len(lst) for lst in dups)), attrs=["bold"])} file(s) '
             f'{colored("[DONE]", color="green", attrs=["bold"])}',
