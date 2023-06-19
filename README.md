@@ -66,7 +66,7 @@ options:
 
 Note: This program ignores any non-image file in the target directory
 *: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are better for
-   identifying identical images; The smaller the hash size, the better the performance; sSmallest accepted hash size
+   identifying identical images; The smaller the hash size, the better the performance; Smallest accepted hash size
    is 8
 ```
 
@@ -112,7 +112,7 @@ options:
 
 Note: This program ignores any non-image file in the target directory
 *: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are better for
-   identifying identical images; The smaller the hash size, the better the performance; sSmallest accepted hash size
+   identifying identical images; The smaller the hash size, the better the performance; Smallest accepted hash size
    is 8
 ```
 
@@ -169,32 +169,27 @@ The user can also specify `-e/--exclude REGEX` flag when cleaning this way to fu
 
 | File type                        | Extension                                                               | Note                                                                     |
 |----------------------------------|-------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| Blizzard Texture Format          | `.blp`                                                                  |                                                                          |
+| Blizzard Mipmap Format           | `.blp`                                                                  |                                                                          |
 | Bitmap                           | `.bmp`, `.dib`                                                          |                                                                          |
 | DirectDraw Surface               | `.dds`                                                                  |                                                                          |
 | Encapsulated PostScript          | `.eps`                                                                  | User needs to have installed [Ghostscript](https://www.ghostscript.com/) |
 | Graphics Interchange Format      | `.gif`                                                                  |                                                                          |
-| Apple Icon Image                 | `.icns`                                                                 |                                                                          |
-| Icon                             | `.ico`                                                                  |                                                                          |
-| IM Magica                        | `.im`                                                                   |                                                                          |
+| Icon                             | `.ico`, `.icns`                                                         |                                                                          |
+| Cursor                           | `.cur`                                                                  |                                                                          |
+| LabEye Image Bitmap              | `.im`                                                                   |                                                                          |
 | Joint Photographic Experts Group | `.jpg`, `.jpeg`, `.jpe`, `.jfif`, `.jif`                                |                                                                          |
 | JPEG 2000                        | `.jp2`, `.j2k`, `.jpf`, `.jpm`, `.jpg2`, `.j2c`, `.jpc`, `.jpx`, `.mj2` |                                                                          |
-| PiCture eXchange                 | `.pcx`                                                                  |                                                                          |
+| Picture Exchange                 | `.pcx`                                                                  |                                                                          |
 | Portable Network Graphics        | `.png`                                                                  |                                                                          |
-| Portable Bitmap                  | `.pbm`                                                                  |                                                                          |
-| Portable Graymap                 | `.pgm`                                                                  |                                                                          |
-| Portable Pixmap                  | `.ppm`                                                                  |                                                                          |
-| Portable Anymap                  | `.pnm`                                                                  |                                                                          |
+| Portable Bitmap                  | `.pbm`, `.pgm`, `.ppm`, `.pnm`                                          |                                                                          |
 | Silicon Graphics Image           | `.sgi`                                                                  |                                                                          |
-| Seattle FilmWorks                | `.spi`                                                                  |                                                                          |
+| SPIDER image                     | `.spi`                                                                  |                                                                          |
 | Truevision TGA                   | `.tga`                                                                  |                                                                          |
-| Tagged Image File Format         | `.tif`, `.tiff`                                                         |                                                                          |
+| Tag Image File Format            | `.tif`, `.tiff`                                                         |                                                                          |
 | WebP                             | `.webp`                                                                 |                                                                          |
-| X11 Bitmap                       | `.xbm`                                                                  |                                                                          |
-| Cursor                           | `.cur`                                                                  |                                                                          |
 | Flexible Image Transport System  | `.fits`, `.fit`, `.fts`                                                 |                                                                          |
-| Multi-Picture Object             | `.mpo`                                                                  |                                                                          |
 | Pixar Image File Format          | `.pxr`                                                                  |                                                                          |
 | Adobe Photoshop Document         | `.psd`                                                                  |                                                                          |
 | Sun Raster                       | `.ras`, `.sun`                                                          |                                                                          |
-| X11 Pixmap                       | `.xpm`                                                                  |                                                                          |
+| X Bitmap                         | `.xbm`                                                                  |                                                                          |
+| X Pixmap                         | `.xpm`                                                                  |                                                                          |

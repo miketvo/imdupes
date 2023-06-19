@@ -45,7 +45,6 @@ SUPPORTED_FILE_EXTS = [  # Refer to: https://pillow.readthedocs.io/en/stable/han
     # Limited read-only extensions
     'cur',
     'fits', 'fit', 'fts',
-    'mpo',
     'pxr',
     'psd',
     'ras', 'sun',
