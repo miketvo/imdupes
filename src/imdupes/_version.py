@@ -1,4 +1,4 @@
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 __app_name__ = 'imdupes'
 __gui_app_name__ = 'Imdupes'
 
@@ -18,7 +18,7 @@ __scan_desc__ = \
 __scan_epilog__ = \
     'Note: This program ignores any non-image file in the target directory\n' \
     '*: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are better for\n' \
-    '   identifying identical images; The smaller the hash size, the better the performance; sSmallest accepted hash ' \
+    '   identifying identical images; The smaller the hash size, the better the performance; Smallest accepted hash ' \
     'size\n   is 8' \
 
 __clean_usage__ = f'{__app_name__} clean [options] input'
