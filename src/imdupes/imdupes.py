@@ -14,6 +14,7 @@ from PIL import Image
 import dupfile
 from detect_dup_images import detect_dup_images
 from utils.futils import index_images, calc_hash_size, clean
+from utils.imutils import ImageFileWrapper
 from utils.output import print_dups
 from utils.globs import PathFormat
 from utils.globs import HashingMethod
@@ -83,11 +84,86 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
     return arguments
 
 
+def main(arguments: argparse.Namespace) -> None:
+    def find_dups() -> dict[str, list[ImageFileWrapper]]:
+        img_paths = index_images(
+            arguments.directory,
+            exclude=arguments.exclude,
+            recursive=arguments.recursive,
+            verbose=arguments.verbose
+        )
+
+        if arguments.hash_size is None:
+            hash_size, img_paths = calc_hash_size(
+                img_paths,
+                auto_hash_size=AutoHashSize(arguments.auto_hash_size),
+                verbose=arguments.verbose,
+                progress_bar=arguments.progress_bar,
+                output_path_format=PathFormat(arguments.format),
+                root_dir=arguments.directory
+            )
+        else:
+            hash_size = arguments.hash_size
+
+        return detect_dup_images(
+            img_paths,
+            method=HashingMethod(arguments.hashing_method),
+            hash_size=hash_size,
+            root_dir=arguments.directory,
+            output_path_format=PathFormat(arguments.format),
+            verbose=arguments.verbose,
+            progress_bar=arguments.progress_bar
+        )
+
+    if arguments.mode == 'scan':
+        hashed_dups = find_dups()
+
+        if not arguments.silent:
+            print()
+            print_dups(
+                hashed_dups,
+                root_dir=arguments.directory,
+                output_path_format=PathFormat(arguments.format),
+                colored_cluster_header=True,
+                show_hash_cluster_header=arguments.show_hash
+            )
+
+        if arguments.output is not None:
+            dupfile.save(
+                [dup_imgs for dup_imgs in hashed_dups.values()],
+                file=arguments.output,
+                verbose=arguments.verbose
+            )
+
+    elif arguments.mode == 'clean':
+        if os.path.isfile(arguments.input):
+            dups = dupfile.load(
+                arguments.input,
+                exclude=arguments.exclude,
+                verbose=arguments.verbose
+            )
+
+            clean(
+                dups,
+                interactive=arguments.interactive,
+                verbose=arguments.verbose,
+                output_path_format=PathFormat.ABSOLUTE
+            )
+
+        else:
+            hashed_dups = find_dups()
+
+            clean(
+                [dup_imgs for dup_imgs in hashed_dups.values()],
+                root_dir=arguments.input,
+                interactive=arguments.interactive,
+                verbose=arguments.verbose,
+                output_path_format=PathFormat(arguments.format)
+            )
+
+
 if __name__ == '__main__':
     try:
-        # ============================================================================================================ #
-        #                                             Arguments Processing                                             #
-        # ============================================================================================================ #
         ap_top_level = argparse.ArgumentParser(
             prog=__app_name__,
             usage=__prog_usage__,
@@ -188,110 +264,7 @@ if __name__ == '__main__':
         )
 
         args = validate_args(ap_top_level)
-        # ==== End Of Arguments Processing ===== #
-
-        # ============================================================================================================ #
-        #                                               Image Processing                                               #
-        # ============================================================================================================ #
-        if args.mode == 'scan':
-            # noinspection DuplicatedCode
-            img_paths = index_images(
-                args.directory,
-                exclude=args.exclude,
-                recursive=args.recursive,
-                verbose=args.verbose
-            )
-
-            if args.hash_size is None:
-                hash_size, img_paths = calc_hash_size(
-                    img_paths,
-                    auto_hash_size=AutoHashSize(args.auto_hash_size),
-                    verbose=args.verbose,
-                    progress_bar=args.progress_bar,
-                    output_path_format=PathFormat(args.format),
-                    root_dir=args.directory
-                )
-            else:
-                hash_size = args.hash_size
-            hashed_dups = detect_dup_images(
-                img_paths,
-                method=HashingMethod(args.hashing_method),
-                hash_size=hash_size,
-                root_dir=args.directory,
-                output_path_format=PathFormat(args.format),
-                verbose=args.verbose,
-                progress_bar=args.progress_bar
-            )
-
-            if not args.silent:
-                print()
-                print_dups(
-                    hashed_dups,
-                    root_dir=args.directory,
-                    output_path_format=PathFormat(args.format),
-                    colored_cluster_header=True,
-                    show_hash_cluster_header=args.show_hash
-                )
-
-            if args.output is not None:
-                dupfile.save(
-                    [dup_imgs for dup_imgs in hashed_dups.values()],
-                    file=args.output,
-                    verbose=args.verbose
-                )
-
-        elif args.mode == 'clean':
-            if os.path.isfile(args.input):
-                dups = dupfile.load(
-                    args.input,
-                    exclude=args.exclude,
-                    verbose=args.verbose
-                )
-
-                clean(
-                    dups,
-                    interactive=args.interactive,
-                    verbose=args.verbose,
-                    output_path_format=PathFormat.ABSOLUTE
-                )
-
-            else:
-                # noinspection DuplicatedCode
-                img_paths = index_images(
-                    args.input,
-                    exclude=args.exclude,
-                    recursive=args.recursive,
-                    verbose=args.verbose
-                )
-
-                if args.hash_size is None:
-                    hash_size, img_paths = calc_hash_size(
-                        img_paths,
-                        auto_hash_size=AutoHashSize(args.auto_hash_size),
-                        verbose=args.verbose,
-                        progress_bar=args.progress_bar,
-                        output_path_format=PathFormat(args.format),
-                        root_dir=args.directory
-                    )
-                else:
-                    hash_size = args.hash_size
-                hashed_dups = detect_dup_images(
-                    img_paths,
-                    method=HashingMethod(args.hashing_method),
-                    hash_size=hash_size,
-                    root_dir=args.input,
-                    output_path_format=PathFormat(args.format),
-                    verbose=args.verbose,
-                    progress_bar=args.progress_bar
-                )
-
-                clean(
-                    [dup_imgs for dup_imgs in hashed_dups.values()],
-                    root_dir=args.input,
-                    interactive=args.interactive,
-                    verbose=args.verbose,
-                    output_path_format=PathFormat(args.format)
-                )
+        main(arguments=args)
 
     except KeyboardInterrupt:
         exit()
