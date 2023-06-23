@@ -6,11 +6,11 @@ from tqdm.auto import tqdm
 from termcolor import colored
 
 from utils import loop_errprint
-from utils.globs import PathFormat, format_path
 from utils.globs import HashingMethod
 from utils.globs import DEFAULT_HASH_SIZE
-from utils.imutils import hash_image, ImageFileWrapper
 from utils.globs import PROGRESS_BAR_LEVELS
+from utils.imutils import hash_image, ImageFileWrapper
+from utils.globs import PathFormat, format_path
 
 
 Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https://www.panaxity.com/

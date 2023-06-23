@@ -14,7 +14,8 @@ from PIL import Image
 
 import dupfile
 from detect_dup_images import detect_dup_images
-from utils.futils import index_images, report_info, calc_hash_size, clean
+from utils.futils import index_images, clean
+from utils.imutils import report_info, calc_hash_size
 from utils.imutils import ImageFileWrapper
 from utils.output import print_dups
 from utils.globs import PathFormat
