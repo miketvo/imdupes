@@ -91,7 +91,7 @@ def main(arguments: argparse.Namespace) -> None:
     def find_dups() -> dict[str, list[ImageFileWrapper]]:
         directory = arguments.input if arguments.mode == 'clean' else arguments.directory
 
-        img_paths = index_images(
+        image_paths = index_images(
             directory,
             exclude=arguments.exclude,
             recursive=arguments.recursive,
@@ -99,8 +99,8 @@ def main(arguments: argparse.Namespace) -> None:
         )
 
         if arguments.hash_size is None:
-            hash_size, img_paths = calc_hash_size(
-                img_paths,
+            hash_size, image_paths = calc_hash_size(
+                image_paths,
                 auto_hash_size=AutoHashSize(arguments.auto_hash_size),
                 verbose=arguments.verbose,
                 progress_bar=arguments.progress_bar,
@@ -111,7 +111,7 @@ def main(arguments: argparse.Namespace) -> None:
             hash_size = arguments.hash_size
 
         return detect_dup_images(
-            img_paths,
+            image_paths,
             method=HashingMethod(arguments.hashing_method),
             hash_size=hash_size,
             root_dir=directory,
