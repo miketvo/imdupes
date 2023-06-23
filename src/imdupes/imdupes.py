@@ -89,8 +89,10 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
 
 def main(arguments: argparse.Namespace) -> None:
     def find_dups() -> dict[str, list[ImageFileWrapper]]:
+        directory = arguments.input if arguments.mode == 'clean' else arguments.directory
+
         img_paths = index_images(
-            arguments.directory,
+            directory,
             exclude=arguments.exclude,
             recursive=arguments.recursive,
             verbose=arguments.verbose
@@ -103,7 +105,7 @@ def main(arguments: argparse.Namespace) -> None:
                 verbose=arguments.verbose,
                 progress_bar=arguments.progress_bar,
                 output_path_format=PathFormat(arguments.format),
-                root_dir=arguments.directory
+                root_dir=directory
             )
         else:
             hash_size = arguments.hash_size
@@ -112,7 +114,7 @@ def main(arguments: argparse.Namespace) -> None:
             img_paths,
             method=HashingMethod(arguments.hashing_method),
             hash_size=hash_size,
-            root_dir=arguments.directory,
+            root_dir=directory,
             output_path_format=PathFormat(arguments.format),
             verbose=arguments.verbose,
             progress_bar=arguments.progress_bar

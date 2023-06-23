@@ -41,7 +41,7 @@ def detect_dup_images(
                 )
             elif progress_bar == PROGRESS_BAR_LEVELS[2]:
                 pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', file=sys.stdout, leave=False)
-            else:
+            elif progress_bar not in PROGRESS_BAR_LEVELS:
                 raise ValueError('Invalid progress bar level')
         if progress_bar == PROGRESS_BAR_LEVELS[0]:
             print(
