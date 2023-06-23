@@ -243,6 +243,10 @@ if __name__ == '__main__':
             formatter_class=argparse.RawTextHelpFormatter
         )
         ap_info.add_argument('directory', help='target image directory')
+        ap_info.add_argument(
+            '-f', '--format', choices=[f.value for f in PathFormat], default=PathFormat.DIR_RELATIVE.value,
+            help=f'console output file path format, (default: {PathFormat.DIR_RELATIVE.value})'
+        )
 
         ap_scan = subparsers.add_parser(
             'scan', parents=[ap_scan_clean_specific_args, ap_common_args],
