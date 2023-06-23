@@ -81,6 +81,16 @@ def index_images(
     return img_paths
 
 
+def report_info(
+        img_paths: list[str],
+        verbose: int = 0,
+        progress_bar: int = PROGRESS_BAR_LEVELS[2],
+        output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
+        root_dir: str = None
+) -> None:
+    print(f'To be implemented')  # TODO: Implement this
+
+
 def calc_hash_size(
         img_paths: list[str],
         auto_hash_size: AutoHashSize = AutoHashSize.MAX_AVG_DIM,

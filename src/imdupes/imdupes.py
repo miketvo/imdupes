@@ -14,7 +14,7 @@ from PIL import Image
 
 import dupfile
 from detect_dup_images import detect_dup_images
-from utils.futils import index_images, calc_hash_size, clean
+from utils.futils import index_images, report_info, calc_hash_size, clean
 from utils.imutils import ImageFileWrapper
 from utils.output import print_dups
 from utils.globs import PathFormat
@@ -121,7 +121,20 @@ def main(arguments: argparse.Namespace) -> None:
         )
 
     if arguments.mode == 'info':
-        print('To be implemented')  # TODO: Implement this
+        img_paths = index_images(
+            arguments.directory,
+            exclude=arguments.exclude,
+            recursive=arguments.recursive,
+            verbose=arguments.verbose
+        )
+
+        report_info(
+            img_paths,
+            verbose=arguments.verbose,
+            progress_bar=arguments.progress_bar,
+            output_path_format=PathFormat(arguments.format),
+            root_dir=arguments.directory
+        )
 
     elif arguments.mode == 'scan':
         hashed_dups = find_dups()
