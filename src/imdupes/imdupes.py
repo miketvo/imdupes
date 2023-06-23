@@ -70,7 +70,8 @@ def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespac
                 argument_parser.error('cleaning from dupfile does not support -f/--format flag')
             if os.path.isfile(arguments.input) and any(argv.startswith(('-s', '--hash-size')) for argv in sys.argv[1:]):
                 argument_parser.error('cleaning from dupfile does not support -s/--hash-size flag')
-            if os.path.isfile(arguments.input) and any(argv.startswith(('-p', '--progress-bar')) for argv in sys.argv[1:]):
+            if os.path.isfile(arguments.input) and \
+                    any(argv.startswith(('-p', '--progress-bar')) for argv in sys.argv[1:]):
                 argument_parser.error('cleaning from dupfile does not support -p/--progress-bar flag')
             if os.path.isfile(arguments.input) and arguments.input.split('.')[-1].lower() != DUPFILE_EXT:
                 ext = arguments.input.split('.')[-1]
