@@ -26,12 +26,11 @@ def detect_dup_images(
         verbose: int = 0,
         progress_bar: int = PROGRESS_BAR_LEVELS[2]
 ) -> dict[str, list[ImageFileWrapper]]:
-    try:
-        hashed_images: dict[str, list[ImageFileWrapper]] = {}
-        has_errors = False
+    hashed_images: dict[str, list[ImageFileWrapper]] = {}
+    has_errors = False
+    pbar = None
 
-        # Image hashing
-        pbar = None
+    try:
         if verbose > 0:
             if progress_bar == PROGRESS_BAR_LEVELS[1]:
                 pbar = tqdm(
@@ -100,8 +99,8 @@ def detect_dup_images(
             hash_val: dup_imgs for hash_val, dup_imgs in hashed_images.items() if len(dup_imgs) > 1
         }
 
-        # Sort duplications in order of decreasing resolution (width * height) so that the highest resolution image is kept
-        # during cleaning step
+        # Sort duplications in order of decreasing resolution (width * height) so that the highest resolution image is
+        # kept during cleaning step
         image_hashes = list(hashed_dups.keys())
         for i in range(len(image_hashes)):
             hashed_dups[image_hashes[i]] = sorted(
