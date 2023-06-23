@@ -10,25 +10,47 @@ See [Releases](https://github.com/miketvo/imdupes-prototype/releases/) for lates
 ## Syntax
 
 ```text
-usage: imdupes {scan,clean} ...
+usage: imdupes {info,scan,clean} ...
 
-Quickly detects and removes identical images. Has two modes:
+Quickly detects and removes identical images. Has 3 modes:
+        - 'info' collects and displays statistics and information of images in a directory
         - 'scan' scans and console prints detected identical image paths/filenames
         - 'clean' scans and removes detected identical images (keeping only the first copy by default)
-See "imdupes {scan,clean} --help" for more information
+See "imdupes {info,scan,clean} --help" for more information
 
 options:
-  -h, --help     show this help message and exit
-  -v, --version  show version information and exit
+  -h, --help         show this help message and exit
+  -v, --version      show version information and exit
 
 run modes:
-  {scan,clean}
+  {info,scan,clean}
 
 Note: This program ignores any non-image file in the target directory
 Algorithm: Average Hash (https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html)
 ```
 
 See below for detailed description of each mode and their arguments:
+
+**Info Mode:**
+
+```text
+usage: imdupes info [options] directory
+
+collect and display statistics and information of images in a directory
+
+options:
+  -h, --help            show this help message and exit
+  -e REGEX, --exclude REGEX
+                        exclude matched filenames based on REGEX pattern
+  -r, --recursive       recursively search for images in subdirectories in addition to the specified parent directory
+  -V {1,2}, --verbose {1,2}
+                        explain what is being done
+  -p {0,1,2}, --progress-bar {0,1,2}
+                        specify verbose mode (-V/--verbose) progress bar detail level, 0 disables the progress bar
+                        entirely (default: 2)
+
+Note: This program ignores any non-image file in the target directory
+```
 
 **Scan Mode:**
 

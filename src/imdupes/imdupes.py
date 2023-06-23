@@ -1,5 +1,6 @@
 from _version import __version__, __app_name__
 from _version import __prog_usage__, __prog_desc__, __prog_epilog__
+from _version import __info_usage__, __info_desc__, __info_epilog__
 from _version import __scan_usage__, __scan_desc__, __scan_epilog__
 from _version import __clean_usage__, __clean_desc__, __clean_epilog__
 
@@ -115,7 +116,10 @@ def main(arguments: argparse.Namespace) -> None:
             progress_bar=arguments.progress_bar
         )
 
-    if arguments.mode == 'scan':
+    if arguments.mode == 'info':
+        print('To be implemented')  # TODO: Implement this
+
+    elif arguments.mode == 'scan':
         hashed_dups = find_dups()
 
         if not arguments.silent:
@@ -178,19 +182,6 @@ if __name__ == '__main__':
 
         ap_common_args = argparse.ArgumentParser(add_help=False)
         ap_common_args.add_argument(
-            '-m', '--hashing-method', choices=[m.value for m in HashingMethod], default=HashingMethod.HIST.value,
-            help=f'specify a hashing method (default: {HashingMethod.HIST.value})'
-        )
-        ap_common_args_hash_size = ap_common_args.add_mutually_exclusive_group()
-        ap_common_args_hash_size.add_argument(
-            '-a', '--auto-hash-size', choices=[a.value for a in AutoHashSize], default=AutoHashSize.MAX_AVG_DIM.value,
-            help=f'automatic hash size calculation (default: {AutoHashSize.MAX_AVG_DIM.value})'
-        )
-        ap_common_args_hash_size.add_argument(
-            '-s', '--hash-size', required=False, type=int, default=None,
-            help=f'specify a preferred hash size (integer)*'
-        )
-        ap_common_args.add_argument(
             '-e', '--exclude', required=False, metavar='REGEX', help='exclude matched filenames based on REGEX pattern'
         )
         ap_common_args.add_argument(
@@ -207,10 +198,36 @@ if __name__ == '__main__':
                  f'entirely (default: {PROGRESS_BAR_LEVELS[-1]})'
         )
 
-        subparsers = ap_top_level.add_subparsers(title='run modes', dest='mode', metavar='{scan,clean}', required=True)
+        ap_scan_clean_specific_args = argparse.ArgumentParser(add_help=False)
+        ap_scan_clean_specific_args.add_argument(
+            '-m', '--hashing-method', choices=[m.value for m in HashingMethod], default=HashingMethod.HIST.value,
+            help=f'specify a hashing method (default: {HashingMethod.HIST.value})'
+        )
+        ap_scan_clean_specific_hash_size_args = ap_scan_clean_specific_args.add_mutually_exclusive_group()
+        ap_scan_clean_specific_hash_size_args.add_argument(
+            '-a', '--auto-hash-size', choices=[a.value for a in AutoHashSize], default=AutoHashSize.MAX_AVG_DIM.value,
+            help=f'automatic hash size calculation (default: {AutoHashSize.MAX_AVG_DIM.value})'
+        )
+        ap_scan_clean_specific_hash_size_args.add_argument(
+            '-s', '--hash-size', required=False, type=int, default=None,
+            help=f'specify a preferred hash size (integer)*'
+        )
+
+        subparsers = ap_top_level.add_subparsers(
+            title='run modes', metavar='{info,scan,clean}',
+            dest='mode', required=True
+        )
+
+        ap_info = subparsers.add_parser(
+            'info', parents=[ap_common_args],
+            usage=__info_usage__,
+            description=__info_desc__,
+            epilog=__info_epilog__,
+            formatter_class=argparse.RawTextHelpFormatter
+        )
 
         ap_scan = subparsers.add_parser(
-            'scan', parents=[ap_common_args],
+            'scan', parents=[ap_scan_clean_specific_args, ap_common_args],
             usage=__scan_usage__,
             description=__scan_desc__,
             epilog=__scan_epilog__,
@@ -236,7 +253,7 @@ if __name__ == '__main__':
         )
 
         ap_clean = subparsers.add_parser(
-            'clean', parents=[ap_common_args],
+            'clean', parents=[ap_scan_clean_specific_args, ap_common_args],
             usage=__clean_usage__,
             description=__clean_desc__,
             epilog=__clean_epilog__,
