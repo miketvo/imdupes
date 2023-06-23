@@ -120,6 +120,7 @@ def detect_dup_images(
             )
 
         return hashed_dups
+
     except KeyboardInterrupt:
         if pbar is not None:
             pbar.close()
