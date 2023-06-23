@@ -27,60 +27,61 @@ from utils.globs import VERBOSE_LEVELS, PROGRESS_BAR_LEVELS
 def validate_args(argument_parser: argparse.ArgumentParser) -> argparse.Namespace:
     arguments = argument_parser.parse_args()
 
-    if arguments.hash_size is not None and arguments.hash_size < 8:
-        argument_parser.error(
-            f'hash size of {arguments.hash_size} is too small, '
-            f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
-        )
-    if (arguments.verbose == 0) and any(argv.startswith(('-p', '--progress-bar')) for argv in sys.argv[1:]):
-        argument_parser.error(
-            f'-p/--progress-bar flag requires -V/--verbose to be specified, '
-            f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
-        )
-
-    if arguments.mode == 'scan':
-        if arguments.silent and arguments.output is None:
+    if arguments.mode in ['scan', 'clean']:
+        if arguments.hash_size is not None and arguments.hash_size < 8:
             argument_parser.error(
-                f'scan mode -S/--silent flag requires -o/--output to be specified, '
-                f'see "{argument_parser.prog} scan --help" for more info'
+                f'hash size of {arguments.hash_size} is too small, '
+                f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
             )
-
-        if not os.path.exists(arguments.directory):
-            argument_parser.error(f'invalid path "{arguments.directory}"')
-        if not os.path.isdir(arguments.directory):
-            argument_parser.error(f'"{arguments.directory}" is not a directory')
-        if len(os.listdir(arguments.directory)) == 0:
-            cprint(f'"{arguments.directory}" is empty. Program terminated.', 'red')
-            exit()
-
-        if arguments.output is not None and arguments.output.split('.')[-1].lower() != DUPFILE_EXT:
-            ext = arguments.output.split('.')[-1]
+        if (arguments.verbose == 0) and any(argv.startswith(('-p', '--progress-bar')) for argv in sys.argv[1:]):
             argument_parser.error(
-                f'output "{arguments.output}": invalid extension ".{ext}" (must be ".{DUPFILE_EXT}"), '
-                f'see "{argument_parser.prog} scan --help" for more info'
+                f'-p/--progress-bar flag requires -V/--verbose to be specified, '
+                f'see "{argument_parser.prog} {{scan,clean}} --help" for more info'
             )
 
-    if arguments.mode == 'clean':
-        if not os.path.exists(arguments.input):
-            argument_parser.error(f'invalid path "{arguments.input}"')
-        if os.path.isfile(arguments.input) and arguments.recursive:
-            argument_parser.error('cleaning from dupfile does not support -r/--recursive flag')
-        if os.path.isfile(arguments.input) and any(argv.startswith(('-f', '--format')) for argv in sys.argv[1:]):
-            argument_parser.error('cleaning from dupfile does not support -f/--format flag')
-        if os.path.isfile(arguments.input) and any(argv.startswith(('-s', '--hash-size')) for argv in sys.argv[1:]):
-            argument_parser.error('cleaning from dupfile does not support -s/--hash-size flag')
-        if os.path.isfile(arguments.input) and any(argv.startswith(('-p', '--progress-bar')) for argv in sys.argv[1:]):
-            argument_parser.error('cleaning from dupfile does not support -p/--progress-bar flag')
-        if os.path.isfile(arguments.input) and arguments.input.split('.')[-1].lower() != DUPFILE_EXT:
-            ext = arguments.input.split('.')[-1]
-            cprint(
-                f'"{arguments.input}": Invalid input file type ".{ext}". '
-                f'Program terminated.', 'red'
-            )
-            exit()
-        if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
-            cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
-            exit()
+        if arguments.mode == 'scan':
+            if arguments.silent and arguments.output is None:
+                argument_parser.error(
+                    f'scan mode -S/--silent flag requires -o/--output to be specified, '
+                    f'see "{argument_parser.prog} scan --help" for more info'
+                )
+
+            if not os.path.exists(arguments.directory):
+                argument_parser.error(f'invalid path "{arguments.directory}"')
+            if not os.path.isdir(arguments.directory):
+                argument_parser.error(f'"{arguments.directory}" is not a directory')
+            if len(os.listdir(arguments.directory)) == 0:
+                cprint(f'"{arguments.directory}" is empty. Program terminated.', 'red')
+                exit()
+
+            if arguments.output is not None and arguments.output.split('.')[-1].lower() != DUPFILE_EXT:
+                ext = arguments.output.split('.')[-1]
+                argument_parser.error(
+                    f'output "{arguments.output}": invalid extension ".{ext}" (must be ".{DUPFILE_EXT}"), '
+                    f'see "{argument_parser.prog} scan --help" for more info'
+                )
+
+        if arguments.mode == 'clean':
+            if not os.path.exists(arguments.input):
+                argument_parser.error(f'invalid path "{arguments.input}"')
+            if os.path.isfile(arguments.input) and arguments.recursive:
+                argument_parser.error('cleaning from dupfile does not support -r/--recursive flag')
+            if os.path.isfile(arguments.input) and any(argv.startswith(('-f', '--format')) for argv in sys.argv[1:]):
+                argument_parser.error('cleaning from dupfile does not support -f/--format flag')
+            if os.path.isfile(arguments.input) and any(argv.startswith(('-s', '--hash-size')) for argv in sys.argv[1:]):
+                argument_parser.error('cleaning from dupfile does not support -s/--hash-size flag')
+            if os.path.isfile(arguments.input) and any(argv.startswith(('-p', '--progress-bar')) for argv in sys.argv[1:]):
+                argument_parser.error('cleaning from dupfile does not support -p/--progress-bar flag')
+            if os.path.isfile(arguments.input) and arguments.input.split('.')[-1].lower() != DUPFILE_EXT:
+                ext = arguments.input.split('.')[-1]
+                cprint(
+                    f'"{arguments.input}": Invalid input file type ".{ext}". '
+                    f'Program terminated.', 'red'
+                )
+                exit()
+            if os.path.isdir(arguments.input) and len(os.listdir(arguments.input)) == 0:
+                cprint(f'"{arguments.input}" is empty. Program terminated.', 'red')
+                exit()
 
     return arguments
 
@@ -225,6 +226,7 @@ if __name__ == '__main__':
             epilog=__info_epilog__,
             formatter_class=argparse.RawTextHelpFormatter
         )
+        ap_info.add_argument('directory', help='target image directory')
 
         ap_scan = subparsers.add_parser(
             'scan', parents=[ap_scan_clean_specific_args, ap_common_args],
