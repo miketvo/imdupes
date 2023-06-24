@@ -1,17 +1,11 @@
-import sys
 from sys import exit
 import os
 import re
-from PIL import Image
-from tqdm.auto import tqdm
 from termcolor import cprint, colored
 
-from utils import loop_errprint
 from utils.globs import SUPPORTED_FILE_EXTS
 from utils.globs import INTERACTIVE_OPTS
-from utils.globs import PROGRESS_BAR_LEVELS
 from utils.globs import PathFormat, format_path
-from utils.globs import AutoHashSize
 from utils.imutils import ImageFileWrapper
 
 
@@ -79,99 +73,6 @@ def index_images(
         )
 
     return img_paths
-
-
-def calc_hash_size(
-        img_paths: list[str],
-        auto_hash_size: AutoHashSize = AutoHashSize.MAX_AVG_DIM,
-        verbose: int = 0,
-        progress_bar: int = PROGRESS_BAR_LEVELS[2],
-        output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
-        root_dir: str = None
-) -> tuple[int, list[str]]:
-    pbar = None
-    if verbose > 0:
-        if progress_bar == PROGRESS_BAR_LEVELS[1]:
-            pbar = tqdm(
-                total=len(img_paths),
-                desc='Determining hash size',
-                bar_format='{desc}: {percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]',
-                file=sys.stdout, leave=False
-            )
-        elif progress_bar == PROGRESS_BAR_LEVELS[2]:
-            pbar = tqdm(total=len(img_paths), desc='Determining hash size', file=sys.stdout, leave=False)
-        else:
-            raise ValueError('Invalid progress bar level')
-    if progress_bar == PROGRESS_BAR_LEVELS[0]:
-        print('Determining hash size...', end='\n' if verbose > 1 else '', flush=True)
-
-    has_errors = False
-    max_hash_size = 0
-    dims_total = 0
-    im_count = 0
-    new_img_paths = []
-    for img_path in img_paths:
-        if pbar is not None:
-            pbar.update()
-
-        im = None
-        try:
-            im = Image.open(img_path)
-            im.verify()
-            im = Image.open(img_path)
-
-            if auto_hash_size == AutoHashSize.MAX_DIM:
-                max_hash_size = max([max_hash_size, im.width, im.height])
-            elif auto_hash_size == AutoHashSize.MAX_AVG_DIM:
-                max_hash_size = max([max_hash_size, int((im.width + im.height) / 2)])
-            elif auto_hash_size == AutoHashSize.AVG_DIM:
-                dims_total += im.width + im.height
-                im_count += 1
-            elif auto_hash_size == AutoHashSize.AVG_AVG_DIM:
-                dims_total += int((im.width + im.height) / 2)
-                im_count += 1
-            else:
-                raise ValueError('Invalid AutoHashSize value')
-
-            im.close()
-            new_img_paths.append(img_path)
-        except (
-                ValueError, TypeError,
-                Image.DecompressionBombError,
-                OSError, EOFError, PermissionError,
-                MemoryError
-        ) as error:
-            has_errors = True
-            loop_errprint(
-                f"Error reading '{format_path(img_path, output_path_format, root_dir)}': "
-                f'{error.__str__()}. '
-                f'File skipped.',
-                pbar=pbar
-            )
-            if im is not None:
-                im.close()
-            continue
-
-    if pbar is not None:
-        pbar.close()
-
-    if auto_hash_size == AutoHashSize.AVG_DIM:
-        hash_size = int(dims_total / (im_count * 2))
-    elif auto_hash_size == AutoHashSize.AVG_AVG_DIM:
-        hash_size = int(dims_total / im_count * 2)
-    else:
-        hash_size = max_hash_size
-
-    if verbose > 0:
-        print(
-            f'{"Determining hash size..." if progress_bar != PROGRESS_BAR_LEVELS[0] else ""}'
-            f'{"" if (verbose > 1 and progress_bar == PROGRESS_BAR_LEVELS[0]) or has_errors else " "}'
-            f'Calculated hash size: {colored(str(hash_size), attrs=["bold"])} '
-            f'{colored("[DONE]", color="green", attrs=["bold"])}',
-            flush=True
-        )
-
-    return hash_size, new_img_paths
 
 
 def clean(

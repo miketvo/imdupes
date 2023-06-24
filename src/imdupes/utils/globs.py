@@ -4,15 +4,15 @@ from os import path
 
 class PathFormat(Enum):
     ABSOLUTE = 'absolute'
-    PROG_RELATIVE = 'prog-relative'
-    DIR_RELATIVE = 'dir-relative'
+    CWD_RELATIVE = 'cwd-relative'
+    DIR_RELATIVE = 'target-dir-relative'
     FILENAME = 'filename'
 
 
 def format_path(p: str, path_format: PathFormat, curdir: str = None) -> str:
     if path_format == PathFormat.ABSOLUTE:
         return path.abspath(p)
-    if path_format == PathFormat.PROG_RELATIVE:
+    if path_format == PathFormat.CWD_RELATIVE:
         return path.relpath(p)
     if path_format == PathFormat.DIR_RELATIVE:
         return path.relpath(p, start=curdir)
@@ -68,9 +68,9 @@ class HashingMethod(Enum):
 
 class AutoHashSize(Enum):
     MAX_DIM = 'max-dim'
-    MAX_AVG_DIM = 'max-adim'
+    MAX_DIMS_MEAN = 'max-dims-mean'
     AVG_DIM = 'avg-dim'
-    AVG_AVG_DIM = 'avg-adim'
+    AVG_DIMS_MEAN = 'avg-dims-mean'
 
 
 DEFAULT_HASH_SIZE = 512
