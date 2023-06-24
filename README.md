@@ -66,8 +66,8 @@ options:
   -h, --help            show this help message and exit
   -m {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}, --hashing-method {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}
                         specify a hashing method (default: color-hist-hashing)
-  -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
-                        automatic hash size calculation (default: max-adim)
+  -a {max-dim,max-dims-mean,avg-dim,avg-dims-mean}, --auto-hash-size {max-dim,max-dims-mean,avg-dim,avg-dims-mean}
+                        automatic hash size calculation (default: max-dims-mean)
   -s HASH_SIZE, --hash-size HASH_SIZE
                         specify a preferred hash size (integer)*
   -e REGEX, --exclude REGEX
@@ -115,8 +115,8 @@ options:
   -h, --help            show this help message and exit
   -m {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}, --hashing-method {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}
                         specify a hashing method (default: color-hist-hashing)
-  -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
-                        automatic hash size calculation (default: max-adim)
+  -a {max-dim,max-dims-mean,avg-dim,avg-dims-mean}, --auto-hash-size {max-dim,max-dims-mean,avg-dim,avg-dims-mean}
+                        automatic hash size calculation (default: max-dims-mean)
   -s HASH_SIZE, --hash-size HASH_SIZE
                         specify a preferred hash size (integer)*
   -e REGEX, --exclude REGEX

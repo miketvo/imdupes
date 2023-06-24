@@ -202,7 +202,7 @@ def report_info(
 
 def calc_hash_size(
         img_paths: list[str],
-        auto_hash_size: AutoHashSize = AutoHashSize.MAX_AVG_DIM,
+        auto_hash_size: AutoHashSize = AutoHashSize.MAX_DIMS_MEAN,
         verbose: int = 0,
         progress_bar: int = PROGRESS_BAR_LEVELS[2],
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
@@ -241,12 +241,12 @@ def calc_hash_size(
 
             if auto_hash_size == AutoHashSize.MAX_DIM:
                 max_hash_size = max([max_hash_size, im.width, im.height])
-            elif auto_hash_size == AutoHashSize.MAX_AVG_DIM:
+            elif auto_hash_size == AutoHashSize.MAX_DIMS_MEAN:
                 max_hash_size = max([max_hash_size, int((im.width + im.height) / 2)])
             elif auto_hash_size == AutoHashSize.AVG_DIM:
                 dims_total += im.width + im.height
                 im_count += 1
-            elif auto_hash_size == AutoHashSize.AVG_AVG_DIM:
+            elif auto_hash_size == AutoHashSize.AVG_DIMS_MEAN:
                 dims_total += int((im.width + im.height) / 2)
                 im_count += 1
             else:
@@ -276,7 +276,7 @@ def calc_hash_size(
 
     if auto_hash_size == AutoHashSize.AVG_DIM:
         hash_size = int(dims_total / (im_count * 2))
-    elif auto_hash_size == AutoHashSize.AVG_AVG_DIM:
+    elif auto_hash_size == AutoHashSize.AVG_DIMS_MEAN:
         hash_size = int(dims_total / im_count * 2)
     else:
         hash_size = max_hash_size

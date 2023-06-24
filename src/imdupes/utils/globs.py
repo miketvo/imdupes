@@ -68,9 +68,9 @@ class HashingMethod(Enum):
 
 class AutoHashSize(Enum):
     MAX_DIM = 'max-dim'
-    MAX_AVG_DIM = 'max-adim'
+    MAX_DIMS_MEAN = 'max-dims-mean'
     AVG_DIM = 'avg-dim'
-    AVG_AVG_DIM = 'avg-adim'
+    AVG_DIMS_MEAN = 'avg-dims-mean'
 
 
 DEFAULT_HASH_SIZE = 512

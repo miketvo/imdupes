@@ -223,8 +223,8 @@ if __name__ == '__main__':
         )
         ap_scan_clean_specific_hash_size_args = ap_scan_clean_specific_args.add_mutually_exclusive_group()
         ap_scan_clean_specific_hash_size_args.add_argument(
-            '-a', '--auto-hash-size', choices=[a.value for a in AutoHashSize], default=AutoHashSize.MAX_AVG_DIM.value,
-            help=f'automatic hash size calculation (default: {AutoHashSize.MAX_AVG_DIM.value})'
+            '-a', '--auto-hash-size', choices=[a.value for a in AutoHashSize], default=AutoHashSize.MAX_DIMS_MEAN.value,
+            help=f'automatic hash size calculation (default: {AutoHashSize.MAX_DIMS_MEAN.value})'
         )
         ap_scan_clean_specific_hash_size_args.add_argument(
             '-s', '--hash-size', required=False, type=int, default=None,
