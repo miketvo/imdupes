@@ -10,25 +10,52 @@ See [Releases](https://github.com/miketvo/imdupes-prototype/releases/) for lates
 ## Syntax
 
 ```text
-usage: imdupes {scan,clean} ...
+usage: imdupes {info,scan,clean} ...
 
-Quickly detects and removes identical images. Has two modes:
+Quickly detects and removes identical images. Has 3 modes:
+        - 'info' collects and displays statistics and information of images in a directory
         - 'scan' scans and console prints detected identical image paths/filenames
         - 'clean' scans and removes detected identical images (keeping only the first copy by default)
-See "imdupes {scan,clean} --help" for more information
+See "imdupes {info,scan,clean} --help" for more information
 
 options:
-  -h, --help     show this help message and exit
-  -v, --version  show version information and exit
+  -h, --help         show this help message and exit
+  -v, --version      show version information and exit
 
 run modes:
-  {scan,clean}
+  {info,scan,clean}
 
 Note: This program ignores any non-image file in the target directory
 Algorithm: Average Hash (https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html)
 ```
 
 See below for detailed description of each mode and their arguments:
+
+**Info Mode:**
+
+```text
+usage: imdupes info [options] directory
+
+collect and display statistics and information of images in a directory
+
+positional arguments:
+  directory             target image directory
+
+options:
+  -h, --help            show this help message and exit
+  -e REGEX, --exclude REGEX
+                        exclude matched filenames based on REGEX pattern
+  -r, --recursive       recursively search for images in subdirectories in addition to the specified parent directory
+  -V {1,2}, --verbose {1,2}
+                        explain what is being done
+  -p {0,1,2}, --progress-bar {0,1,2}
+                        specify verbose mode (-V/--verbose) progress bar detail level, 0 disables the progress bar
+                        entirely (default: 2)
+  -f {absolute,cwd-relative,target-dir-relative,filename}, --format {absolute,cwd-relative,target-dir-relative,filename}
+                        console output file path format, (default: target-dir-relative)
+
+Note: This program ignores any non-image file in the target directory
+```
 
 **Scan Mode:**
 
@@ -44,8 +71,8 @@ options:
   -h, --help            show this help message and exit
   -m {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}, --hashing-method {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}
                         specify a hashing method (default: color-hist-hashing)
-  -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
-                        automatic hash size calculation (default: max-adim)
+  -a {max-dim,max-dims-mean,avg-dim,avg-dims-mean}, --auto-hash-size {max-dim,max-dims-mean,avg-dim,avg-dims-mean}
+                        automatic hash size calculation (default: max-dims-mean)
   -s HASH_SIZE, --hash-size HASH_SIZE
                         specify a preferred hash size (integer)*
   -e REGEX, --exclude REGEX
@@ -57,8 +84,8 @@ options:
                         specify verbose mode (-V/--verbose) progress bar detail level, 0 disables the progress bar
                         entirely (default: 2)
   -H, --show-hash       show hash value of each duplication in output
-  -f {absolute,prog-relative,dir-relative,filename}, --format {absolute,prog-relative,dir-relative,filename}
-                        console output file path format, (default: dir-relative)
+  -f {absolute,cwd-relative,target-dir-relative,filename}, --format {absolute,cwd-relative,target-dir-relative,filename}
+                        console output file path format, (default: target-dir-relative)
   -S, --silent          no console output, -o/--output must be specified
   -o DUPFILE, --output DUPFILE
                         save the output to the specified DUPFILE (JSON formatted .imdup) file (overwriting if file
@@ -93,8 +120,8 @@ options:
   -h, --help            show this help message and exit
   -m {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}, --hashing-method {color-hist-hashing,grayscale-hashing,rgb-hashing,rgba-hashing}
                         specify a hashing method (default: color-hist-hashing)
-  -a {max-dim,max-adim,avg-dim,avg-adim}, --auto-hash-size {max-dim,max-adim,avg-dim,avg-adim}
-                        automatic hash size calculation (default: max-adim)
+  -a {max-dim,max-dims-mean,avg-dim,avg-dims-mean}, --auto-hash-size {max-dim,max-dims-mean,avg-dim,avg-dims-mean}
+                        automatic hash size calculation (default: max-dims-mean)
   -s HASH_SIZE, --hash-size HASH_SIZE
                         specify a preferred hash size (integer)*
   -e REGEX, --exclude REGEX
@@ -106,9 +133,9 @@ options:
                         specify verbose mode (-V/--verbose) progress bar detail level, 0 disables the progress bar
                         entirely (default: 2)
   -i, --interactive     prompt for every duplication and let the user choose which file to delete
-  -f {absolute,prog-relative,dir-relative,filename}, --format {absolute,prog-relative,dir-relative,filename}
+  -f {absolute,cwd-relative,target-dir-relative,filename}, --format {absolute,cwd-relative,target-dir-relative,filename}
                         console output file path format, ignored if -V/--verbose and -i/--interactive are both not
-                        enabled (default: dir-relative)
+                        enabled (default: target-dir-relative)
 
 Note: This program ignores any non-image file in the target directory
 *: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are better for
