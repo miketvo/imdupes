@@ -8,7 +8,7 @@ from tqdm.auto import tqdm
 from termcolor import cprint, colored
 
 from utils import UnknownImageFormatError
-from utils import loop_errprint
+from utils import sizeof_fmt, loop_errprint
 from utils.globs import HashingMethod
 from utils.globs import AutoHashSize
 from utils.globs import DEFAULT_HASH_SIZE
@@ -116,6 +116,8 @@ def report_info(
     min_height = -1
     widths_total = 0
     heights_total = 0
+    max_dims_mean = 0
+    min_dims_mean = -1
     dims_total = 0
     dims_mean_total = 0
     im_count = 0
@@ -135,10 +137,14 @@ def report_info(
             min_width = im.width if (min_width == -1) or (im.width < min_width) else min_width
             min_height = im.height if (min_height == -1) or (im.height < min_height) else min_height
 
+            dims_mean = int((im.width + im.height) / 2)
+            max_dims_mean = dims_mean if dims_mean > max_dims_mean else max_dims_mean
+            min_dims_mean = dims_mean if (min_dims_mean == -1) or (dims_mean < min_dims_mean) else min_dims_mean
+
             widths_total += im.width
             heights_total += im.height
             dims_total += im.width + im.height
-            dims_mean_total += int((im.width + im.height) / 2)
+            dims_mean_total += dims_mean
             im_count += 1
 
             file_format = im.format.lower()
@@ -191,12 +197,73 @@ def report_info(
             flush=True
         )
 
+    def header(text: str) -> str:
+        return colored(text, color='magenta', attrs=['bold'])
+
     cprint(
         f'\n'
-        f'Target directory: '
-        f'{format_path(root_dir, output_path_format) if output_path_format == PathFormat.ABSOLUTE else root_dir}\n'
-        f'{"=" * (18 + len(root_dir))}',
-        color='blue', attrs=['bold'], flush=True
+        f'TARGET DIRECTORY: "'
+        f'{format_path(root_dir, output_path_format) if output_path_format == PathFormat.ABSOLUTE else root_dir}"',
+        color='blue', attrs=['bold']
+    )
+
+    cprint('\nFolder statistics', color='magenta', attrs=['bold'])
+    print('-----------------')
+    print(f'{header("File count:   ")} {im_count} (skipped: {errors_count})')
+    print(f'{header("Disk usage:   ")} {sizeof_fmt(disk_usage)}')
+    print(
+        f'{header("Largest file: ")} '
+        f'"{format_path(largest_file, output_path_format, root_dir)}" ({sizeof_fmt(largest_file_size)})'
+    )
+    print(
+        f'{header("Smallest file:")} '
+        f'"{format_path(smallest_file, output_path_format, root_dir)}" ({sizeof_fmt(smallest_file_size)})'
+    )
+
+    cprint('\nFile types', color='magenta', attrs=['bold'])
+    print('----------')
+    print(f'{header("File type")}   {header("Count")}')
+    for file_format in file_formats.keys():
+        print(f'{file_format:11} {file_formats[file_format]}')
+
+    cprint('\nDimensions statistics', color='magenta', attrs=['bold'])
+    print('---------------------')
+    print(
+        f'{header("Width:                  ")} '
+        f'{max_width}px (max), '
+        f'{min_width}px (min), '
+        f'{int(widths_total / im_count)}px (mean)'
+    )
+    print(
+        f'{header("Height:                 ")} '
+        f'{max_height}px (max), '
+        f'{min_height}px (min), '
+        f'{int(heights_total / im_count)}px (mean)'
+    )
+    print(f'{header("Max dimension:          ")} {max([max_width, max_height])}px')
+    print(f'{header("Min dimension:          ")} {min([min_width, min_height])}px')
+    print(f'{header("Average dimension:      ")} {int(dims_total / (im_count * 2))}px')
+    print(f'{header("Max dimensions mean:    ")} {max_dims_mean}px')
+    print(f'{header("Min dimensions mean:    ")} {min_dims_mean}px')
+    print(f'{header("Average dimensions mean:")} {int(dims_mean_total / im_count)}px')
+
+    cprint('\nRecommended hash size', color='magenta', attrs=['bold'])
+    print('---------------------')
+    print(
+        f'{header(f"Max dimension ({AutoHashSize.MAX_DIM.value}):            ")} '
+        f'{max([max_width, max_height])}px (best accuracy)'
+    )
+    print(
+        f'{header(f"Max dimensions mean ({AutoHashSize.MAX_DIMS_MEAN.value}):")} '
+        f'{max_dims_mean}px (high accuracy)'
+    )
+    print(
+        f'{header(f"Average dimension ({AutoHashSize.AVG_DIM.value}):        ")} '
+        f'{int(dims_total / (im_count * 2))}px (good performance & good accuracy)'
+    )
+    print(
+        f'{header(f"Average dimensions mean ({AutoHashSize.AVG_DIM.value}):  ")} '
+        f'{int(dims_mean_total / im_count)}px (good performance & good accuracy)'
     )
 
 
@@ -277,7 +344,7 @@ def calc_hash_size(
     if auto_hash_size == AutoHashSize.AVG_DIM:
         hash_size = int(dims_total / (im_count * 2))
     elif auto_hash_size == AutoHashSize.AVG_DIMS_MEAN:
-        hash_size = int(dims_total / im_count * 2)
+        hash_size = int(dims_total / im_count)
     else:
         hash_size = max_hash_size
 
