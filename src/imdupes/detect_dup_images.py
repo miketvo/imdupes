@@ -6,11 +6,11 @@ from tqdm.auto import tqdm
 from termcolor import colored
 
 from utils import loop_errprint
-from utils.globs import PathFormat, format_path
 from utils.globs import HashingMethod
 from utils.globs import DEFAULT_HASH_SIZE
-from utils.imutils import hash_image, ImageFileWrapper
 from utils.globs import PROGRESS_BAR_LEVELS
+from utils.imutils import hash_image, ImageFileWrapper
+from utils.globs import PathFormat, format_path
 
 
 Image.MAX_IMAGE_PIXELS = 846_071_539_488  # Kuala Lumpur 846 gigapixels: https://www.panaxity.com/
@@ -26,12 +26,11 @@ def detect_dup_images(
         verbose: int = 0,
         progress_bar: int = PROGRESS_BAR_LEVELS[2]
 ) -> dict[str, list[ImageFileWrapper]]:
-    try:
-        hashed_images: dict[str, list[ImageFileWrapper]] = {}
-        has_errors = False
+    hashed_images: dict[str, list[ImageFileWrapper]] = {}
+    has_errors = False
+    pbar = None
 
-        # Image hashing
-        pbar = None
+    try:
         if verbose > 0:
             if progress_bar == PROGRESS_BAR_LEVELS[1]:
                 pbar = tqdm(
@@ -42,7 +41,7 @@ def detect_dup_images(
                 )
             elif progress_bar == PROGRESS_BAR_LEVELS[2]:
                 pbar = tqdm(total=len(img_paths), desc='Scanning for identical images', file=sys.stdout, leave=False)
-            else:
+            elif progress_bar not in PROGRESS_BAR_LEVELS:
                 raise ValueError('Invalid progress bar level')
         if progress_bar == PROGRESS_BAR_LEVELS[0]:
             print(
@@ -100,8 +99,8 @@ def detect_dup_images(
             hash_val: dup_imgs for hash_val, dup_imgs in hashed_images.items() if len(dup_imgs) > 1
         }
 
-        # Sort duplications in order of decreasing resolution (width * height) so that the highest resolution image is kept
-        # during cleaning step
+        # Sort duplications in order of decreasing resolution (width * height) so that the highest resolution image is
+        # kept during cleaning step
         image_hashes = list(hashed_dups.keys())
         for i in range(len(image_hashes)):
             hashed_dups[image_hashes[i]] = sorted(
@@ -121,6 +120,7 @@ def detect_dup_images(
             )
 
         return hashed_dups
+
     except KeyboardInterrupt:
         if pbar is not None:
             pbar.close()
