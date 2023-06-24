@@ -259,11 +259,11 @@ def report_info(
     )
     print(
         f'{header(f"Average dimension ({AutoHashSize.AVG_DIM.value}):        ")} '
-        f'{int(dims_total / (im_count * 2))}px (good performance & good accuracy)'
+        f'{int(dims_total / (im_count * 2))}px (good performance & medium accuracy)'
     )
     print(
         f'{header(f"Average dimensions mean ({AutoHashSize.AVG_DIM.value}):  ")} '
-        f'{int(dims_mean_total / im_count)}px (good performance & good accuracy)'
+        f'{int(dims_mean_total / im_count)}px (good performance & medium accuracy)'
     )
 
 
