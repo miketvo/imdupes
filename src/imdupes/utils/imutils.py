@@ -1,5 +1,6 @@
 import os
 import sys
+from sys import exit
 import imagehash
 import numpy
 from imagehash import ImageHash, MeanFunc
