@@ -193,7 +193,7 @@ def report_info(
         if verbose > 0:
             print(
                 f'{"Collecting information..." if progress_bar != PROGRESS_BAR_LEVELS[0] else ""}'
-                f'{"" if (verbose > 1 and progress_bar == PROGRESS_BAR_LEVELS[0]) or has_errors else " "}'
+                f'{"" if (progress_bar == PROGRESS_BAR_LEVELS[0]) and (verbose > 1 or has_errors) else " "}'
                 f'{colored("[DONE]", color="green", attrs=["bold"])}',
                 flush=True
             )
@@ -357,7 +357,7 @@ def calc_hash_size(
         if verbose > 0:
             print(
                 f'{"Determining hash size..." if progress_bar != PROGRESS_BAR_LEVELS[0] else ""}'
-                f'{"" if (verbose > 1 and progress_bar == PROGRESS_BAR_LEVELS[0]) or has_errors else " "}'
+                f'{"" if (progress_bar == PROGRESS_BAR_LEVELS[0]) and (verbose > 1 or has_errors) else " "}'
                 f'Calculated hash size: {colored(str(hash_size), attrs=["bold"])} '
                 f'{colored("[DONE]", color="green", attrs=["bold"])}',
                 flush=True
