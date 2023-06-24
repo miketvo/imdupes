@@ -4,15 +4,15 @@ from os import path
 
 class PathFormat(Enum):
     ABSOLUTE = 'absolute'
-    PROG_RELATIVE = 'prog-relative'
-    DIR_RELATIVE = 'dir-relative'
+    CWD_RELATIVE = 'cwd-relative'
+    DIR_RELATIVE = 'target-dir-relative'
     FILENAME = 'filename'
 
 
 def format_path(p: str, path_format: PathFormat, curdir: str = None) -> str:
     if path_format == PathFormat.ABSOLUTE:
         return path.abspath(p)
-    if path_format == PathFormat.PROG_RELATIVE:
+    if path_format == PathFormat.CWD_RELATIVE:
         return path.relpath(p)
     if path_format == PathFormat.DIR_RELATIVE:
         return path.relpath(p, start=curdir)

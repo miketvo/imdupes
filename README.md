@@ -38,6 +38,9 @@ usage: imdupes info [options] directory
 
 collect and display statistics and information of images in a directory
 
+positional arguments:
+  directory             target image directory
+
 options:
   -h, --help            show this help message and exit
   -e REGEX, --exclude REGEX
@@ -48,6 +51,8 @@ options:
   -p {0,1,2}, --progress-bar {0,1,2}
                         specify verbose mode (-V/--verbose) progress bar detail level, 0 disables the progress bar
                         entirely (default: 2)
+  -f {absolute,cwd-relative,target-dir-relative,filename}, --format {absolute,cwd-relative,target-dir-relative,filename}
+                        console output file path format, (default: target-dir-relative)
 
 Note: This program ignores any non-image file in the target directory
 ```
@@ -79,8 +84,8 @@ options:
                         specify verbose mode (-V/--verbose) progress bar detail level, 0 disables the progress bar
                         entirely (default: 2)
   -H, --show-hash       show hash value of each duplication in output
-  -f {absolute,prog-relative,dir-relative,filename}, --format {absolute,prog-relative,dir-relative,filename}
-                        console output file path format, (default: dir-relative)
+  -f {absolute,cwd-relative,target-dir-relative,filename}, --format {absolute,cwd-relative,target-dir-relative,filename}
+                        console output file path format, (default: target-dir-relative)
   -S, --silent          no console output, -o/--output must be specified
   -o DUPFILE, --output DUPFILE
                         save the output to the specified DUPFILE (JSON formatted .imdup) file (overwriting if file
@@ -128,9 +133,9 @@ options:
                         specify verbose mode (-V/--verbose) progress bar detail level, 0 disables the progress bar
                         entirely (default: 2)
   -i, --interactive     prompt for every duplication and let the user choose which file to delete
-  -f {absolute,prog-relative,dir-relative,filename}, --format {absolute,prog-relative,dir-relative,filename}
+  -f {absolute,cwd-relative,target-dir-relative,filename}, --format {absolute,cwd-relative,target-dir-relative,filename}
                         console output file path format, ignored if -V/--verbose and -i/--interactive are both not
-                        enabled (default: dir-relative)
+                        enabled (default: target-dir-relative)
 
 Note: This program ignores any non-image file in the target directory
 *: Smaller hash sizes are better for detecting visually similar images, while larger hash sizes are better for
