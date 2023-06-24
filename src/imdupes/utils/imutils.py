@@ -1,11 +1,13 @@
+import os
 import sys
 import imagehash
 import numpy
 from imagehash import ImageHash, MeanFunc
 from PIL import Image
 from tqdm.auto import tqdm
-from termcolor import colored
+from termcolor import cprint, colored
 
+from utils import UnknownImageFormatError
 from utils import loop_errprint
 from utils.globs import HashingMethod
 from utils.globs import AutoHashSize
@@ -85,7 +87,117 @@ def report_info(
         output_path_format: PathFormat = PathFormat.DIR_RELATIVE,
         root_dir: str = None
 ) -> None:
-    print(f'To be implemented')  # TODO: Implement this
+    pbar = None
+    if verbose > 0:
+        if progress_bar == PROGRESS_BAR_LEVELS[1]:
+            pbar = tqdm(
+                total=len(img_paths),
+                desc='Collecting information',
+                bar_format='{desc}: {percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]',
+                file=sys.stdout, leave=False
+            )
+        elif progress_bar == PROGRESS_BAR_LEVELS[2]:
+            pbar = tqdm(total=len(img_paths), desc='Collecting information', file=sys.stdout, leave=False)
+        elif progress_bar not in PROGRESS_BAR_LEVELS:
+            raise ValueError('Invalid progress bar level')
+    if progress_bar == PROGRESS_BAR_LEVELS[0]:
+        print('Collecting information...', end='\n' if verbose > 1 else '', flush=True)
+
+    has_errors = False
+    file_formats: dict[str, int] = {}
+    largest_file = None
+    largest_file_size = 0
+    smallest_file = None
+    smallest_file_size = -1
+    disk_usage = 0
+    max_width = 0
+    max_height = 0
+    min_width = -1
+    min_height = -1
+    widths_total = 0
+    heights_total = 0
+    dims_total = 0
+    dims_mean_total = 0
+    im_count = 0
+    errors_count = 0
+    for img_path in img_paths:
+        if pbar is not None:
+            pbar.update()
+
+        im = None
+        try:
+            im = Image.open(img_path)
+            im.verify()
+            im = Image.open(img_path)
+
+            max_width = im.width if im.width > max_width else max_width
+            max_height = im.height if im.height > max_height else max_height
+            min_width = im.width if (min_width == -1) or (im.width < min_width) else min_width
+            min_height = im.height if (min_height == -1) or (im.height < min_height) else min_height
+
+            widths_total += im.width
+            heights_total += im.height
+            dims_total += im.width + im.height
+            dims_mean_total += int((im.width + im.height) / 2)
+            im_count += 1
+
+            file_format = im.format.lower()
+            if file_format is not None:
+                if file_format in file_formats:
+                    file_formats[file_format] += 1
+                else:
+                    file_formats[file_format] = 1
+            else:
+                raise UnknownImageFormatError('Unknown image format')
+
+            im.close()
+
+            file_size = os.stat(img_path).st_size
+            if file_size > largest_file_size:
+                largest_file_size = file_size
+                largest_file = img_path
+            if (smallest_file_size == -1) or (file_size < smallest_file_size):
+                smallest_file_size = file_size
+                smallest_file = img_path
+            disk_usage += file_size
+
+        except (
+                ValueError, TypeError,
+                UnknownImageFormatError,
+                Image.DecompressionBombError,
+                OSError, EOFError, PermissionError,
+                MemoryError
+        ) as error:
+            has_errors = True
+            loop_errprint(
+                f"Error reading '{format_path(img_path, output_path_format, root_dir)}': "
+                f'{error.__str__()}. '
+                f'File skipped.',
+                pbar=pbar
+            )
+            errors_count += 1
+            if im is not None:
+                im.close()
+            continue
+
+    if pbar is not None:
+        pbar.close()
+
+    if verbose > 0:
+        print(
+            f'{"Collecting information..." if progress_bar != PROGRESS_BAR_LEVELS[0] else ""}'
+            f'{"" if (verbose > 1 and progress_bar == PROGRESS_BAR_LEVELS[0]) or has_errors else " "}'
+            f'{colored("[DONE]", color="green", attrs=["bold"])}',
+            flush=True
+        )
+
+    cprint(
+        f'\n'
+        f'Target directory: '
+        f'{format_path(root_dir, output_path_format) if output_path_format == PathFormat.ABSOLUTE else root_dir}\n'
+        f'{"=" * (18 + len(root_dir))}',
+        color='blue', attrs=['bold'], flush=True
+    )
 
 
 def calc_hash_size(
