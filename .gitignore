@@ -126,7 +126,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -142,7 +141,6 @@ MANIFEST
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
-*.spec
 
 # Installer logs
 pip-log.txt
@@ -718,3 +716,8 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,pythonvanilla,circuitpython,pycharm+all,visualstudiocode,visualstudio
+
+# Included libraries
+!src/lib/**/[Aa][Rr][Mm]/
+!src/lib/**/x64/
+!src/lib/**/x86/
