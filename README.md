@@ -17,7 +17,7 @@ scoop install scoop-miketvo/imdupes
 ```
 
 ### Portable Binaries
-See [Releases](https://github.com/miketvo/imdupes-prototype/releases/) for latest versions.
+See [Releases](https://github.com/miketvo/imdupes/releases/) for latest versions.
 
 Download and extract the archive containing the `imdupes` executable for your operating system. Currently, these OSes are supported:
 
