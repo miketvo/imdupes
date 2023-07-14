@@ -1,4 +1,4 @@
-# Prototype: Imdupes
+# Imdupes
 
 Versatile image deduplicator.
 
