@@ -6,7 +6,7 @@ Versatile image deduplicator.
 
 ## Download and Installation
 
-### [Scoop](https://scoop.sh/) (Windows)
+### Install with [Scoop](https://scoop.sh/) (Windows)
 
 ```bash
 scoop bucket add scoop-miketvo https://github.com/miketvo/scoop-miketvo
@@ -16,7 +16,7 @@ scoop bucket add scoop-miketvo https://github.com/miketvo/scoop-miketvo
 scoop install scoop-miketvo/imdupes
 ```
 
-### Portable Binaries
+### Portable Binaries Downloads
 See [Releases](https://github.com/miketvo/imdupes/releases/) for latest versions.
 
 Download and extract the archive containing the `imdupes` executable for your operating system. Currently, these OSes are supported:
