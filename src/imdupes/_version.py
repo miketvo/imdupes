@@ -1,4 +1,4 @@
-__version__ = '0.2.4'
+__version__ = '0.2.5'
 __app_name__ = 'imdupes'
 
 __prog_usage__ = f'{__app_name__} {{info,scan,clean}} ...'

@@ -1,6 +1,11 @@
 import unittest
+import sys
 import os
+from os.path import dirname
 
+
+sys.path.append(os.path.join(dirname(__file__) + '/..', 'src/imdupes'))
+sys.path.append(os.path.join(dirname(__file__) + '/..', 'tests'))
 from detect_dup_images import detect_dup_images
 from utils.globs import HashingMethod
 from tests import DIR_DATA_SCRAPED
