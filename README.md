@@ -1,6 +1,14 @@
-# Imdupes
+<div align="center" style="display: flex; justify-content: center; align-items: center; margin-top: 64px; margin-bottom: -32px;">
+    <img alt="Imdupes Logo" src="./icon.png" width="256px" height="256px" />
+</div>
 
-Versatile image deduplicator.
+<div>
+    <h1 align="center" style="text-align: center; font-size: 48px;">Imdupes</h1>
+</div>
+
+<div align="center" style="display: flex; justify-content: center; align-items: center;">
+    Versatile image deduplicator
+</div>
 
 ---
 
@@ -16,13 +24,23 @@ scoop bucket add scoop-miketvo https://github.com/miketvo/scoop-miketvo
 scoop install scoop-miketvo/imdupes
 ```
 
+### Install with [Homebrew](https://brew.sh/) (Linux and MacOS)
+
+```bash
+brew tap miketvo/apps
+```
+
+```bash
+brew install imdupes
+```
+
 ### Portable Binaries Downloads
 See [Releases](https://github.com/miketvo/imdupes/releases/) for latest versions.
 
-Download and extract the archive containing the `imdupes` executable for your operating system. Currently, these OSes are supported:
+Download and extract the archive containing the `imdupes` executable for your operating system. Currently, pre-built binaries are available for these OSes:
 
-- Windows 7 or higher
-- Any Linux Distro with Kernel version 5.15 or higher
+- Windows 7 or higher (x64) 
+- Any Linux Distro with Kernel version 5.15 or higher (x64) 
 
 ## Syntax
 
