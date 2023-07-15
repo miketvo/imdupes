@@ -1,5 +1,5 @@
 # noinspection PyProtectedMember
-from imdupes._version import __version__
+from _version import __version__
 import os
 import shutil
 from sys import platform
