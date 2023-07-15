@@ -42,7 +42,7 @@ jobs:
       - name: Build executable
         run: python -O build.py
 
-      - name: Archive executables
+      - name: Archive executable
         uses: actions/upload-artifact@v3
         with:
           name: imdupes-artifacts
