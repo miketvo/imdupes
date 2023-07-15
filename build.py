@@ -1,9 +1,9 @@
 # noinspection PyProtectedMember
-from _version import __version__
 import os
-import shutil
-from sys import platform
+from os.path import dirname
 import sys
+from sys import platform
+import shutil
 import zipfile
 import tarfile
 import hashlib
@@ -46,6 +46,9 @@ def create_checksum_file(os_name: str, file_extension: str) -> None:
 
 
 if __name__ == '__main__':
+    sys.path.append(os.path.join(dirname(__file__), 'src/imdupes'))
+    from _version import __version__
+
     print(f'Detected platform: "{platform}".', end='')
     if platform.startswith('win'):
         print('\n')
