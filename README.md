@@ -39,8 +39,9 @@ See [Releases](https://github.com/miketvo/imdupes/releases/) for latest versions
 
 Download and extract the archive containing the `imdupes` executable for your operating system. Currently, pre-built binaries are available for these OSes:
 
-- Windows 7 or higher (x64) 
-- Any Linux Distro with Kernel version 5.15 or higher (x64) 
+- Windows 7 or above (x64)
+- Any Linux Distro with Kernel version 5.15 or above (x64)
+- MacOS Monterey 12 or above (x64)
 
 ## Syntax
 
