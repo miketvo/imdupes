@@ -14,8 +14,8 @@ if __name__ == '__main__':
     if platform.startswith('win'):
         print('\n')
         build('windows-build.spec')
-    elif platform.startswith('linux'):
+    elif platform.startswith('linux') or platform.startswith('darwin'):
         print('\n')
-        build('linux-build.spec')
+        build('unix-build.spec')
     else:
         print(f'Platform not supported!')
