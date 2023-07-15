@@ -40,7 +40,7 @@ jobs:
         run: python -m unittest discover
 
       - name: Build executable
-        run: python build.py
+        run: python -O build.py
 
       - name: Archive executables
         uses: actions/upload-artifact@v3
