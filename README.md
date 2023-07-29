@@ -256,3 +256,13 @@ The user can also specify `-e/--exclude REGEX` flag when cleaning this way to fu
 | Sun Raster                       | `.ras`, `.sun`                                                          |                                                                          |
 | X Bitmap                         | `.xbm`                                                                  |                                                                          |
 | X Pixmap                         | `.xpm`                                                                  |                                                                          |
+
+
+---
+
+# Contributors
+
+Thanks to these wonderful people:
+- [Doanh Tran](https://github.com/yoantran)
+- [Do Le Long An](https://github.com/LaansDole)
+
