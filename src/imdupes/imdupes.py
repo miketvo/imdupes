@@ -122,7 +122,7 @@ def main(arguments: argparse.Namespace) -> None:
         )
 
     if arguments.mode == 'info':
-        img_paths = index_images(
+        image_paths = index_images(
             arguments.directory,
             exclude=arguments.exclude,
             recursive=arguments.recursive,
@@ -130,7 +130,7 @@ def main(arguments: argparse.Namespace) -> None:
         )
 
         report_info(
-            img_paths,
+            image_paths,
             verbose=arguments.verbose,
             progress_bar=arguments.progress_bar,
             output_path_format=PathFormat(arguments.format),

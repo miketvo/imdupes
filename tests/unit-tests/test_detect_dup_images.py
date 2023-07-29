@@ -23,7 +23,7 @@ def get_test_dups() -> list[str]:
     return list(dups)
 
 
-class Detect(unittest.TestCase):
+class DetectDupImages(unittest.TestCase):
     def test(self):
         # Arrange
         test_dups = get_test_dups()
