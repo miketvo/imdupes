@@ -122,7 +122,8 @@ def main(arguments: argparse.Namespace) -> None:
         )
 
     if arguments.mode == 'info':
-        image_paths = index_images(
+        # This variable is named img_path to avoid naming conflict with that in find_dups()
+        img_paths = index_images(
             arguments.directory,
             exclude=arguments.exclude,
             recursive=arguments.recursive,
@@ -130,7 +131,7 @@ def main(arguments: argparse.Namespace) -> None:
         )
 
         report_info(
-            image_paths,
+            img_paths,
             verbose=arguments.verbose,
             progress_bar=arguments.progress_bar,
             output_path_format=PathFormat(arguments.format),
