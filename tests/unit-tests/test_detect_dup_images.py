@@ -18,10 +18,9 @@ class DetectDupImages(unittest.TestCase):
             dups = set()
 
             for filename in os.listdir(DIR_DATA_SCRAPED):
-                filename_tokens = filename.split('_')
-                if filename_tokens[0] == 'DUPLICATE':
+                if filename.startswith('DUPLICATE_'):
                     dups.add(filename)
-                    dups.add(filename_tokens[-1])
+                    dups.add(filename.split('_')[-1])
 
             return list(dups)
         test_dups = get_test_dups()
@@ -39,6 +38,7 @@ class DetectDupImages(unittest.TestCase):
         for dup_imgs in detect_dups_dict.values():
             for dup_img in dup_imgs:
                 detect_dups.append(os.path.basename(dup_img.path))
+        self.maxDiff = None
         self.assertCountEqual(test_dups, detect_dups)
 
 
