@@ -11,21 +11,19 @@ from utils.globs import HashingMethod
 from tests import DIR_DATA_SCRAPED
 
 
-def get_test_dups() -> list[str]:
-    dups = set()
-
-    for filename in os.listdir(DIR_DATA_SCRAPED):
-        filename_tokens = filename.split('_')
-        if filename_tokens[0] == 'DUPLICATE':
-            dups.add(filename)
-            dups.add(filename_tokens[-1])
-
-    return list(dups)
-
-
 class DetectDupImages(unittest.TestCase):
     def test(self):
         # Arrange
+        def get_test_dups() -> list[str]:
+            dups = set()
+
+            for filename in os.listdir(DIR_DATA_SCRAPED):
+                filename_tokens = filename.split('_')
+                if filename_tokens[0] == 'DUPLICATE':
+                    dups.add(filename)
+                    dups.add(filename_tokens[-1])
+
+            return list(dups)
         test_dups = get_test_dups()
 
         # Act
