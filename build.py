@@ -50,8 +50,8 @@ def create_checksum_file(os_name: str, file_extension: str) -> None:
 
 
 if __name__ == '__main__':
-    sys.path.append(os.path.join(dirname(__file__), 'src/imdupes'))
-    from _version import __version__
+    sys.path.append(os.path.join(dirname(__file__), 'src'))
+    from imdupes._version import __version__
 
     print(f'Detected platform: "{platform}".', end='')
     if platform.startswith('win'):
